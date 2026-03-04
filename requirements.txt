@@ -4,3 +4,5 @@ plotly
 dash-bootstrap-components
 gunicorn
 requests
+psycopg2-binary
+sqlalchemy
