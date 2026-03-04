@@ -1,0 +1,177 @@
+import pandas as pd
+import unicodedata
+import re
+import os
+
+
+# ---------------- CAMINHOS DOS ARQUIVOS ---------------- #
+
+# Pega a pasta raiz do projeto
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+arquivo_atend = os.path.join(base_dir, "relatorio-atendimentos.csv")
+arquivo_pac = os.path.join(base_dir, "tabela_pacientes.csv")
+arquivo_obs = os.path.join(base_dir, "observacoes.csv")
+arquivo_agenda = os.path.join(base_dir, "table_agenda_relatorio.csv")
+
+
+# ---------------- FUNÇÕES AUXILIARES ---------------- #
+
+def normalizar_nome(nome):
+    if pd.isna(nome):
+        return ""
+
+    nome = unicodedata.normalize('NFKD', nome)
+    nome = nome.encode('ASCII', 'ignore').decode('utf-8')
+    nome = re.sub(r'\W+', '', nome)
+    return nome.lower()
+
+
+def classificar_status(idade_dias, recencia):
+
+    if pd.isna(idade_dias) or pd.isna(recencia):
+        return "Atenção"
+
+    # 0 a 1 ano
+    if 0 <= idade_dias < 365:
+        if recencia > 30:
+            return "Perigo"
+        elif recencia <= 20:
+            return "Ok"
+        else:
+            return "Atenção"
+
+    # 1 a 2 anos
+    elif 365 <= idade_dias < 730:
+        if recencia > 60:
+            return "Perigo"
+        elif recencia <= 40:
+            return "Ok"
+        else:
+            return "Atenção"
+
+    # 2+ anos
+    elif idade_dias >= 730:
+        if recencia > 180:
+            return "Perigo"
+        elif recencia <= 120:
+            return "Ok"
+        else:
+            return "Atenção"
+
+    return "Atenção"
+
+
+# ---------------- FUNÇÃO PRINCIPAL ---------------- #
+
+def carregar_dados():
+
+    df_atend = pd.read_csv(arquivo_atend, sep=";")
+    df_pac = pd.read_csv(arquivo_pac, sep=";")
+
+    df_atend.columns = df_atend.columns.str.strip()
+    df_pac.columns = df_pac.columns.str.strip()
+
+    df_atend['Data'] = pd.to_datetime(
+        df_atend['Data'], dayfirst=True, errors='coerce'
+    )
+
+    df_pac['Nascimento'] = pd.to_datetime(
+        df_pac['Nascimento'], dayfirst=True, errors='coerce'
+    )
+
+    # Normaliza nomes
+    df_atend['nome_normalizado'] = df_atend['Paciente'].apply(normalizar_nome)
+    df_pac['nome_normalizado'] = df_pac['Paciente'].apply(normalizar_nome)
+
+    # Merge
+    df_base = df_atend.merge(
+        df_pac[['nome_normalizado', 'Nascimento']],
+        on='nome_normalizado',
+        how='left'
+    )
+
+    hoje = pd.Timestamp.today()
+
+    df_group = df_base.groupby(['Paciente', 'Nascimento']).agg(
+        ultimo_atendimento=('Data', 'max'),
+        quantidade_atendimento=('Data', 'count')
+    ).reset_index()
+
+    df_group['idade_dias'] = (hoje - df_group['Nascimento']).dt.days
+    df_group['recencia_dias'] = (hoje - df_group['ultimo_atendimento']).dt.days
+
+    df_group['Status'] = df_group.apply(
+        lambda row: classificar_status(
+            row['idade_dias'], row['recencia_dias']
+        ),
+        axis=1
+    )
+
+    df_group['Recência'] = df_group['recencia_dias']
+
+    df_final = df_group[[
+        'Paciente',
+        'ultimo_atendimento',
+        'quantidade_atendimento',
+        'Recência',
+        'Status'
+    ]].rename(columns={
+        'ultimo_atendimento': 'Último Atendimento',
+        'quantidade_atendimento': 'Qtd At.'
+    })
+    df_final["Último Atendimento"] = df_final["Último Atendimento"].dt.strftime(
+        "%d/%m/%Y")
+    # Observações
+    if os.path.exists(arquivo_obs):
+        df_obs = pd.read_csv(arquivo_obs)
+        df_final = df_final.merge(df_obs, on="Paciente", how="left")
+    else:
+        df_final["Observação"] = ""
+
+        # ================================
+    # 🔹 CRUZAR COM AGENDA
+    # ================================
+
+    if os.path.exists(arquivo_agenda):
+
+        df_agenda = pd.read_csv(arquivo_agenda)
+
+        # Corrigir encoding (se necessário)
+        df_agenda.columns = df_agenda.columns.str.strip()
+
+        # Normalizar nome do paciente
+        df_agenda["nome_normalizado"] = df_agenda["Paciente"].apply(
+            normalizar_nome)
+        df_final["nome_normalizado"] = df_final["Paciente"].apply(
+            normalizar_nome)
+
+        # Manter apenas último agendamento por paciente
+        df_agenda["Data e hora"] = pd.to_datetime(
+            df_agenda["Data e hora"],
+            dayfirst=True,
+            errors="coerce"
+        )
+
+        df_agenda = df_agenda.sort_values("Data e hora", ascending=False)
+
+        df_agenda_unico = df_agenda.drop_duplicates(
+            subset="nome_normalizado",
+            keep="first"
+        )
+
+        # Merge com df_final
+        df_final = df_final.merge(
+            df_agenda_unico[["nome_normalizado", "Status"]],
+            on="nome_normalizado",
+            how="left",
+            suffixes=("", "_agenda")
+        )
+
+        df_final.rename(columns={"Status_agenda": "Agendado"}, inplace=True)
+
+    else:
+        df_final["Agendado"] = ""
+    df_final.drop(columns=["nome_normalizado"], inplace=True, errors="ignore")
+
+    return df_final
