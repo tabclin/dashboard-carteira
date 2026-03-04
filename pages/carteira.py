@@ -213,7 +213,8 @@ def atualizar_relatorio(n_clicks, filtro_status):
 
     # 🔹 Se clicou no botão → roda automação
     if trigger == "btn-atualizar-relatorio":
-        requests.get("http://192.168.15.101:5000/executar-automacao")
+        requests.get(
+            "https://https://bess-leptoprosopic-grinningly.ngrok-free.dev/executar-automacao")
 
     # 🔹 Sempre recarrega dados depois
     df = carregar_dados()
