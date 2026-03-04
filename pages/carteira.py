@@ -3,6 +3,7 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import subprocess
 import os
+import requests
 
 from utils.data_loader import carregar_dados
 
@@ -212,10 +213,7 @@ def atualizar_relatorio(n_clicks, filtro_status):
 
     # 🔹 Se clicou no botão → roda automação
     if trigger == "btn-atualizar-relatorio":
-        subprocess.run(
-            ["python", "automatizar_gestaods.py"],
-            check=True
-        )
+        requests.get("http://192.168.15.101:5000/executar-automacao")
 
     # 🔹 Sempre recarrega dados depois
     df = carregar_dados()
