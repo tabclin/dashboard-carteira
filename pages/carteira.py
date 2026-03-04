@@ -214,7 +214,10 @@ def atualizar_relatorio(n_clicks, filtro_status):
     # 🔹 Se clicou no botão → roda automação
     if trigger == "btn-atualizar-relatorio":
         requests.get(
-            "https://https://bess-leptoprosopic-grinningly.ngrok-free.dev/executar-automacao")
+            "https://bess-leptoprosopic-grinningly.ngrok-free.dev/executar-automacao",
+            headers={"ngrok-skip-browser-warning": "true"},
+            timeout=120
+        )
 
     # 🔹 Sempre recarrega dados depois
     df = carregar_dados()
