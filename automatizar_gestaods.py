@@ -9,6 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime
+import subprocess
 
 # -------- CONFIG -------- #
 
@@ -148,3 +149,7 @@ agora = datetime.now().strftime("%d/%m/%Y %H:%M")
 
 with open("ultima_atualizacao.txt", "w") as f:
     f.write(agora)
+
+    subprocess.run(["python", "importar_csv_para_banco.py"])
+
+    print("Importação para banco finalizada.")
