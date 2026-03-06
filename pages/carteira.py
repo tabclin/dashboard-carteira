@@ -18,7 +18,7 @@ arquivo_obs = os.path.join(base_dir, "observacoes.csv")
 def layout():
 
     df = carregar_dados()
-    df["Ação"] = "📝 Editar"
+    df["Ação"] = "📝"
 
     total_pacientes = len(df)
     total_perigo = len(df[df["Status"] == "Perigo"])

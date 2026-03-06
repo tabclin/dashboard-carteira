@@ -2,17 +2,11 @@ import pandas as pd
 import unicodedata
 import re
 import os
+from sqlalchemy import create_engine
 
+DATABASE_URL = "postgresql://postgres:TabClin1706@db.hlfiykpoousspkcdswer.supabase.co:5432/postgres"
 
-# ---------------- CAMINHOS DOS ARQUIVOS ---------------- #
-
-# Pega a pasta raiz do projeto
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-arquivo_atend = os.path.join(base_dir, "relatorio-atendimentos.csv")
-arquivo_pac = os.path.join(base_dir, "tabela_pacientes.csv")
-arquivo_obs = os.path.join(base_dir, "observacoes.csv")
-arquivo_agenda = os.path.join(base_dir, "table_agenda_relatorio.csv")
+engine = create_engine(DATABASE_URL)
 
 
 # ---------------- FUNÇÕES AUXILIARES ---------------- #
@@ -66,8 +60,8 @@ def classificar_status(idade_dias, recencia):
 
 def carregar_dados():
 
-    df_atend = pd.read_csv(arquivo_atend, sep=";")
-    df_pac = pd.read_csv(arquivo_pac, sep=";")
+    df_atend = pd.read_sql("SELECT * FROM atendimentos", engine)
+    df_pac = pd.read_sql("SELECT * FROM pacientes", engine)
 
     df_atend.columns = df_atend.columns.str.strip()
     df_pac.columns = df_pac.columns.str.strip()
@@ -122,9 +116,10 @@ def carregar_dados():
     })
     df_final["Último Atendimento"] = df_final["Último Atendimento"].dt.strftime(
         "%d/%m/%Y")
+
     # Observações
     if os.path.exists(arquivo_obs):
-        df_obs = pd.read_csv(arquivo_obs)
+        df_obs = pd.read_sql("SELECT * FROM observacoes", engine)
         df_final = df_final.merge(df_obs, on="Paciente", how="left")
     else:
         df_final["Observação"] = ""
@@ -135,7 +130,7 @@ def carregar_dados():
 
     if os.path.exists(arquivo_agenda):
 
-        df_agenda = pd.read_csv(arquivo_agenda)
+        df_agenda = pd.read_sql("SELECT * FROM agenda", engine)
 
         # Corrigir encoding (se necessário)
         df_agenda.columns = df_agenda.columns.str.strip()
