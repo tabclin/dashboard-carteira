@@ -1,7 +1,7 @@
 import pandas as pd
 from sqlalchemy import create_engine
 
-DATABASE_URL = "SUA_STRING_SUPABASE"
+DATABASE_URL = "postgresql://postgres.hlfiykpoousspkcdswer:TabClin1706@aws-1-sa-east-1.pooler.supabase.com:6543/postgres"
 
 engine = create_engine(DATABASE_URL)
 
