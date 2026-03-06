@@ -6,7 +6,7 @@ DATABASE_URL = "postgresql://postgres:TabClin1706@db.hlfiykpoousspkcdswer.supaba
 engine = create_engine(DATABASE_URL)
 
 # ler CSV
-arquivo_csv = r"C:\Users\Thiago\Desktop\Python\Dra Ana Beatriz Buzatto\relatorio-atendimentos.csv"
+arquivo_csv = "C:/Users/Thiago/Desktop/Python/Dra Ana Beatriz Buzatto/relatorio-atendimentos.csv"
 
 df = pd.read_csv(arquivo_csv)
 
