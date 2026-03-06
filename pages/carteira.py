@@ -87,6 +87,11 @@ def layout():
                     color="primary",
                     className="mb-3",
                 ),
+                dbc.Button(
+                    "Atualizar Geral",
+                    id="btn-atualizar-geral",
+                    color="success",
+                ),
 
                 html.Span(
                     f"Atualizado em: {obter_ultima_atualizacao()}",
@@ -236,3 +241,19 @@ def obter_ultima_atualizacao():
             return f.read()
     except:
         return "Nunca atualizado"
+
+
+@callback(
+    Output("btn-atualizar-geral", "disabled"),
+    Input("btn-atualizar-geral", "n_clicks"),
+    prevent_initial_call=True
+)
+def atualizar_geral(n):
+
+    requests.get(
+        "https://SEU_NGROK/executar-importacao",
+        headers={"ngrok-skip-browser-warning": "true"},
+        timeout=300
+    )
+
+    return False
