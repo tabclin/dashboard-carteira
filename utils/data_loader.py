@@ -75,24 +75,24 @@ def carregar_dados():
     )
 
     # Normaliza nomes
-    df_atend['nome_normalizado'] = df_atend['Paciente'].apply(normalizar_nome)
-    df_pac['nome_normalizado'] = df_pac['Paciente'].apply(normalizar_nome)
+    df_atend['nome_normalizado'] = df_atend['paciente'].apply(normalizar_nome)
+    df_pac['nome_normalizado'] = df_pac['paciente'].apply(normalizar_nome)
 
     # Merge
     df_base = df_atend.merge(
-        df_pac[['nome_normalizado', 'Nascimento']],
+        df_pac[['nome_normalizado', 'nascimento']],
         on='nome_normalizado',
         how='left'
     )
 
     hoje = pd.Timestamp.today()
 
-    df_group = df_base.groupby(['Paciente', 'nascimento']).agg(
+    df_group = df_base.groupby(['paciente', 'nascimento']).agg(
         ultimo_atendimento=('data_atendimento', 'max'),
-        quantidade_atendimento=('Data', 'count')
+        quantidade_atendimento=('data_atendimento', 'count')
     ).reset_index()
 
-    df_group['idade_dias'] = (hoje - df_group['Nascimento']).dt.days
+    df_group['idade_dias'] = (hoje - df_group['nascimento']).dt.days
     df_group['recencia_dias'] = (hoje - df_group['ultimo_atendimento']).dt.days
 
     df_group['Status'] = df_group.apply(
@@ -121,7 +121,7 @@ def carregar_dados():
     df_obs = pd.read_sql("SELECT * FROM observacoes", engine)
     df_final = df_final.merge(
         df_obs,
-        left_on="Paciente",
+        left_on="paciente",
         right_on="paciente",
         how="left"
     )
@@ -138,7 +138,7 @@ def carregar_dados():
 # Normalizar nome do paciente
     df_agenda["nome_normalizado"] = df_agenda["paciente"].apply(
         normalizar_nome)
-    df_final["nome_normalizado"] = df_final["Paciente"].apply(normalizar_nome)
+    df_final["nome_normalizado"] = df_final["paciente"].apply(normalizar_nome)
 
     df_agenda["data_hora"] = pd.to_datetime(
         df_agenda["data_hora"],
