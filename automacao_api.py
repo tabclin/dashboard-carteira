@@ -4,14 +4,14 @@ import subprocess
 app = Flask(__name__)
 
 
-@app.route("/executar-automacao")
-def executar():
+@app.route("/executar-importacao")
+def importar():
 
-    print("Executando automação...")
+    print("Executando atualização...")
 
-    subprocess.run(["python", "automatizar_gestaods.py"])
+    subprocess.run(["python", "importar_todos_csv.py"])
 
-    return {"status": "automacao executada"}
+    return {"status": "importacao executada"}
 
 
 if __name__ == "__main__":
