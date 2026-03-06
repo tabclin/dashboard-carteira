@@ -6,3 +6,4 @@ gunicorn
 requests
 psycopg2-binary
 sqlalchemy
+os
