@@ -251,7 +251,7 @@ def obter_ultima_atualizacao():
 def atualizar_geral(n):
 
     requests.get(
-        "https://SEU_NGROK/executar-importacao",
+        "https://bess-leptoprosopic-grinningly.ngrok-free.dev/executar-importacao",
         headers={"ngrok-skip-browser-warning": "true"},
         timeout=300
     )
