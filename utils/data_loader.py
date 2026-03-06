@@ -118,55 +118,48 @@ def carregar_dados():
         "%d/%m/%Y")
 
     # Observações
-    if os.path.exists(arquivo_obs):
-        df_obs = pd.read_sql("SELECT * FROM observacoes", engine)
-        df_final = df_final.merge(df_obs, on="Paciente", how="left")
-    else:
-        df_final["Observação"] = ""
-
-        # ================================
+    df_obs = pd.read_sql("SELECT * FROM observacoes", engine)
+    df_final = df_final.merge(
+        df_obs,
+        left_on="Paciente",
+        right_on="paciente",
+        how="left"
+    )
+    # ================================
     # 🔹 CRUZAR COM AGENDA
     # ================================
 
-    if os.path.exists(arquivo_agenda):
+    df_agenda = pd.read_sql("SELECT * FROM agenda", engine)
 
-        df_agenda = pd.read_sql("SELECT * FROM agenda", engine)
 
-        # Corrigir encoding (se necessário)
-        df_agenda.columns = df_agenda.columns.str.strip()
+# Corrigir encoding (se necessário)
+    df_agenda.columns = df_agenda.columns.str.strip()
 
-        # Normalizar nome do paciente
-        df_agenda["nome_normalizado"] = df_agenda["Paciente"].apply(
-            normalizar_nome)
-        df_final["nome_normalizado"] = df_final["Paciente"].apply(
-            normalizar_nome)
+# Normalizar nome do paciente
+    df_agenda["nome_normalizado"] = df_agenda["paciente"].apply(
+        normalizar_nome)
+    df_final["nome_normalizado"] = df_final["Paciente"].apply(normalizar_nome)
 
-        # Manter apenas último agendamento por paciente
-        df_agenda["Data e hora"] = pd.to_datetime(
-            df_agenda["Data e hora"],
-            dayfirst=True,
-            errors="coerce"
-        )
+    df_agenda["data_hora"] = pd.to_datetime(
+        df_agenda["Data e hora"],
+        dayfirst=True,
+        errors="coerce"
+    )
 
-        df_agenda = df_agenda.sort_values("Data e hora", ascending=False)
+    df_agenda = df_agenda.sort_values("Data e hora", ascending=False)
 
-        df_agenda_unico = df_agenda.drop_duplicates(
-            subset="nome_normalizado",
-            keep="first"
-        )
+    df_agenda_unico = df_agenda.drop_duplicates(
+        subset="nome_normalizado",
+        keep="first"
+    )
 
-        # Merge com df_final
-        df_final = df_final.merge(
-            df_agenda_unico[["nome_normalizado", "Status"]],
-            on="nome_normalizado",
-            how="left",
-            suffixes=("", "_agenda")
-        )
+    df_final = df_final.merge(
+        df_agenda_unico[["nome_normalizado", "status"]],
+        on="nome_normalizado",
+        how="left",
+        suffixes=("", "_agenda")
+    )
 
-        df_final.rename(columns={"Status_agenda": "Agendado"}, inplace=True)
-
-    else:
-        df_final["Agendado"] = ""
-    df_final.drop(columns=["nome_normalizado"], inplace=True, errors="ignore")
+    df_final.rename(columns={"status_agenda": "Agendado"}, inplace=True)
 
     return df_final
