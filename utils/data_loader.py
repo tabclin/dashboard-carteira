@@ -141,12 +141,12 @@ def carregar_dados():
     df_final["nome_normalizado"] = df_final["Paciente"].apply(normalizar_nome)
 
     df_agenda["data_hora"] = pd.to_datetime(
-        df_agenda["Data e hora"],
+        df_agenda["data_hora"],
         dayfirst=True,
         errors="coerce"
     )
 
-    df_agenda = df_agenda.sort_values("Data e hora", ascending=False)
+    df_agenda = df_agenda.sort_values("data_hora", ascending=False)
 
     df_agenda_unico = df_agenda.drop_duplicates(
         subset="nome_normalizado",
