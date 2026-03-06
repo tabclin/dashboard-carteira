@@ -226,7 +226,7 @@ def atualizar_relatorio(n_clicks, filtro_status):
 
     # 🔹 Sempre recarrega dados depois
     df = carregar_dados()
-    df["Ação"] = "📝"
+    df["Ação"] = "📝 ed"
 
     # 🔹 Aplica filtro se existir
     if filtro_status:
