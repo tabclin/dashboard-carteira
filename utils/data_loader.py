@@ -70,9 +70,16 @@ def carregar_dados():
     print("Carregando dados do Supabase...")
 
     df_atend = pd.read_sql("SELECT * FROM atendimentos", engine)
+    df_atend.columns = df_atend.columns.str.lower()
+
     df_pac = pd.read_sql("SELECT * FROM pacientes", engine)
+    df_pac.columns = df_pac.columns.str.lower()
+
     df_obs = pd.read_sql("SELECT * FROM observacoes", engine)
+    df_obs.columns = df_obs.columns.str.lower()
+
     df_agenda = pd.read_sql("SELECT * FROM agenda", engine)
+    df_agenda.columns = df_agenda.columns.str.lower()
 
     # evitar erro se tabela estiver vazia
     if df_atend.empty:
