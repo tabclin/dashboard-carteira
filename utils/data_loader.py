@@ -5,6 +5,7 @@ from sqlalchemy import create_engine
 import os
 
 # DATABASE_URL = "postgresql://postgres:TabClin1706@db.hlfiykpoousspkcdswer.supabase.co:6543/postgres?sslmode=require"
+
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = create_engine(
