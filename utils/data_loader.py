@@ -3,12 +3,16 @@ import unicodedata
 import re
 from sqlalchemy import create_engine
 
-DATABASE_URL = "postgresql://postgres:TabClin1706@db.hlfiykpoousspkcdswer.supabase.co:5432/postgres"
 
-engine = create_engine(DATABASE_URL)
+DATABASE_URL = "postgresql://postgres:TabClin1706@db.hlfiykpoousspkcdswer.supabase.co:5432/postgres?sslmode=require"
 
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True
+)
 
 # ---------------- FUNÇÕES AUXILIARES ---------------- #
+
 
 def normalizar_nome(nome):
     if pd.isna(nome):
@@ -86,7 +90,8 @@ def carregar_dados():
 
     df_atend["nome_normalizado"] = df_atend["paciente"].apply(normalizar_nome)
     df_pac["nome_normalizado"] = df_pac["paciente"].apply(normalizar_nome)
-    df_agenda["nome_normalizado"] = df_agenda["paciente"].apply(normalizar_nome)
+    df_agenda["nome_normalizado"] = df_agenda["paciente"].apply(
+        normalizar_nome)
 
     # ---------------- MERGE PACIENTES ---------------- #
 
@@ -131,7 +136,8 @@ def carregar_dados():
         "quantidade_atendimento": "Qtd At."
     })
 
-    df_final["Último Atendimento"] = df_final["Último Atendimento"].dt.strftime("%d/%m/%Y")
+    df_final["Último Atendimento"] = df_final["Último Atendimento"].dt.strftime(
+        "%d/%m/%Y")
 
     # ---------------- OBSERVAÇÕES ---------------- #
 
