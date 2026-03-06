@@ -66,12 +66,12 @@ def carregar_dados():
     df_atend.columns = df_atend.columns.str.strip()
     df_pac.columns = df_pac.columns.str.strip()
 
-    df_atend['Data'] = pd.to_datetime(
-        df_atend['Data'], dayfirst=True, errors='coerce'
+    df_atend['data_atendimento'] = pd.to_datetime(
+        df_atend['data_atendimento'], dayfirst=True, errors='coerce'
     )
 
-    df_pac['Nascimento'] = pd.to_datetime(
-        df_pac['Nascimento'], dayfirst=True, errors='coerce'
+    df_pac['nascimento'] = pd.to_datetime(
+        df_pac['nascimento'], dayfirst=True, errors='coerce'
     )
 
     # Normaliza nomes
@@ -87,8 +87,8 @@ def carregar_dados():
 
     hoje = pd.Timestamp.today()
 
-    df_group = df_base.groupby(['Paciente', 'Nascimento']).agg(
-        ultimo_atendimento=('Data', 'max'),
+    df_group = df_base.groupby(['Paciente', 'nascimento']).agg(
+        ultimo_atendimento=('data_atendimento', 'max'),
         quantidade_atendimento=('Data', 'count')
     ).reset_index()
 
