@@ -1,19 +1,40 @@
 import pandas as pd
 from sqlalchemy import create_engine, text
 
-DATABASE_URL = "postgresql://postgres:TabClin1706@db.hlfiykpoousspkcdswer.supabase.co:5432/postgres"
 
 engine = create_engine(DATABASE_URL)
 
-# ler CSV
-arquivo_csv = "C:/Users/Thiago/Desktop/Python/Dra Ana Beatriz Buzatto/relatorio-atendimentos.csv"
+arquivo_csv = r"C:\Users\Thiago\Desktop\Python\Dra Ana Beatriz Buzatto\relatorio-atendimentos.csv"
 
-df = pd.read_csv(arquivo_csv)
+# ler CSV com separador correto
+df = pd.read_csv(arquivo_csv, sep=";")
 
-# criar ID único (exemplo simples)
+# renomear colunas
+df = df.rename(columns={
+    "Paciente": "paciente",
+    "Valor": "valor",
+    "Data": "data_atendimento",
+    "Status do pagamento": "status"
+})
+
+# converter data
+df["data_atendimento"] = pd.to_datetime(df["data_atendimento"], dayfirst=True)
+
+# converter valor monetário
+df["valor"] = (
+    df["valor"]
+    .astype(str)
+    .str.replace("R$", "", regex=False)
+    .str.replace(".", "", regex=False)
+    .str.replace(",", ".", regex=False)
+)
+
+df["valor"] = pd.to_numeric(df["valor"], errors="coerce")
+
+# criar id único
 df["atendimento_id"] = (
-    df["Paciente"].astype(str) + "_" +
-    df["Data"].astype(str)
+    df["paciente"].astype(str) + "_" +
+    df["data_atendimento"].astype(str)
 )
 
 with engine.begin() as conn:
@@ -21,23 +42,27 @@ with engine.begin() as conn:
     for _, row in df.iterrows():
 
         query = text("""
-        INSERT INTO atendimentos (atendimento_id, paciente, data_atendimento, valor, status)
-        VALUES (:id, :paciente, :data, :valor, :status)
+        INSERT INTO atendimentos
+        (paciente, status, valor, data_atendimento, atendimento_id)
+
+        VALUES
+        (:paciente, :status, :valor, :data_atendimento, :atendimento_id)
 
         ON CONFLICT (atendimento_id)
         DO UPDATE SET
+
             paciente = EXCLUDED.paciente,
-            data_atendimento = EXCLUDED.data_atendimento,
+            status = EXCLUDED.status,
             valor = EXCLUDED.valor,
-            status = EXCLUDED.status
+            data_atendimento = EXCLUDED.data_atendimento
         """)
 
         conn.execute(query, {
-            "id": row["atendimento_id"],
-            "paciente": row["Paciente"],
-            "data": row["Data"],
-            "valor": row["Valor"],
-            "status": row["Status"]
+            "paciente": row["paciente"],
+            "status": row["status"],
+            "valor": row["valor"],
+            "data_atendimento": row["data_atendimento"],
+            "atendimento_id": row["atendimento_id"]
         })
 
-print("Banco atualizado com UPSERT!")
+print("Importação concluída com sucesso!")
