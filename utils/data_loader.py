@@ -4,7 +4,7 @@ import re
 from sqlalchemy import create_engine
 
 
-DATABASE_URL = "postgresql://postgres:TabClin1706@db.hlfiykpoousspkcdswer.supabase.co:5432/postgres?sslmode=require"
+DATABASE_URL = "postgresql://postgres:TabClin1706@db.hlfiykpoousspkcdswer.supabase.co:6543/postgres?sslmode=require"
 
 engine = create_engine(
     DATABASE_URL,
@@ -59,6 +59,18 @@ def classificar_status(idade_dias, recencia):
 # ---------------- FUNÇÃO PRINCIPAL ---------------- #
 
 def carregar_dados():
+
+    print("Carregando atendimentos...")
+    df_atend = pd.read_sql("SELECT * FROM atendimentos", engine)
+
+    print("Carregando pacientes...")
+    df_pac = pd.read_sql("SELECT * FROM pacientes", engine)
+
+    print("Carregando observacoes...")
+    df_obs = pd.read_sql("SELECT * FROM observacoes", engine)
+
+    print("Carregando agenda...")
+    df_agenda = pd.read_sql("SELECT * FROM agenda", engine)
 
     # ---------------- BANCO ---------------- #
 
