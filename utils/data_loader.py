@@ -14,9 +14,9 @@ def normalizar_nome(nome):
     if pd.isna(nome):
         return ""
 
-    nome = unicodedata.normalize('NFKD', nome)
-    nome = nome.encode('ASCII', 'ignore').decode('utf-8')
-    nome = re.sub(r'\W+', '', nome)
+    nome = unicodedata.normalize("NFKD", nome)
+    nome = nome.encode("ASCII", "ignore").decode("utf-8")
+    nome = re.sub(r"\W+", "", nome)
     return nome.lower()
 
 
@@ -56,11 +56,19 @@ def classificar_status(idade_dias, recencia):
 
 def carregar_dados():
 
+    # ---------------- BANCO ---------------- #
+
     df_atend = pd.read_sql("SELECT * FROM atendimentos", engine)
     df_pac = pd.read_sql("SELECT * FROM pacientes", engine)
+    df_obs = pd.read_sql("SELECT * FROM observacoes", engine)
+    df_agenda = pd.read_sql("SELECT * FROM agenda", engine)
 
     df_atend.columns = df_atend.columns.str.strip()
     df_pac.columns = df_pac.columns.str.strip()
+    df_obs.columns = df_obs.columns.str.strip()
+    df_agenda.columns = df_agenda.columns.str.strip()
+
+    # ---------------- DATAS ---------------- #
 
     df_atend["data_atendimento"] = pd.to_datetime(
         df_atend["data_atendimento"], errors="coerce"
@@ -70,11 +78,18 @@ def carregar_dados():
         df_pac["nascimento"], errors="coerce"
     )
 
-    # Normalizar nomes
+    df_agenda["data_hora"] = pd.to_datetime(
+        df_agenda["data_hora"], errors="coerce"
+    )
+
+    # ---------------- NORMALIZAR NOMES ---------------- #
+
     df_atend["nome_normalizado"] = df_atend["paciente"].apply(normalizar_nome)
     df_pac["nome_normalizado"] = df_pac["paciente"].apply(normalizar_nome)
+    df_agenda["nome_normalizado"] = df_agenda["paciente"].apply(normalizar_nome)
 
-    # Merge pacientes + atendimentos
+    # ---------------- MERGE PACIENTES ---------------- #
+
     df_base = df_atend.merge(
         df_pac[["nome_normalizado", "nascimento"]],
         on="nome_normalizado",
@@ -82,6 +97,8 @@ def carregar_dados():
     )
 
     hoje = pd.Timestamp.today()
+
+    # ---------------- AGRUPAMENTO ---------------- #
 
     df_group = df_base.groupby(["paciente", "nascimento"]).agg(
         ultimo_atendimento=("data_atendimento", "max"),
@@ -100,6 +117,8 @@ def carregar_dados():
 
     df_group["Recência"] = df_group["recencia_dias"]
 
+    # ---------------- DATAFRAME FINAL ---------------- #
+
     df_final = df_group[[
         "paciente",
         "ultimo_atendimento",
@@ -112,12 +131,9 @@ def carregar_dados():
         "quantidade_atendimento": "Qtd At."
     })
 
-    df_final["Último Atendimento"] = df_final["Último Atendimento"].dt.strftime(
-        "%d/%m/%Y")
+    df_final["Último Atendimento"] = df_final["Último Atendimento"].dt.strftime("%d/%m/%Y")
 
     # ---------------- OBSERVAÇÕES ---------------- #
-
-    df_obs = pd.read_sql("SELECT * FROM observacoes", engine)
 
     df_final = df_final.merge(
         df_obs,
@@ -126,20 +142,9 @@ def carregar_dados():
         how="left"
     )
 
+    df_final.drop(columns=["paciente"], inplace=True, errors="ignore")
+
     # ---------------- AGENDA ---------------- #
-
-    df_agenda = pd.read_sql("SELECT * FROM agenda", engine)
-
-    df_agenda.columns = df_agenda.columns.str.strip()
-
-    df_agenda["nome_normalizado"] = df_agenda["paciente"].apply(
-        normalizar_nome)
-    df_final["nome_normalizado"] = df_final["Paciente"].apply(normalizar_nome)
-
-    df_agenda["data_hora"] = pd.to_datetime(
-        df_agenda["data_hora"],
-        errors="coerce"
-    )
 
     df_agenda = df_agenda.sort_values("data_hora", ascending=False)
 
@@ -147,6 +152,8 @@ def carregar_dados():
         subset="nome_normalizado",
         keep="first"
     )
+
+    df_final["nome_normalizado"] = df_final["Paciente"].apply(normalizar_nome)
 
     df_final = df_final.merge(
         df_agenda_unico[["nome_normalizado", "status"]],
