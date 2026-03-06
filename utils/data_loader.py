@@ -4,27 +4,30 @@ import re
 from sqlalchemy import create_engine
 import os
 
-# DATABASE_URL = "postgresql://postgres:TabClin1706@db.hlfiykpoousspkcdswer.supabase.co:6543/postgres?sslmode=require"
-# DATABASE_URL = "postgresql://postgres.hlfiykpoousspkcdswer:TabClin1706@aws-1-sa-east-1.pooler.supabase.com:6543/postgres"
+# ---------------- BANCO ---------------- #
 
-DATABASE_URL = os.getenv(
-    "postgresql://postgres.hlfiykpoousspkcdswer:TabClin1706@aws-1-sa-east-1.pooler.supabase.com:6543/postgres")
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL não encontrada no ambiente")
 
 engine = create_engine(
     DATABASE_URL,
     pool_pre_ping=True
 )
 
+
 # ---------------- FUNÇÕES AUXILIARES ---------------- #
 
-
 def normalizar_nome(nome):
+
     if pd.isna(nome):
         return ""
 
     nome = unicodedata.normalize("NFKD", nome)
     nome = nome.encode("ASCII", "ignore").decode("utf-8")
     nome = re.sub(r"\W+", "", nome)
+
     return nome.lower()
 
 
@@ -64,24 +67,18 @@ def classificar_status(idade_dias, recencia):
 
 def carregar_dados():
 
-    print("Carregando atendimentos...")
-    df_atend = pd.read_sql("SELECT * FROM atendimentos", engine)
-
-    print("Carregando pacientes...")
-    df_pac = pd.read_sql("SELECT * FROM pacientes", engine)
-
-    print("Carregando observacoes...")
-    df_obs = pd.read_sql("SELECT * FROM observacoes", engine)
-
-    print("Carregando agenda...")
-    df_agenda = pd.read_sql("SELECT * FROM agenda", engine)
-
-    # ---------------- BANCO ---------------- #
+    print("Carregando dados do Supabase...")
 
     df_atend = pd.read_sql("SELECT * FROM atendimentos", engine)
     df_pac = pd.read_sql("SELECT * FROM pacientes", engine)
     df_obs = pd.read_sql("SELECT * FROM observacoes", engine)
     df_agenda = pd.read_sql("SELECT * FROM agenda", engine)
+
+    # evitar erro se tabela estiver vazia
+    if df_atend.empty:
+        return pd.DataFrame()
+
+    # ---------------- LIMPEZA ---------------- #
 
     df_atend.columns = df_atend.columns.str.strip()
     df_pac.columns = df_pac.columns.str.strip()
