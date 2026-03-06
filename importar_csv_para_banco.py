@@ -6,7 +6,9 @@ DATABASE_URL = "postgresql://postgres:TabClin1706@db.hlfiykpoousspkcdswer.supaba
 engine = create_engine(DATABASE_URL)
 
 # ler CSV
-df = pd.read_csv("relatorio-atendimentos.csv")
+arquivo_csv = r"C:\Users\Thiago\Desktop\Python\Dra Ana Beatriz Buzatto\relatorio-atendimentos.csv"
+
+df = pd.read_csv(arquivo_csv)
 
 # criar ID único (exemplo simples)
 df["atendimento_id"] = (
