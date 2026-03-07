@@ -5,9 +5,7 @@ DATABASE_URL = "postgresql://postgres.hlfiykpoousspkcdswer:TabClin1706@aws-1-sa-
 
 engine = create_engine(DATABASE_URL)
 
-base = r"C:\Users\Thiago\Desktop\Python\Dra Ana Beatriz Buzatto"
-
-
+base = r"C:\Users\Thiago\Desktop\Python\Dra Ana Beatriz Buzatto passo02"
 # -------------------------------
 # observacoes.csv
 # -------------------------------

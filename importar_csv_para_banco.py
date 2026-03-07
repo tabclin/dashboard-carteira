@@ -7,7 +7,8 @@ DATABASE_URL = "postgresql://postgres:TabClin1706@db.hlfiykpoousspkcdswer.supaba
 
 engine = create_engine(DATABASE_URL)
 
-arquivo_csv = r"C:\Users\Thiago\Desktop\Python\Dra Ana Beatriz Buzatto\relatorio-atendimentos.csv"
+arquivo_csv = r"C:\Users\Thiago\Desktop\Python\Dra Ana Beatriz Buzatto passo02\tabela_pacientes.csv"
+
 
 # ler CSV com separador correto
 df = pd.read_csv(arquivo_csv, sep=";")
