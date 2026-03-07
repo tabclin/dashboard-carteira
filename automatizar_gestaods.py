@@ -13,7 +13,7 @@ import subprocess
 
 # -------- CONFIG -------- #
 
-download_path = r"C:\Users\Thiago\Desktop\Python\Dra Ana Beatriz Buzatto"
+download_path = r"C:\Users\Thiago\Desktop\Python\Dra Ana Beatriz Buzatto passo02"
 
 email = "suporte@tabclin.com"
 senha = "Thi17062014$"

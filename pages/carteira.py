@@ -196,12 +196,29 @@ def controle_modal(active_cell, n_clicks, texto, rows, is_open):
 
     if trigger == "btn-salvar" and active_cell:
         paciente = rows[active_cell["row"]]["Paciente"]
-        df = pd.DataFrame(rows)
-        df.loc[df["Paciente"] == paciente, "Observação"] = texto
-        df[["Paciente", "Observação"]].to_csv(arquivo_obs, index=False)
-        return False, ""
+        from sqlalchemy import text
+        from utils.data_loader import engine
 
-    return is_open, texto
+        with engine.begin() as conn:
+
+            conn.execute(text("""
+
+            INSERT INTO observacoes (paciente, observacao)
+
+            VALUES (:paciente, :obs)
+
+            ON CONFLICT (paciente)
+
+            DO UPDATE SET observacao = EXCLUDED.observacao
+
+            """), {
+
+                "paciente": paciente,
+                "obs": texto
+            })
+            return False, ""
+
+            return is_open, texto
 
 
 # callbac da atualização:
