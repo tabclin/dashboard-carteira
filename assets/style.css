@@ -1,0 +1,17 @@
+.status-ok {
+    background-color: #198754 !important;
+    color: white !important;
+    font-weight: bold;
+}
+
+.status-atencao {
+    background-color: #ffc107 !important;
+    color: black !important;
+    font-weight: bold;
+}
+
+.status-perigo {
+    background-color: #dc3545 !important;
+    color: white !important;
+    font-weight: bold;
+}
