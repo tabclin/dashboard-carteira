@@ -13,7 +13,22 @@ from utils.data_loader import carregar_dados, engine
 
 def layout():
 
-    df = carregar_dados()
+    try:
+        df = carregar_dados()
+    except Exception as e:
+        print("ERRO AO CARREGAR DADOS:", e)
+        df = pd.DataFrame()
+
+    if df is None or df.empty:
+        df = pd.DataFrame(columns=[
+            "Paciente",
+            "Qtd At.",
+            "Recência",
+            "Status",
+            "Observação",
+            "Agendado"
+        ])
+
     df["Ação"] = "📝"
 
     total_pacientes = len(df)
