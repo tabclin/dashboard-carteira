@@ -1,4 +1,5 @@
 from dash import html, dcc, Input, Output, State, ctx, callback
+import dash
 import dash_bootstrap_components as dbc
 import pandas as pd
 import requests
@@ -237,38 +238,13 @@ def abrir_modal(data, is_open):
     Output("modal", "is_open", allow_duplicate=True),
     Output("tabela", "rowData", allow_duplicate=True),
     Input("btn-salvar", "n_clicks"),
-    State("tabela", "cellClicked"),
-    State("input-observacao", "value"),
-    prevent_initial_call=True
-)
-def salvar_obs(n, cell, texto):
-
-    paciente = cell["data"]["Paciente"]
-
-    with engine.begin() as conn:
-        conn.execute(text("""
-            INSERT INTO observacoes (paciente, observacao)
-            VALUES (:paciente, :obs)
-            ON CONFLICT (paciente)
-            DO UPDATE SET observacao = EXCLUDED.observacao
-        """), {"paciente": paciente, "obs": texto})
-
-    df = carregar_dados()
-    df["Ação"] = "📝"
-
-    return False, df.to_dict("records")
-
-
-# ---------------- ATUALIZAR RELATORIO ---------------- #
-@callback(
-    Output("modal", "is_open", allow_duplicate=True),
-    Output("tabela", "rowData", allow_duplicate=True),
-    Input("btn-salvar", "n_clicks"),
     State("tabela", "cellRendererData"),
     State("input-observacao", "value"),
     prevent_initial_call=True
 )
 def salvar_obs(n, data, texto):
+    if not data:
+        raise dash.exceptions.PreventUpdate
 
     paciente = data["Paciente"]
 
@@ -285,8 +261,38 @@ def salvar_obs(n, data, texto):
 
     return False, df.to_dict("records")
 
+# ---------------- ATUALIZAR RELATORIO ---------------- #
+
+
+@callback(
+    Output("tabela", "rowData", allow_duplicate=True),
+    Output("btn-atualizar-relatorio", "disabled"),
+    Input("btn-atualizar-relatorio", "n_clicks"),
+    Input("filtro-status", "value"),
+    prevent_initial_call=True
+)
+def atualizar_relatorio(n_clicks, filtro):
+
+    trigger = ctx.triggered_id
+
+    if trigger == "btn-atualizar-relatorio":
+
+        requests.get(
+            "https://bess-leptoprosopic-grinningly.ngrok-free.dev/executar-automacao",
+            headers={"ngrok-skip-browser-warning": "true"},
+            timeout=120
+        )
+
+    df = carregar_dados()
+    df["Ação"] = "📝"
+
+    if filtro:
+        df = df[df["Status"].isin(filtro)]
+
+    return df.to_dict("records"), False
 
 # ---------------- ATUALIZAR GERAL ---------------- #
+
 
 @callback(
     Output("tabela", "rowData", allow_duplicate=True),
