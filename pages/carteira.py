@@ -56,9 +56,9 @@ def layout():
             "field": "Status",
             "width": 120,
             "cellClassRules": {
-                "status-ok": 'value == "Ok"',
-                "status-atencao": 'value == "Atenção"',
-                "status-perigo": 'value == "Perigo"',
+                "status-ok": "params.value == 'Ok'",
+                "status-atencao": "params.value == 'Atenção'",
+                "status-perigo": "params.value == 'Perigo'",
             },
         },
 
@@ -70,7 +70,8 @@ def layout():
             "headerName": "",
             "field": "Ação",
             "width": 70,
-            "cellStyle": {"textAlign": "center", "cursor": "pointer"},
+            "cellRenderer": "botaoObs",
+            "cellStyle": {"textAlign": "center"},
         },
     ]
 
@@ -213,26 +214,21 @@ def layout():
 
 
 # ---------------- ABRIR MODAL ---------------- #
-
 @callback(
     Output("modal", "is_open"),
     Output("input-observacao", "value"),
-    Input("tabela", "cellClicked"),
+    Input("tabela", "cellRendererData"),
     State("modal", "is_open"),
     prevent_initial_call=True
 )
-def abrir_modal(cell, is_open):
+def abrir_modal(data, is_open):
 
-    if not cell:
+    if not data:
         return is_open, ""
 
-    if cell["colId"] == "Ação":
+    obs = data.get("Observação", "")
 
-        obs = cell["data"].get("Observação", "")
-
-        return True, obs
-
-    return is_open, ""
+    return True, obs
 
 
 # ---------------- SALVAR OBS ---------------- #
@@ -264,33 +260,30 @@ def salvar_obs(n, cell, texto):
 
 
 # ---------------- ATUALIZAR RELATORIO ---------------- #
-
 @callback(
+    Output("modal", "is_open", allow_duplicate=True),
     Output("tabela", "rowData", allow_duplicate=True),
-    Output("btn-atualizar-relatorio", "disabled"),
-    Input("btn-atualizar-relatorio", "n_clicks"),
-    Input("filtro-status", "value"),
+    Input("btn-salvar", "n_clicks"),
+    State("tabela", "cellRendererData"),
+    State("input-observacao", "value"),
     prevent_initial_call=True
 )
-def atualizar_relatorio(n_clicks, filtro):
+def salvar_obs(n, data, texto):
 
-    trigger = ctx.triggered_id
+    paciente = data["Paciente"]
 
-    if trigger == "btn-atualizar-relatorio":
-
-        requests.get(
-            "https://bess-leptoprosopic-grinningly.ngrok-free.dev/executar-automacao",
-            headers={"ngrok-skip-browser-warning": "true"},
-            timeout=120
-        )
+    with engine.begin() as conn:
+        conn.execute(text("""
+            INSERT INTO observacoes (paciente, observacao)
+            VALUES (:paciente, :obs)
+            ON CONFLICT (paciente)
+            DO UPDATE SET observacao = EXCLUDED.observacao
+        """), {"paciente": paciente, "obs": texto})
 
     df = carregar_dados()
     df["Ação"] = "📝"
 
-    if filtro:
-        df = df[df["Status"].isin(filtro)]
-
-    return df.to_dict("records"), False
+    return False, df.to_dict("records")
 
 
 # ---------------- ATUALIZAR GERAL ---------------- #
