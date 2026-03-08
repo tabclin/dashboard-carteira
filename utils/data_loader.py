@@ -25,10 +25,10 @@ def carregar_dados():
 
         df = pd.DataFrame()
 
-    # garante dataframe com estrutura
+    # estrutura mínima para Dash não quebrar
     if df.empty:
 
-        return pd.DataFrame(columns=[
+        df = pd.DataFrame(columns=[
             "Paciente",
             "Qtd At.",
             "Recência",
@@ -37,6 +37,8 @@ def carregar_dados():
             "Agendado",
             "Último Atendimento"
         ])
+
+        return df
 
     df["Último Atendimento"] = pd.to_datetime(
         df["ultimo_atendimento"],
