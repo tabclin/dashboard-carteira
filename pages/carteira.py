@@ -10,6 +10,13 @@ from utils.data_loader import carregar_dados, engine
 
 
 # ---------------- LAYOUT ---------------- #
+def obter_ultima_atualizacao():
+    try:
+        with open("ultima_atualizacao.txt", "r") as f:
+            return f.read()
+    except:
+        return "Nunca atualizado"
+
 
 def layout():
 
