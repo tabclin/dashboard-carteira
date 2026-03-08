@@ -4,6 +4,7 @@ import pandas as pd
 import requests
 import dash
 from sqlalchemy import text
+import os
 
 from utils.data_loader import carregar_dados, engine
 
