@@ -1,15 +1,13 @@
-from dash import html, dcc, dash_table, Input, Output, State, ctx, callback, no_update
+from dash import html, dcc, Input, Output, State, ctx, callback, no_update
 import dash_bootstrap_components as dbc
 import pandas as pd
 import requests
-import dash
 from sqlalchemy import text
-import os
+import dash_ag_grid as dag
 
 from utils.data_loader import carregar_dados, engine
 
 
-# ---------------- LAYOUT ---------------- #
 def obter_ultima_atualizacao():
     try:
         with open("ultima_atualizacao.txt", "r") as f:
@@ -17,6 +15,8 @@ def obter_ultima_atualizacao():
     except:
         return "Nunca atualizado"
 
+
+# ---------------- LAYOUT ---------------- #
 
 def layout():
 
@@ -95,7 +95,6 @@ def layout():
 
         ], className="mb-4"),
 
-
         html.Div(
             [
                 dbc.Button(
@@ -113,7 +112,6 @@ def layout():
 
                 html.Span(
                     f"Atualizado em: {obter_ultima_atualizacao() or '—'}",
-                    id="texto-atualizacao",
                     style={
                         "marginLeft": "15px",
                         "fontSize": "14px",
@@ -139,38 +137,24 @@ def layout():
             className="mb-3",
         ),
 
-        dcc.Loading(
-            id="loading-atualizacao",
-            type="circle",
-            fullscreen=True,
-            children=dash_table.DataTable(
-                id="tabela",
-                data=df.to_dict("records"),
-                columns=[{"name": i, "id": i} for i in df.columns],
-                style_cell={'textAlign': 'center'},
-                style_data_conditional=[
-                    {
-                        'if': {'filter_query': '{Status} = "Ok"'},
-                        'backgroundColor': '#198754',
-                        'color': 'white'
-                    },
-                    {
-                        'if': {'filter_query': '{Status} = "Atenção"'},
-                        'backgroundColor': '#ffc107',
-                        'color': 'black'
-                    },
-                    {
-                        'if': {'filter_query': '{Status} = "Perigo"'},
-                        'backgroundColor': '#dc3545',
-                        'color': 'white'
-                    },
-                ],
-                style_header={
-                    'backgroundColor': '#212529',
-                    'color': 'white',
-                    'fontWeight': 'bold'
-                }
-            )
+        dag.AgGrid(
+            id="tabela",
+
+            rowData=df.to_dict("records"),
+
+            columnDefs=[
+                {"headerName": i, "field": i}
+                for i in df.columns
+            ],
+
+            defaultColDef={
+                "sortable": True,
+                "filter": True,
+                "resizable": True,
+            },
+
+            className="ag-theme-alpine-dark",
+            style={"height": "600px", "width": "100%"},
         ),
 
         dbc.Modal(
@@ -193,73 +177,68 @@ def layout():
     ])
 
 
-# ---------------- ABRIR MODAL / SALVAR OBS ---------------- #
+# ---------------- ABRIR MODAL ---------------- #
 
 @callback(
     Output("modal", "is_open"),
     Output("input-observacao", "value"),
-    Output("tabela", "data", allow_duplicate=True),
-    Input("tabela", "active_cell"),
-    Input("btn-salvar", "n_clicks"),
-    State("input-observacao", "value"),
-    State("tabela", "data"),
+    Input("tabela", "cellClicked"),
+    State("tabela", "rowData"),
     State("modal", "is_open"),
     prevent_initial_call=True
 )
-def controle_modal(active_cell, n_clicks, texto, rows, is_open):
+def abrir_modal(cell, rows, is_open):
 
-    trigger = ctx.triggered_id
+    if not cell:
+        return is_open, ""
 
-    if rows is None:
-        return is_open, texto, no_update
+    if cell["colId"] == "Ação":
 
-    # abrir modal
-    if trigger == "tabela" and active_cell and active_cell["column_id"] == "Ação":
+        obs = cell["data"].get("Observação", "")
 
-        obs = rows[active_cell["row"]].get("Observação", "")
+        return True, obs
 
-        return True, obs, no_update
-
-    # salvar observação
-    if trigger == "btn-salvar" and active_cell:
-
-        paciente = rows[active_cell["row"]]["Paciente"]
-
-        with engine.begin() as conn:
-            conn.execute(text("""
-                INSERT INTO observacoes (paciente, observacao)
-                VALUES (:paciente, :obs)
-                ON CONFLICT (paciente)
-                DO UPDATE SET observacao = EXCLUDED.observacao
-            """), {"paciente": paciente, "obs": texto})
-
-        try:
-            carregar_dados.cache_clear()
-        except:
-            pass
-
-        try:
-            df = carregar_dados()
-            df["Ação"] = "📝"
-        except Exception as e:
-            print("Erro ao carregar dados:", e)
-            df = pd.DataFrame(columns=["Paciente", "Status"])
-
-            return False, "", df.to_dict("records")
-
-    return is_open, texto, no_update
+    return is_open, ""
 
 
-# ---------------- ATUALIZAR RELATÓRIO ---------------- #
+# ---------------- SALVAR OBS ---------------- #
 
 @callback(
-    Output("tabela", "data", allow_duplicate=True),
+    Output("modal", "is_open", allow_duplicate=True),
+    Output("tabela", "rowData", allow_duplicate=True),
+    Input("btn-salvar", "n_clicks"),
+    State("tabela", "cellClicked"),
+    State("input-observacao", "value"),
+    prevent_initial_call=True
+)
+def salvar_obs(n, cell, texto):
+
+    paciente = cell["data"]["Paciente"]
+
+    with engine.begin() as conn:
+        conn.execute(text("""
+            INSERT INTO observacoes (paciente, observacao)
+            VALUES (:paciente, :obs)
+            ON CONFLICT (paciente)
+            DO UPDATE SET observacao = EXCLUDED.observacao
+        """), {"paciente": paciente, "obs": texto})
+
+    df = carregar_dados()
+    df["Ação"] = "📝"
+
+    return False, df.to_dict("records")
+
+
+# ---------------- ATUALIZAR RELATORIO ---------------- #
+
+@callback(
+    Output("tabela", "rowData", allow_duplicate=True),
     Output("btn-atualizar-relatorio", "disabled"),
     Input("btn-atualizar-relatorio", "n_clicks"),
     Input("filtro-status", "value"),
     prevent_initial_call=True
 )
-def atualizar_relatorio(n_clicks, filtro_status):
+def atualizar_relatorio(n_clicks, filtro):
 
     trigger = ctx.triggered_id
 
@@ -274,8 +253,8 @@ def atualizar_relatorio(n_clicks, filtro_status):
     df = carregar_dados()
     df["Ação"] = "📝"
 
-    if filtro_status:
-        df = df[df["Status"].isin(filtro_status)]
+    if filtro:
+        df = df[df["Status"].isin(filtro)]
 
     return df.to_dict("records"), False
 
@@ -283,7 +262,7 @@ def atualizar_relatorio(n_clicks, filtro_status):
 # ---------------- ATUALIZAR GERAL ---------------- #
 
 @callback(
-    Output("tabela", "data", allow_duplicate=True),
+    Output("tabela", "rowData", allow_duplicate=True),
     Input("btn-atualizar-geral", "n_clicks"),
     prevent_initial_call=True
 )
@@ -299,13 +278,3 @@ def atualizar_geral(n):
     df["Ação"] = "📝"
 
     return df.to_dict("records")
-
-
-# ---------------- ULTIMA ATUALIZAÇÃO ---------------- #
-
-def obter_ultima_atualizacao():
-    try:
-        with open("ultima_atualizacao.txt", "r") as f:
-            return f.read()
-    except:
-        return "Nunca atualizado"
