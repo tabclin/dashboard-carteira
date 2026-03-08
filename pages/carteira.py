@@ -198,7 +198,7 @@ def layout():
 @callback(
     Output("modal", "is_open"),
     Output("input-observacao", "value"),
-    Output("tabela", "data"),
+    Output("tabela", "data", allow_duplicate=True),
     Input("tabela", "active_cell"),
     Input("btn-salvar", "n_clicks"),
     State("input-observacao", "value"),
@@ -253,7 +253,7 @@ def controle_modal(active_cell, n_clicks, texto, rows, is_open):
 # ---------------- ATUALIZAR RELATÓRIO ---------------- #
 
 @callback(
-    Output("tabela", "data"),
+    Output("tabela", "data", allow_duplicate=True),
     Output("btn-atualizar-relatorio", "disabled"),
     Input("btn-atualizar-relatorio", "n_clicks"),
     Input("filtro-status", "value"),
@@ -283,7 +283,7 @@ def atualizar_relatorio(n_clicks, filtro_status):
 # ---------------- ATUALIZAR GERAL ---------------- #
 
 @callback(
-    Output("tabela", "data"),
+    Output("tabela", "data", allow_duplicate=True),
     Input("btn-atualizar-geral", "n_clicks"),
     prevent_initial_call=True
 )
