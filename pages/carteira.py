@@ -169,7 +169,7 @@ def layout():
             placeholder="Filtrar por Status",
             className="mb-3",
         ),
-
+        dcc.Store(id="paciente-selecionado"),
         dag.AgGrid(
 
             id="tabela",
@@ -218,6 +218,7 @@ def layout():
 @callback(
     Output("modal", "is_open"),
     Output("input-observacao", "value"),
+    Output("paciente-selecionado", "data"),
     Input("tabela", "cellRendererData"),
     State("modal", "is_open"),
     prevent_initial_call=True
@@ -225,28 +226,28 @@ def layout():
 def abrir_modal(data, is_open):
 
     if not data:
-        return is_open, ""
+        raise dash.exceptions.PreventUpdate
 
+    paciente = data["Paciente"]
     obs = data.get("Observação", "")
 
-    return True, obs
-
+    return True, obs, paciente
 
 # ---------------- SALVAR OBS ---------------- #
+
 
 @callback(
     Output("modal", "is_open", allow_duplicate=True),
     Output("tabela", "rowData", allow_duplicate=True),
     Input("btn-salvar", "n_clicks"),
-    State("tabela", "cellRendererData"),
+    State("paciente-selecionado", "data"),
     State("input-observacao", "value"),
     prevent_initial_call=True
 )
-def salvar_obs(n, data, texto):
-    if not data:
-        raise dash.exceptions.PreventUpdate
+def salvar_obs(n, paciente, texto):
 
-    paciente = data["Paciente"]
+    if not paciente:
+        raise dash.exceptions.PreventUpdate
 
     with engine.begin() as conn:
         conn.execute(text("""
