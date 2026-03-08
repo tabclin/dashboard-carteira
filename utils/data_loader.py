@@ -12,13 +12,31 @@ engine = create_engine(
 
 def carregar_dados():
 
-    df = pd.read_sql(
-        "SELECT * FROM carteira",
-        engine
-    )
+    try:
 
+        df = pd.read_sql(
+            "SELECT * FROM carteira",
+            engine
+        )
+
+    except Exception as e:
+
+        print("Erro ao carregar carteira:", e)
+
+        df = pd.DataFrame()
+
+    # garante dataframe com estrutura
     if df.empty:
-        return pd.DataFrame()
+
+        return pd.DataFrame(columns=[
+            "Paciente",
+            "Qtd At.",
+            "Recência",
+            "Status",
+            "Observação",
+            "Agendado",
+            "Último Atendimento"
+        ])
 
     df["Último Atendimento"] = pd.to_datetime(
         df["ultimo_atendimento"],
