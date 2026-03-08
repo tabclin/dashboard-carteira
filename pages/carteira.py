@@ -1,16 +1,11 @@
-from dash import html, dcc, dash_table, Input, Output, State, ctx, callback
+from dash import html, dcc, dash_table, Input, Output, State, ctx, callback, no_update
 import dash_bootstrap_components as dbc
 import pandas as pd
-import subprocess
-import os
 import requests
+import dash
+from sqlalchemy import text
 
-from utils.data_loader import carregar_dados
-
-
-# Caminho do arquivo observações
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-arquivo_obs = os.path.join(base_dir, "observacoes.csv")
+from utils.data_loader import carregar_dados, engine
 
 
 # ---------------- LAYOUT ---------------- #
@@ -29,7 +24,6 @@ def layout():
 
         html.H2("Carteira de Pacientes", className="mb-4"),
 
-        # começa
         dbc.Row([
 
             dbc.Col(
@@ -77,7 +71,7 @@ def layout():
             ),
 
         ], className="mb-4"),
-        # termina
+
 
         html.Div(
             [
@@ -87,6 +81,7 @@ def layout():
                     color="primary",
                     className="mb-3",
                 ),
+
                 dbc.Button(
                     "Atualizar Geral",
                     id="btn-atualizar-geral",
@@ -175,10 +170,12 @@ def layout():
     ])
 
 
-# ---------------- ABRIR MODAL ---------------- #
+# ---------------- ABRIR MODAL / SALVAR OBS ---------------- #
+
 @callback(
     Output("modal", "is_open"),
     Output("input-observacao", "value"),
+    Output("tabela", "data"),
     Input("tabela", "active_cell"),
     Input("btn-salvar", "n_clicks"),
     State("input-observacao", "value"),
@@ -190,38 +187,36 @@ def controle_modal(active_cell, n_clicks, texto, rows, is_open):
 
     trigger = ctx.triggered_id
 
+    # abrir modal
     if trigger == "tabela" and active_cell and active_cell["column_id"] == "Ação":
-        obs = rows[active_cell["row"]].get("Observação", "")
-        return True, obs
 
+        obs = rows[active_cell["row"]].get("Observação", "")
+
+        return True, obs, no_update
+
+    # salvar observação
     if trigger == "btn-salvar" and active_cell:
+
         paciente = rows[active_cell["row"]]["Paciente"]
-        from sqlalchemy import text
-        from utils.data_loader import engine
 
         with engine.begin() as conn:
-
             conn.execute(text("""
+                INSERT INTO observacoes (paciente, observacao)
+                VALUES (:paciente, :obs)
+                ON CONFLICT (paciente)
+                DO UPDATE SET observacao = EXCLUDED.observacao
+            """), {"paciente": paciente, "obs": texto})
 
-            INSERT INTO observacoes (paciente, observacao)
+        df = carregar_dados()
+        df["Ação"] = "📝"
 
-            VALUES (:paciente, :obs)
+        return False, "", df.to_dict("records")
 
-            ON CONFLICT (paciente)
-
-            DO UPDATE SET observacao = EXCLUDED.observacao
-
-            """), {
-
-                "paciente": paciente,
-                "obs": texto
-            })
-            return False, ""
-
-            return is_open, texto
+    return is_open, texto, no_update
 
 
-# callbac da atualização:
+# ---------------- ATUALIZAR RELATÓRIO ---------------- #
+
 @callback(
     Output("tabela", "data"),
     Output("btn-atualizar-relatorio", "disabled"),
@@ -233,35 +228,27 @@ def atualizar_relatorio(n_clicks, filtro_status):
 
     trigger = ctx.triggered_id
 
-    # 🔹 Se clicou no botão → roda automação
     if trigger == "btn-atualizar-relatorio":
+
         requests.get(
             "https://bess-leptoprosopic-grinningly.ngrok-free.dev/executar-automacao",
             headers={"ngrok-skip-browser-warning": "true"},
             timeout=120
         )
 
-    # 🔹 Sempre recarrega dados depois
     df = carregar_dados()
-    df["Ação"] = "📝 ed"
+    df["Ação"] = "📝"
 
-    # 🔹 Aplica filtro se existir
     if filtro_status:
         df = df[df["Status"].isin(filtro_status)]
 
     return df.to_dict("records"), False
 
 
-def obter_ultima_atualizacao():
-    try:
-        with open("ultima_atualizacao.txt", "r") as f:
-            return f.read()
-    except:
-        return "Nunca atualizado"
-
+# ---------------- ATUALIZAR GERAL ---------------- #
 
 @callback(
-    Output("btn-atualizar-geral", "disabled"),
+    Output("tabela", "data"),
     Input("btn-atualizar-geral", "n_clicks"),
     prevent_initial_call=True
 )
@@ -273,4 +260,17 @@ def atualizar_geral(n):
         timeout=300
     )
 
-    return False
+    df = carregar_dados()
+    df["Ação"] = "📝"
+
+    return df.to_dict("records")
+
+
+# ---------------- ULTIMA ATUALIZAÇÃO ---------------- #
+
+def obter_ultima_atualizacao():
+    try:
+        with open("ultima_atualizacao.txt", "r") as f:
+            return f.read()
+    except:
+        return "Nunca atualizado"
