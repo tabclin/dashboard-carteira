@@ -90,7 +90,7 @@ def layout():
                 ),
 
                 html.Span(
-                    f"Atualizado em: {obter_ultima_atualizacao()}",
+                    f"Atualizado em: {obter_ultima_atualizacao() or '—'}",
                     id="texto-atualizacao",
                     style={
                         "marginLeft": "15px",
@@ -188,6 +188,9 @@ def controle_modal(active_cell, n_clicks, texto, rows, is_open):
 
     trigger = ctx.triggered_id
 
+    if rows is None:
+        return is_open, texto, no_update
+
     # abrir modal
     if trigger == "tabela" and active_cell and active_cell["column_id"] == "Ação":
 
@@ -207,6 +210,8 @@ def controle_modal(active_cell, n_clicks, texto, rows, is_open):
                 ON CONFLICT (paciente)
                 DO UPDATE SET observacao = EXCLUDED.observacao
             """), {"paciente": paciente, "obs": texto})
+
+        carregar_dados.cache_clear()
 
         df = carregar_dados()
         df["Ação"] = "📝"
