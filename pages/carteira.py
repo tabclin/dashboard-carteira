@@ -1,4 +1,4 @@
-from dash import html, dcc, Input, Output, State, ctx, callback, no_update
+from dash import html, dcc, Input, Output, State, ctx, callback
 import dash_bootstrap_components as dbc
 import pandas as pd
 import requests
@@ -42,6 +42,37 @@ def layout():
     total_perigo = len(df[df["Status"] == "Perigo"])
     total_atencao = len(df[df["Status"] == "Atenção"])
     total_ok = len(df[df["Status"] == "Ok"])
+
+    columnDefs = [
+
+        {"headerName": "Paciente", "field": "Paciente", "flex": 2},
+
+        {"headerName": "Qtd At.", "field": "Qtd At.", "width": 110},
+
+        {"headerName": "Recência", "field": "Recência", "width": 110},
+
+        {
+            "headerName": "Status",
+            "field": "Status",
+            "width": 120,
+            "cellClassRules": {
+                "status-ok": 'value == "Ok"',
+                "status-atencao": 'value == "Atenção"',
+                "status-perigo": 'value == "Perigo"',
+            },
+        },
+
+        {"headerName": "Agendado", "field": "Agendado", "width": 120},
+
+        {"headerName": "Observação", "field": "Observação", "flex": 2},
+
+        {
+            "headerName": "",
+            "field": "Ação",
+            "width": 70,
+            "cellStyle": {"textAlign": "center", "cursor": "pointer"},
+        },
+    ]
 
     return html.Div([
 
@@ -138,14 +169,12 @@ def layout():
         ),
 
         dag.AgGrid(
+
             id="tabela",
 
-            rowData=df.to_dict("records"),
+            columnDefs=columnDefs,
 
-            columnDefs=[
-                {"headerName": i, "field": i}
-                for i in df.columns
-            ],
+            rowData=df.to_dict("records"),
 
             defaultColDef={
                 "sortable": True,
@@ -153,7 +182,13 @@ def layout():
                 "resizable": True,
             },
 
+            dashGridOptions={
+                "animateRows": True,
+                "rowSelection": "single",
+            },
+
             className="ag-theme-alpine-dark",
+
             style={"height": "600px", "width": "100%"},
         ),
 
@@ -183,11 +218,10 @@ def layout():
     Output("modal", "is_open"),
     Output("input-observacao", "value"),
     Input("tabela", "cellClicked"),
-    State("tabela", "rowData"),
     State("modal", "is_open"),
     prevent_initial_call=True
 )
-def abrir_modal(cell, rows, is_open):
+def abrir_modal(cell, is_open):
 
     if not cell:
         return is_open, ""
