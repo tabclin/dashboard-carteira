@@ -211,12 +211,19 @@ def controle_modal(active_cell, n_clicks, texto, rows, is_open):
                 DO UPDATE SET observacao = EXCLUDED.observacao
             """), {"paciente": paciente, "obs": texto})
 
-        carregar_dados.cache_clear()
+        try:
+            carregar_dados.cache_clear()
+        except:
+            pass
 
-        df = carregar_dados()
-        df["Ação"] = "📝"
+        try:
+            df = carregar_dados()
+            df["Ação"] = "📝"
+        except Exception as e:
+            print("Erro ao carregar dados:", e)
+            df = pd.DataFrame(columns=["Paciente", "Status"])
 
-        return False, "", df.to_dict("records")
+            return False, "", df.to_dict("records")
 
     return is_open, texto, no_update
 
