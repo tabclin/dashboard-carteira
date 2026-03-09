@@ -1,4 +1,4 @@
-from dash import html, dcc, Input, Output, State, ctx, callback
+from dash import html, dcc, Input, Output, State, callback
 import dash
 import dash_bootstrap_components as dbc
 import pandas as pd
@@ -21,15 +21,12 @@ def obter_ultima_atualizacao():
 
 def layout():
 
-    try:
-        df = carregar_dados()
-    except Exception as e:
-        print("ERRO AO CARREGAR DADOS:", e)
-        df = pd.DataFrame()
+    df = carregar_dados()
 
     if df is None or df.empty:
         df = pd.DataFrame(columns=[
             "Paciente",
+            "Último Atendimento",
             "Qtd At.",
             "Recência",
             "Status",
@@ -51,9 +48,9 @@ def layout():
         {"headerName": "Último Atendimento",
             "field": "Último Atendimento", "width": 150},
 
-        {"headerName": "Qtd At.", "field": "Qtd At.", "width": 110},
+        {"headerName": "Qtd At.", "field": "Qtd At.", "width": 100},
 
-        {"headerName": "Recência", "field": "Recência", "width": 110},
+        {"headerName": "Recência", "field": "Recência", "width": 100},
 
         {
             "headerName": "Status",
@@ -66,20 +63,20 @@ def layout():
             },
         },
 
-        {"headerName": "Agendado", "field": "Agendado", "width": 120},
+        {"headerName": "Agendado", "field": "Agendado", "width": 110},
 
         {"headerName": "Observação", "field": "Observação", "flex": 2},
 
         {
             "headerName": "",
             "field": "Ação",
-            "width": 70,
+            "width": 60,
             "cellStyle": {
-                "textAlign": "center",
                 "cursor": "pointer",
+                "textAlign": "center",
                 "fontSize": "18px"
             },
-        }
+        },
     ]
 
     return html.Div([
@@ -89,80 +86,61 @@ def layout():
         dbc.Row([
 
             dbc.Col(
-                dbc.Card(
-                    dbc.CardBody([
-                        html.H6("Total Pacientes"),
-                        html.H3(total_pacientes)
-                    ]),
-                    color="secondary",
-                    inverse=True
-                ), width=3
+                dbc.Card(dbc.CardBody([
+                    html.H6("Total Pacientes"),
+                    html.H3(total_pacientes)
+                ]), color="secondary", inverse=True), width=3
             ),
 
             dbc.Col(
-                dbc.Card(
-                    dbc.CardBody([
-                        html.H6("Perigo"),
-                        html.H3(total_perigo)
-                    ]),
-                    color="danger",
-                    inverse=True
-                ), width=3
+                dbc.Card(dbc.CardBody([
+                    html.H6("Perigo"),
+                    html.H3(total_perigo)
+                ]), color="danger", inverse=True), width=3
             ),
 
             dbc.Col(
-                dbc.Card(
-                    dbc.CardBody([
-                        html.H6("Atenção"),
-                        html.H3(total_atencao)
-                    ]),
-                    color="warning",
-                    inverse=True
-                ), width=3
+                dbc.Card(dbc.CardBody([
+                    html.H6("Atenção"),
+                    html.H3(total_atencao)
+                ]), color="warning", inverse=True), width=3
             ),
 
             dbc.Col(
-                dbc.Card(
-                    dbc.CardBody([
-                        html.H6("Ok"),
-                        html.H3(total_ok)
-                    ]),
-                    color="success",
-                    inverse=True
-                ), width=3
+                dbc.Card(dbc.CardBody([
+                    html.H6("Ok"),
+                    html.H3(total_ok)
+                ]), color="success", inverse=True), width=3
             ),
 
         ], className="mb-4"),
 
-        html.Div(
-            [
-                dbc.Button(
-                    "Atualizar Relatório",
-                    id="btn-atualizar-relatorio",
-                    color="primary",
-                    className="mb-3",
-                ),
+        html.Div([
 
-                dbc.Button(
-                    "Atualizar Geral",
-                    id="btn-atualizar-geral",
-                    color="success",
-                ),
+            dbc.Button(
+                "Atualizar Relatório",
+                id="btn-atualizar-relatorio",
+                color="primary",
+                className="mb-3",
+            ),
 
-                html.Span(
-                    f"Atualizado em: {obter_ultima_atualizacao() or '—'}",
-                    style={
-                        "marginLeft": "15px",
-                        "fontSize": "14px",
-                        "color": "#6c757d"
-                    }
-                ),
-            ],
-            style={
-                "display": "flex",
-                "alignItems": "center"
-            }
-        ),
+            dbc.Button(
+                "Atualizar Geral",
+                id="btn-atualizar-geral",
+                color="success",
+                className="ms-2"
+            ),
+
+            html.Span(
+                f"Atualizado em: {obter_ultima_atualizacao()}",
+                style={
+                    "marginLeft": "15px",
+                    "fontSize": "14px",
+                    "color": "#6c757d"
+                }
+            ),
+
+        ], style={"display": "flex", "alignItems": "center"}),
 
         dcc.Dropdown(
             id="filtro-status",
@@ -175,7 +153,9 @@ def layout():
             placeholder="Filtrar por Status",
             className="mb-3",
         ),
+
         dcc.Store(id="paciente-selecionado"),
+
         dag.AgGrid(
 
             id="tabela",
@@ -190,11 +170,6 @@ def layout():
                 "resizable": True,
             },
 
-            dashGridOptions={
-                "animateRows": True,
-                "rowSelection": "single",
-            },
-
             className="ag-theme-alpine-dark",
 
             style={"height": "600px", "width": "100%"},
@@ -202,16 +177,19 @@ def layout():
 
         dbc.Modal(
             [
-                dbc.ModalHeader(dbc.ModalTitle("Adicionar Observação")),
+                dbc.ModalHeader(dbc.ModalTitle("Observação do Paciente")),
+
                 dbc.ModalBody(
                     dcc.Textarea(
                         id="input-observacao",
-                        style={"width": "100%"}
+                        style={"width": "100%"},
                     )
                 ),
+
                 dbc.ModalFooter(
                     dbc.Button("Salvar", id="btn-salvar", color="success")
                 ),
+
             ],
             id="modal",
             is_open=False,
@@ -221,6 +199,7 @@ def layout():
 
 
 # ---------------- ABRIR MODAL ---------------- #
+
 @callback(
     Output("modal", "is_open"),
     Output("input-observacao", "value"),
@@ -230,25 +209,21 @@ def layout():
 )
 def abrir_modal(cell):
 
-    if cell is None:
+    if not cell:
         raise dash.exceptions.PreventUpdate
 
-    # só reage se clicou na coluna Ação
-    if cell.get("colId") != "Ação":
+    if cell["colId"] != "Ação":
         raise dash.exceptions.PreventUpdate
 
-    row = cell.get("data")
+    row = cell["data"]
 
-    if not row:
-        raise dash.exceptions.PreventUpdate
-
-    paciente = row.get("Paciente", "")
+    paciente = row["Paciente"]
     obs = row.get("Observação", "")
 
     return True, obs, paciente
 
-# ---------------- SALVAR OBS ---------------- #
 
+# ---------------- SALVAR OBS ---------------- #
 
 @callback(
     Output("modal", "is_open", allow_duplicate=True),
@@ -276,8 +251,8 @@ def salvar_obs(n, paciente, texto):
 
     return False, df.to_dict("records")
 
-# ---------------- ATUALIZAR RELATORIO ---------------- #
 
+# ---------------- ATUALIZAR RELATORIO ---------------- #
 
 @callback(
     Output("tabela", "rowData", allow_duplicate=True),
@@ -288,10 +263,7 @@ def salvar_obs(n, paciente, texto):
 )
 def atualizar_relatorio(n_clicks, filtro):
 
-    trigger = ctx.triggered_id
-
-    if trigger == "btn-atualizar-relatorio":
-
+    if n_clicks:
         requests.get(
             "https://bess-leptoprosopic-grinningly.ngrok-free.dev/executar-automacao",
             headers={"ngrok-skip-browser-warning": "true"},
@@ -306,8 +278,8 @@ def atualizar_relatorio(n_clicks, filtro):
 
     return df.to_dict("records"), False
 
-# ---------------- ATUALIZAR GERAL ---------------- #
 
+# ---------------- ATUALIZAR GERAL ---------------- #
 
 @callback(
     Output("tabela", "rowData", allow_duplicate=True),
