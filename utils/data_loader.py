@@ -40,11 +40,13 @@ def carregar_dados():
 
         return df
 
+    # converter data
     df["Último Atendimento"] = pd.to_datetime(
         df["ultimo_atendimento"],
         errors="coerce"
     ).dt.strftime("%d/%m/%Y")
 
+    # renomear colunas
     df.rename(columns={
         "paciente": "Paciente",
         "qtd_at": "Qtd At.",
@@ -53,5 +55,16 @@ def carregar_dados():
         "observacao": "Observação",
         "agendado": "Agendado"
     }, inplace=True)
+
+    # manter apenas colunas usadas no grid
+    df = df[[
+        "Paciente",
+        "Qtd At.",
+        "Recência",
+        "Status",
+        "Agendado",
+        "Observação",
+        "Último Atendimento"
+    ]]
 
     return df

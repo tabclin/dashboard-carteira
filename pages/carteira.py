@@ -48,6 +48,9 @@ def layout():
 
         {"headerName": "Paciente", "field": "Paciente", "flex": 2},
 
+        {"headerName": "Último Atendimento",
+            "field": "Último Atendimento", "width": 150},
+
         {"headerName": "Qtd At.", "field": "Qtd At.", "width": 110},
 
         {"headerName": "Recência", "field": "Recência", "width": 110},

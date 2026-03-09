@@ -2,19 +2,18 @@ var dagcomponentfuncs = window.dashAgGridComponentFunctions = window.dashAgGridC
 
 dagcomponentfuncs.botaoObs = function(props) {
 
+    function click() {
+        props.setData(props.data);
+    }
+
     return React.createElement(
-        'button',
+        'span',
         {
             style: {
-                backgroundColor: '#444',
-                border: 'none',
-                color: 'white',
                 cursor: 'pointer',
-                fontSize: '16px'
+                fontSize: '18px'
             },
-            onClick: () => {
-                props.setData(props.data)
-            }
+            onClick: click
         },
         '📝'
     );
