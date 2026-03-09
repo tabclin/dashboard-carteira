@@ -230,15 +230,19 @@ def layout():
 )
 def abrir_modal(cell):
 
-    if not cell:
+    if cell is None:
         raise dash.exceptions.PreventUpdate
 
-    if cell["colId"] != "Ação":
+    # só reage se clicou na coluna Ação
+    if cell.get("colId") != "Ação":
         raise dash.exceptions.PreventUpdate
 
-    row = cell["data"]
+    row = cell.get("data")
 
-    paciente = row.get("Paciente")
+    if not row:
+        raise dash.exceptions.PreventUpdate
+
+    paciente = row.get("Paciente", "")
     obs = row.get("Observação", "")
 
     return True, obs, paciente
