@@ -74,9 +74,12 @@ def layout():
             "headerName": "",
             "field": "Ação",
             "width": 70,
-            "cellRenderer": "botaoObs",
-            "cellStyle": {"textAlign": "center"},
-        },
+            "cellStyle": {
+                "textAlign": "center",
+                "cursor": "pointer",
+                "fontSize": "18px"
+            },
+        }
     ]
 
     return html.Div([
@@ -222,24 +225,23 @@ def layout():
     Output("modal", "is_open"),
     Output("input-observacao", "value"),
     Output("paciente-selecionado", "data"),
-    Input("tabela", "cellRendererData"),
+    Input("tabela", "cellClicked"),
     prevent_initial_call=True
 )
-def abrir_modal(event):
+def abrir_modal(cell):
 
-    if not event:
+    if not cell:
         raise dash.exceptions.PreventUpdate
 
-    row = event.get("data")
-
-    if not row:
+    if cell["colId"] != "Ação":
         raise dash.exceptions.PreventUpdate
+
+    row = cell["data"]
 
     paciente = row.get("Paciente")
     obs = row.get("Observação", "")
 
     return True, obs, paciente
-    print(event)
 
 # ---------------- SALVAR OBS ---------------- #
 
