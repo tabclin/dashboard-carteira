@@ -223,16 +223,17 @@ def layout():
     Output("input-observacao", "value"),
     Output("paciente-selecionado", "data"),
     Input("tabela", "cellRendererData"),
-    State("modal", "is_open"),
     prevent_initial_call=True
 )
-def abrir_modal(data, is_open):
+def abrir_modal(data):
 
-    if not data:
+    if data is None:
         raise dash.exceptions.PreventUpdate
 
-    paciente = data["Paciente"]
-    obs = data.get("Observação", "")
+    row = data["data"]
+
+    paciente = row.get("Paciente")
+    obs = row.get("Observação", "")
 
     return True, obs, paciente
 
