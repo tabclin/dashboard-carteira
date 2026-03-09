@@ -2,8 +2,14 @@ var dagcomponentfuncs = window.dashAgGridComponentFunctions = window.dashAgGridC
 
 dagcomponentfuncs.botaoObs = function(props) {
 
-    function click() {
-        props.setData(props.data);
+    function clicar() {
+
+        const payload = {
+            Paciente: props.data.Paciente,
+            "Observação": props.data["Observação"]
+        };
+
+        props.setData(payload);
     }
 
     return React.createElement(
@@ -13,7 +19,7 @@ dagcomponentfuncs.botaoObs = function(props) {
                 cursor: 'pointer',
                 fontSize: '18px'
             },
-            onClick: click
+            onClick: clicar
         },
         '📝'
     );
