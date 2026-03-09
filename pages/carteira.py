@@ -212,12 +212,17 @@ def abrir_modal(cell):
     if not cell:
         raise dash.exceptions.PreventUpdate
 
-    if cell["colId"] != "Ação":
+    # garante que clicou na coluna correta
+    if cell.get("colId") != "Ação":
         raise dash.exceptions.PreventUpdate
 
-    row = cell["data"]
+    row = cell.get("data")
 
-    paciente = row["Paciente"]
+    # evita erro quando AG Grid não manda data
+    if not row:
+        raise dash.exceptions.PreventUpdate
+
+    paciente = row.get("Paciente")
     obs = row.get("Observação", "")
 
     return True, obs, paciente
