@@ -131,6 +131,13 @@ def layout():
                 className="ms-2"
             ),
 
+            dbc.Button(
+                "Adicionar Observação",
+                id="btn-abrir-modal",
+                color="warning",
+                className="ms-2"
+            ),
+
             html.Span(
                 f"Atualizado em: {obter_ultima_atualizacao()}",
                 style={
@@ -169,6 +176,9 @@ def layout():
                 "filter": True,
                 "resizable": True,
             },
+            dashGridOptions={
+                "rowSelection": "single"
+            },
 
             className="ag-theme-alpine-dark",
 
@@ -204,23 +214,16 @@ def layout():
     Output("modal", "is_open"),
     Output("input-observacao", "value"),
     Output("paciente-selecionado", "data"),
-    Input("tabela", "cellClicked"),
+    Input("btn-abrir-modal", "n_clicks"),
+    State("tabela", "selectedRows"),
     prevent_initial_call=True
 )
-def abrir_modal(cell):
+def abrir_modal(n, rows):
 
-    if not cell:
+    if not rows:
         raise dash.exceptions.PreventUpdate
 
-    # garante que clicou na coluna correta
-    if cell.get("colId") != "Ação":
-        raise dash.exceptions.PreventUpdate
-
-    row = cell.get("data")
-
-    # evita erro quando AG Grid não manda data
-    if not row:
-        raise dash.exceptions.PreventUpdate
+    row = rows[0]
 
     paciente = row.get("Paciente")
     obs = row.get("Observação", "")
