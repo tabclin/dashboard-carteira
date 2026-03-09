@@ -239,6 +239,7 @@ def abrir_modal(event):
     obs = row.get("Observação", "")
 
     return True, obs, paciente
+    print(event)
 
 # ---------------- SALVAR OBS ---------------- #
 
