@@ -225,12 +225,15 @@ def layout():
     Input("tabela", "cellRendererData"),
     prevent_initial_call=True
 )
-def abrir_modal(data):
+def abrir_modal(event):
 
-    if data is None:
+    if not event:
         raise dash.exceptions.PreventUpdate
 
-    row = data["data"]
+    row = event.get("data")
+
+    if not row:
+        raise dash.exceptions.PreventUpdate
 
     paciente = row.get("Paciente")
     obs = row.get("Observação", "")
