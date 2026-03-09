@@ -34,7 +34,7 @@ def layout():
             "Agendado"
         ])
 
-    df["Ação"] = "📝"
+   # df["Ação"] = "📝"
 
     total_pacientes = len(df)
     total_perigo = len(df[df["Status"] == "Perigo"])
@@ -67,16 +67,16 @@ def layout():
 
         {"headerName": "Observação", "field": "Observação", "flex": 2},
 
-        {
-            "headerName": "",
-            "field": "Ação",
-            "width": 60,
-            "cellStyle": {
-                "cursor": "pointer",
-                "textAlign": "center",
-                "fontSize": "18px"
-            },
-        },
+        # {
+        #    "headerName": "",
+        #   "field": "Ação",
+        #   "width": 60,
+        #  "cellStyle": {
+        #     "cursor": "pointer",
+        #     "textAlign": "center",
+        #    "fontSize": "18px"
+        # },
+        # },
     ]
 
     return html.Div([
@@ -255,7 +255,7 @@ def salvar_obs(n, paciente, texto):
         """), {"paciente": paciente, "obs": texto})
 
     df = carregar_dados()
-    df["Ação"] = "📝"
+   # df["Ação"] = "📝"
 
     return False, df.to_dict("records")
 
@@ -279,7 +279,7 @@ def atualizar_relatorio(n_clicks, filtro):
         )
 
     df = carregar_dados()
-    df["Ação"] = "📝"
+   # df["Ação"] = "📝"
 
     if filtro:
         df = df[df["Status"].isin(filtro)]
@@ -303,6 +303,6 @@ def atualizar_geral(n):
     )
 
     df = carregar_dados()
-    df["Ação"] = "📝"
+    # df["Ação"] = "📝"
 
     return df.to_dict("records")
