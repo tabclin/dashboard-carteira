@@ -9,6 +9,8 @@ from pages import carteira, dashboard
 from auth import login
 from login_layout import layout_login
 
+from dash.exceptions import PreventUpdate
+
 
 app = Dash(
     __name__,
@@ -130,10 +132,15 @@ def fazer_login(n, email, senha):
 @app.callback(
     Output("user_session", "clear_data"),
     Output("url", "pathname", allow_duplicate=True),
+
     Input("btn_logout", "n_clicks"),
+
     prevent_initial_call=True
 )
 def logout(n):
+
+    if not n:
+        raise PreventUpdate
 
     return True, "/"
 
