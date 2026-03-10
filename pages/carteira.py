@@ -121,20 +121,20 @@ def layout():
                 "Atualizar Relatório",
                 id="btn-atualizar-relatorio",
                 color="primary",
-                className="mb-3",
+                className="ms-2",
             ),
 
             dbc.Button(
                 "Atualizar Geral",
                 id="btn-atualizar-geral",
-                color="success",
+                color="primary",
                 className="ms-2"
             ),
 
             dbc.Button(
                 "Adicionar Observação",
                 id="btn-abrir-modal",
-                color="warning",
+                color="primary",
                 className="ms-2"
             ),
 
