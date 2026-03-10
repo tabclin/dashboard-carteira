@@ -81,21 +81,35 @@ print("pacientes atualizado")
 # -------------------------------
 # agenda
 # -------------------------------
+
 df_agenda = pd.read_csv(
     f"{base}/table_agenda_relatorio.csv"
 )
 
 df_agenda = df_agenda.rename(columns={
-    "Medico": "medico",
     "Paciente": "paciente",
-    "Data e hora": "data_hora",
-    "Agendado em": "agendado_em",
-    "Tipo": "tipo",
-    "Convênio": "convenio",
     "Status": "status",
-    "Primeiro Atendimento": "primeiro_atendimento",
     "Obs": "observacao"
 })
+
+# converter data e hora
+df_agenda["data_hora"] = pd.to_datetime(
+    df_agenda["Data e hora"],
+    format="%d/%m/%Y %H:%M"
+)
+
+df_agenda["data_atendimento"] = df_agenda["data_hora"].dt.date
+df_agenda["hora_atendimento"] = df_agenda["data_hora"].dt.time
+
+# manter apenas colunas que existem na tabela
+df_agenda = df_agenda[[
+    "paciente",
+    "status",
+    "data_atendimento",
+    "hora_atendimento",
+    "observacao"
+]]
+
 with engine.begin() as conn:
     conn.execute(text("TRUNCATE TABLE agenda"))
 
