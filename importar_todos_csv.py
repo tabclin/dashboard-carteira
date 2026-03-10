@@ -9,16 +9,6 @@ base = r"C:\Users\Thiago\Desktop\Python\Dra Ana Beatriz Buzatto passo02"
 # -------------------------------
 # observacoes.csv
 # -------------------------------
-df_obs = pd.read_csv(f"{base}/observacoes.csv")
-
-df_obs.to_sql(
-    "observacoes",
-    engine,
-    if_exists="replace",
-    index=False
-)
-
-print("observacoes atualizado")
 
 
 # -------------------------------
