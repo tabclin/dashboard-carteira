@@ -28,7 +28,7 @@ app.layout = html.Div([
 
     dcc.Location(id="url"),
 
-    # sessão persistente
+    # sessão do usuário
     dcc.Store(id="user_session", storage_type="session"),
 
     html.Div(id="sidebar_container"),
@@ -39,7 +39,7 @@ app.layout = html.Div([
 
 
 # -----------------------------
-# Sidebar só aparece logado
+# Mostrar sidebar somente logado
 # -----------------------------
 @app.callback(
     Output("sidebar_container", "children"),
@@ -48,22 +48,21 @@ app.layout = html.Div([
 def mostrar_sidebar(user):
 
     if user:
+
         return html.Div([
 
             sidebar,
 
-            html.Div(
-                dbc.Button(
-                    "Logout",
-                    id="btn_logout",
-                    color="danger",
-                    style={
-                        "position": "fixed",
-                        "bottom": "20px",
-                        "left": "20px",
-                        "width": "200px"
-                    }
-                )
+            dbc.Button(
+                "Logout",
+                id="btn_logout",
+                color="danger",
+                style={
+                    "position": "fixed",
+                    "bottom": "20px",
+                    "left": "20px",
+                    "width": "200px"
+                }
             )
 
         ])
@@ -81,14 +80,18 @@ def mostrar_sidebar(user):
 )
 def render_page(pathname, user):
 
-    # se não estiver logado
+    # usuário não logado
     if not user:
         return layout_login
 
+    # usuário logado
     if pathname == "/dashboard":
         return dashboard.layout()
 
-    # página padrão
+    if pathname == "/carteira":
+        return carteira.layout()
+
+    # página padrão após login
     return carteira.layout()
 
 
@@ -97,8 +100,8 @@ def render_page(pathname, user):
 # -----------------------------
 @app.callback(
     Output("user_session", "data"),
-    Output("url", "pathname"),
     Output("login_msg", "children"),
+    Output("url", "pathname"),
 
     Input("btn_login", "n_clicks"),
 
@@ -115,11 +118,11 @@ def fazer_login(n, email, senha):
 
         return (
             {"email": usuario["email"]},
-            "/carteira",
-            ""
+            "",
+            "/carteira"
         )
 
-    return None, "/", "Email ou senha inválidos"
+    return None, "Email ou senha inválidos", "/"
 
 
 # -----------------------------
@@ -138,8 +141,5 @@ def logout(n):
     return True, "/"
 
 
-# -----------------------------
-# rodar aplicação
-# -----------------------------
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
