@@ -12,6 +12,7 @@ arquivo_csv = r"C:\Users\Thiago\Desktop\Python\Dra Ana Beatriz Buzatto passo02\t
 
 # ler CSV com separador correto
 df = pd.read_csv(arquivo_csv, sep=";")
+print(df.columns)
 
 # renomear colunas
 df = df.rename(columns={
