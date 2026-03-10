@@ -129,10 +129,8 @@ def fazer_login(n, email, senha):
 # -----------------------------
 @app.callback(
     Output("user_session", "clear_data"),
-    Output("url", "pathname"),
-
+    Output("url", "pathname", allow_duplicate=True),
     Input("btn_logout", "n_clicks"),
-
     prevent_initial_call=True
 )
 def logout(n):
