@@ -7,3 +7,4 @@ requests
 psycopg2-binary
 sqlalchemy
 dash-ag-grid
+psycopg2-binary
