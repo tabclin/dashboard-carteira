@@ -1,5 +1,6 @@
 import pandas as pd
 from sqlalchemy import create_engine
+from sqlalchemy import text
 
 DATABASE_URL = "postgresql://postgres.hlfiykpoousspkcdswer:TabClin1706@aws-1-sa-east-1.pooler.supabase.com:6543/postgres"
 
@@ -10,6 +11,24 @@ base = r"C:\Users\Thiago\Desktop\Python\Dra Ana Beatriz Buzatto passo02"
 # observacoes.csv
 # -------------------------------
 
+df_obs = pd.read_csv(f"{base}/observacoes.csv")
+
+df_obs = df_obs.rename(columns={
+    "Paciente": "paciente",
+    "Observação": "observacao"
+})
+
+with engine.begin() as conn:
+    conn.execute(text("TRUNCATE TABLE observacoes"))
+
+df_obs.to_sql(
+    "observacoes",
+    engine,
+    if_exists="append",
+    index=False
+)
+
+print("observacoes atualizado")
 
 # -------------------------------
 # relatorio-atendimentos.csv
@@ -33,10 +52,13 @@ df_atend = df_atend.rename(columns={
     "Status do pagamento": "status"
 })
 
+with engine.begin() as conn:
+    conn.execute(text("TRUNCATE TABLE atendimentos"))
+
 df_atend.to_sql(
     "atendimentos",
     engine,
-    if_exists="replace",
+    if_exists="append",
     index=False
 )
 
@@ -60,11 +82,13 @@ df_pac = df_pac.rename(columns={
     "Cidade": "cidade",
     "Etiquetas": "etiquetas"
 })
+with engine.begin() as conn:
+    conn.execute(text("TRUNCATE TABLE pacientes"))
 
 df_pac.to_sql(
     "pacientes",
     engine,
-    if_exists="replace",
+    if_exists="append",
     index=False
 )
 
@@ -89,11 +113,13 @@ df_agenda = df_agenda.rename(columns={
     "Primeiro Atendimento": "primeiro_atendimento",
     "Obs": "observacao"
 })
+with engine.begin() as conn:
+    conn.execute(text("TRUNCATE TABLE agenda"))
 
 df_agenda.to_sql(
     "agenda",
     engine,
-    if_exists="replace",
+    if_exists="append",
     index=False
 )
 
