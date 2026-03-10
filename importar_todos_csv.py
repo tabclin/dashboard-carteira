@@ -11,24 +11,7 @@ base = r"C:\Users\Thiago\Desktop\Python\Dra Ana Beatriz Buzatto passo02"
 # observacoes.csv
 # -------------------------------
 
-df_obs = pd.read_csv(f"{base}/observacoes.csv")
-
-df_obs = df_obs.rename(columns={
-    "Paciente": "paciente",
-    "Observação": "observacao"
-})
-
-with engine.begin() as conn:
-    conn.execute(text("TRUNCATE TABLE observacoes"))
-
-df_obs.to_sql(
-    "observacoes",
-    engine,
-    if_exists="append",
-    index=False
-)
-
-print("observacoes atualizado")
+# FOI REMOVIDA, ATUALIZADA POR TRIGGER AGORA
 
 # -------------------------------
 # relatorio-atendimentos.csv
