@@ -28,7 +28,6 @@ app.layout = html.Div([
 
     dcc.Location(id="url"),
 
-    # sessão do usuário
     dcc.Store(id="user_session", storage_type="session"),
 
     html.Div(id="sidebar_container"),
@@ -39,7 +38,7 @@ app.layout = html.Div([
 
 
 # -----------------------------
-# Mostrar sidebar somente logado
+# Mostrar sidebar se logado
 # -----------------------------
 @app.callback(
     Output("sidebar_container", "children"),
@@ -50,7 +49,6 @@ def mostrar_sidebar(user):
     if user:
 
         return html.Div([
-
             sidebar,
 
             dbc.Button(
@@ -80,18 +78,18 @@ def mostrar_sidebar(user):
 )
 def render_page(pathname, user):
 
-    # usuário não logado
+    # não logado
     if not user:
-        return layout_login
+        return layout_login()
 
-    # usuário logado
+    # páginas protegidas
     if pathname == "/dashboard":
         return dashboard.layout()
 
     if pathname == "/carteira":
         return carteira.layout()
 
-    # página padrão após login
+    # padrão
     return carteira.layout()
 
 

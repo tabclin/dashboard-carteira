@@ -1,34 +1,24 @@
 from dash import html, dcc
 
-layout_login = html.Div(
 
-    style={"width": "300px", "margin": "auto", "marginTop": "150px"},
+def layout_login():
 
-    children=[
-
+    return html.Div([
         html.H2("Login"),
 
         dcc.Input(
             id="login_email",
             type="email",
-            placeholder="Email",
-            style={"width": "100%", "marginBottom": "10px"}
+            placeholder="Email"
         ),
 
         dcc.Input(
             id="login_senha",
             type="password",
-            placeholder="Senha",
-            style={"width": "100%", "marginBottom": "10px"}
+            placeholder="Senha"
         ),
 
-        html.Button(
-            "Entrar",
-            id="btn_login",
-            style={"width": "100%"}
-        ),
+        html.Button("Entrar", id="btn_login"),
 
         html.Div(id="login_msg")
-
-    ]
-)
+    ])
