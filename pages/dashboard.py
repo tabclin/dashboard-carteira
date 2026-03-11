@@ -11,6 +11,7 @@ from utils.data_loader import carregar_dados
 def layout():
 
     df = carregar_dados()
+    print(df.columns)
 
     # =============================
     # KPIs

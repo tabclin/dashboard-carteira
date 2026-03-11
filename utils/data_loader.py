@@ -29,13 +29,14 @@ def carregar_dados():
     if df.empty:
 
         df = pd.DataFrame(columns=[
-            "Paciente",
-            "Qtd At.",
-            "Recência",
-            "Status",
-            "Observação",
-            "Agendado",
-            "Último Atendimento"
+            "paciente",
+            "qtd_at",
+            "recencia_dias",
+            "status",
+            "observacao",
+            "agendado",
+            "ultimo_atendimento",
+            "idade_dias"
         ])
 
         return df
@@ -46,25 +47,12 @@ def carregar_dados():
         errors="coerce"
     ).dt.strftime("%d/%m/%Y")
 
-    # renomear colunas
-    df.rename(columns={
-        "paciente": "Paciente",
-        "qtd_at": "Qtd At.",
-        "recencia_dias": "Recência",
-        "status": "Status",
-        "observacao": "Observação",
-        "agendado": "Agendado"
-    }, inplace=True)
-
-    # manter apenas colunas usadas no grid
-    df = df[[
-        "Paciente",
-        "Qtd At.",
-        "Recência",
-        "Status",
-        "Agendado",
-        "Observação",
-        "Último Atendimento"
-    ]]
+    # criar colunas amigáveis (sem remover as originais)
+    df["Paciente"] = df["paciente"]
+    df["Qtd At."] = df["qtd_at"]
+    df["Recência"] = df["recencia_dias"]
+    df["Status"] = df["status"]
+    df["Observação"] = df["observacao"]
+    df["Agendado"] = df["agendado"]
 
     return df
