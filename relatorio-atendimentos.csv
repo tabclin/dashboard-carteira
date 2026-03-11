@@ -1,4 +1,5 @@
 ﻿Data;Paciente;Cidade;CPF;Celular;E-mail;Serviço;Tipo;Orçamento;Médico;CNS;Número do cartão;Convênio;Sala / Equipamento;Valor;Valor líquido;Valor total;Status do pagamento;Estoque utilizado;Lucro líquido;Observações
+10/03/2026;Clara Sousa de Oliveira;São José do Rio Preto;15330736862;16992219085;-;Consulta;Retorno;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Isento;-;0;-
 04/03/2026;Bárbara Campaneli Teixeira;São José Do Rio Preto;10129742864;17981741300;lucianicampaneli@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
 03/03/2026;Kalel Vieira Ozana;Itajobi;61091878870;17991003548;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
 03/03/2026;Mateus Souza Andrade;Caxias;13328737316;99984760438;anandaplmr@gmail.com;Consulta;Retorno;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Isento;-;0;-
@@ -98,4 +99,3 @@
 28/10/2025;José Freitas Jara;Ibriá;08252906869;17991328299;jordanabfreitas@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
 24/10/2025;Leonardo Luchini Nunes Feitosa;Brasília;11092107100;61982701869;marcellaluchiniwb@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
 23/10/2025;Ada Pivotto;Penápolis;60517260808;17991019665;paularf2005@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
-23/10/2025;Aarão Vicente Fernandes Bijos;Penápolis;56872076860;17991019665;paularf2005@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-

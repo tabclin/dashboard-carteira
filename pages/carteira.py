@@ -81,87 +81,144 @@ def layout():
 
     return html.Div([
 
-        html.H2("Carteira de Pacientes", className="mb-4"),
+        html.H2(
+            "Carteira de Pacientes",
+            className="mb-4",
+            style={"fontWeight": "600"}
+        ),
 
         dbc.Row([
 
             dbc.Col(
-                dbc.Card(dbc.CardBody([
-                    html.H6("Total Pacientes"),
-                    html.H3(total_pacientes)
-                ]), color="secondary", inverse=True), width=3
+                dbc.Card(
+                    dbc.CardBody([
+                        html.Div("Total Pacientes", className="card-title"),
+                        html.H3(total_pacientes, className="fw-bold")
+                    ]),
+                    style={
+                        "backgroundColor": "#6c757d",
+                        "color": "white",
+                        "borderRadius": "10px"
+                    }
+                ),
+                width=3
             ),
 
             dbc.Col(
-                dbc.Card(dbc.CardBody([
-                    html.H6("Perigo"),
-                    html.H3(total_perigo)
-                ]), color="danger", inverse=True), width=3
+                dbc.Card(
+                    dbc.CardBody([
+                        html.Div("Perigo", className="card-title"),
+                        html.H3(total_perigo, className="fw-bold")
+                    ]),
+                    style={
+                        "backgroundColor": "#dc3545",
+                        "color": "white",
+                        "borderRadius": "10px"
+                    }
+                ),
+                width=3
             ),
 
             dbc.Col(
-                dbc.Card(dbc.CardBody([
-                    html.H6("Atenção"),
-                    html.H3(total_atencao)
-                ]), color="warning", inverse=True), width=3
+                dbc.Card(
+                    dbc.CardBody([
+                        html.Div("Atenção", className="card-title"),
+                        html.H3(total_atencao, className="fw-bold")
+                    ]),
+                    style={
+                        "backgroundColor": "#ffc107",
+                        "color": "#000",
+                        "borderRadius": "10px"
+                    }
+                ),
+                width=3
             ),
 
             dbc.Col(
-                dbc.Card(dbc.CardBody([
-                    html.H6("Ok"),
-                    html.H3(total_ok)
-                ]), color="success", inverse=True), width=3
+                dbc.Card(
+                    dbc.CardBody([
+                        html.Div("Ok", className="card-title"),
+                        html.H3(total_ok, className="fw-bold")
+                    ]),
+                    style={
+                        "backgroundColor": "#198754",
+                        "color": "white",
+                        "borderRadius": "10px"
+                    }
+                ),
+                width=3
             ),
 
-        ], className="mb-4"),
+        ], className="mb-4 g-3"),
 
+
+        # CONTROLES
         html.Div([
 
-            dbc.Button(
-                "Atualizar Relatório",
-                id="btn-atualizar-relatorio",
-                color="primary",
-                className="ms-2",
-            ),
+            html.Div([
 
-            dbc.Button(
-                "Atualizar Geral",
-                id="btn-atualizar-geral",
-                color="primary",
-                className="ms-2"
-            ),
+                dbc.Button(
+                    "Atualizar Relatório",
+                    id="btn-atualizar-relatorio",
+                    color="primary",
+                    className="me-2"
+                ),
 
-            dbc.Button(
-                "Adicionar Observação",
-                id="btn-abrir-modal",
-                color="primary",
-                className="ms-2"
-            ),
+                dbc.Button(
+                    "Atualizar Geral",
+                    id="btn-atualizar-geral",
+                    color="secondary",
+                    className="me-2"
+                ),
 
-            html.Span(
+                dbc.Button(
+                    "Adicionar Observação",
+                    id="btn-abrir-modal",
+                    color="success",
+                    className="me-3"
+                ),
+
+                dcc.Dropdown(
+                    id="filtro-status",
+                    options=[
+                        {"label": "Ok", "value": "Ok"},
+                        {"label": "Atenção", "value": "Atenção"},
+                        {"label": "Perigo", "value": "Perigo"},
+                    ],
+                    multi=True,
+                    placeholder="Filtrar status...",
+                    style={
+                        "width": "250px",
+                        "marginRight": "20px"
+                    }
+                ),
+
+            ], style={
+                "display": "flex",
+                "alignItems": "center"
+            }),
+
+
+            html.Div(
                 f"Atualizado em: {obter_ultima_atualizacao()}",
                 style={
-                    "marginLeft": "15px",
-                    "fontSize": "14px",
-                    "color": "#6c757d"
+                    "fontSize": "13px",
+                    "color": "#6c757d",
                 }
-            ),
+            )
 
-        ], style={"display": "flex", "alignItems": "center"}),
-
-        dcc.Dropdown(
-            id="filtro-status",
-            options=[
-                {"label": "Ok", "value": "Ok"},
-                {"label": "Atenção", "value": "Atenção"},
-                {"label": "Perigo", "value": "Perigo"},
-            ],
-            multi=True,
-            placeholder="Filtrar por Status",
-            className="ms-2",
+        ],
+            style={
+            "display": "flex",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "marginBottom": "20px"
+        }
         ),
 
+
         dcc.Store(id="paciente-selecionado"),
+
 
         dag.AgGrid(
 
@@ -176,6 +233,7 @@ def layout():
                 "filter": True,
                 "resizable": True,
             },
+
             dashGridOptions={
                 "rowSelection": "single"
             },
@@ -185,22 +243,35 @@ def layout():
             style={"height": "600px", "width": "100%"},
         ),
 
+
         dbc.Modal(
             [
-                dbc.ModalHeader(dbc.ModalTitle("Observação do Paciente")),
+
+                dbc.ModalHeader(
+                    dbc.ModalTitle("Observação do Paciente")
+                ),
 
                 dbc.ModalBody(
                     dcc.Textarea(
                         id="input-observacao",
-                        style={"width": "100%"},
+                        style={
+                            "width": "100%",
+                            "height": "120px",
+                            "borderRadius": "6px"
+                        },
                     )
                 ),
 
                 dbc.ModalFooter(
-                    dbc.Button("Salvar", id="btn-salvar", color="success")
+                    dbc.Button(
+                        "Salvar",
+                        id="btn-salvar",
+                        color="success"
+                    )
                 ),
 
             ],
+
             id="modal",
             is_open=False,
         )
