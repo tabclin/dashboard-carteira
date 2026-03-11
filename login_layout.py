@@ -1,24 +1,71 @@
 from dash import html, dcc
+import dash_bootstrap_components as dbc
 
 
 def layout_login():
 
-    return html.Div([
-        html.H2("Login"),
+    return html.Div(
 
-        dcc.Input(
-            id="login_email",
-            type="email",
-            placeholder="Email"
+        dbc.Row(
+
+            dbc.Col(
+
+                dbc.Card(
+
+                    dbc.CardBody([
+
+                        html.H3(
+                            "Login",
+                            className="text-center mb-4"
+                        ),
+
+                        dbc.Input(
+                            id="login_email",
+                            type="email",
+                            placeholder="Email",
+                            className="mb-3",
+                        ),
+
+                        dbc.Input(
+                            id="login_senha",
+                            type="password",
+                            placeholder="Senha",
+                            className="mb-4",
+                        ),
+
+                        dbc.Button(
+                            "Entrar",
+                            id="btn_login",
+                            color="primary",
+                            className="w-100"
+                        ),
+
+                        html.Div(
+                            id="login_msg",
+                            className="mt-3 text-center"
+                        )
+
+                    ]),
+
+                    style={
+                        "borderRadius": "12px",
+                        "boxShadow": "0 4px 20px rgba(0,0,0,0.1)"
+                    }
+
+                ),
+
+                width=4
+
+            ),
+
+            justify="center",
+            align="center",
+            style={"height": "100vh"}
+
         ),
 
-        dcc.Input(
-            id="login_senha",
-            type="password",
-            placeholder="Senha"
-        ),
+        style={
+            "backgroundColor": "#f5f7fb"
+        }
 
-        html.Button("Entrar", id="btn_login"),
-
-        html.Div(id="login_msg")
-    ])
+    )
