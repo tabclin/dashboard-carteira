@@ -158,7 +158,7 @@ def layout():
             ],
             multi=True,
             placeholder="Filtrar por Status",
-            className="mb-3",
+            className="ms-2",
         ),
 
         dcc.Store(id="paciente-selecionado"),
