@@ -22,10 +22,9 @@ def layout():
     ok = len(df[df["Status"] == "Ok"])
 
     # =============================
-    # GRÁFICOS
+    # GRÁFICO 1 - Pizza Status
     # =============================
 
-    # Pizza Status
     grafico_status = px.pie(
         df,
         names="Status",
@@ -38,15 +37,10 @@ def layout():
         }
     )
 
-    # Histograma Recência
-    grafico_recencia = px.histogram(
-        df,
-        x="Recência",
-        nbins=20,
-        title="Distribuição de Recência (Dias)"
-    )
+    # =============================
+    # GRÁFICO 2 - Barra Status
+    # =============================
 
-    # Barra Status (forma segura)
     df_status = df["Status"].value_counts().reset_index()
     df_status.columns = ["Status", "Quantidade"]
 
@@ -56,6 +50,7 @@ def layout():
         y="Quantidade",
         title="Quantidade por Status",
         color="Status",
+        text="Quantidade",
         color_discrete_map={
             "Perigo": "#dc3545",
             "Atenção": "#ffc107",
@@ -63,15 +58,79 @@ def layout():
         }
     )
 
-    # Top 10 maior recência
-    top10 = df.sort_values("Recência", ascending=False).head(10)
+    grafico_barra_status.update_traces(textposition="outside")
 
-    grafico_top10 = px.bar(
-        top10,
-        x="Recência",
-        y="Paciente",
-        orientation="h",
-        title="Top 10 Pacientes com Maior Recência"
+    # =============================
+    # GRÁFICO 3 - Distribuição de Idades
+    # =============================
+
+    df["idade_anos"] = df["idade_dias"] / 365
+
+    def faixa_idade(x):
+        if x < 1:
+            return "0-1"
+        elif x < 2:
+            return "1-2"
+        elif x < 5:
+            return "2-5"
+        elif x < 12:
+            return "5-12"
+        else:
+            return ">12"
+
+    df["faixa_idade"] = df["idade_anos"].apply(faixa_idade)
+
+    idade_dist = df["faixa_idade"].value_counts().reset_index()
+    idade_dist.columns = ["Faixa", "Quantidade"]
+
+    ordem = ["0-1", "1-2", "2-5", "5-12", ">12"]
+
+    grafico_idade = px.bar(
+        idade_dist,
+        x="Faixa",
+        y="Quantidade",
+        title="Distribuição de Idades",
+        category_orders={"Faixa": ordem},
+        text="Quantidade"
+    )
+
+    grafico_idade.update_traces(textposition="outside")
+
+    grafico_idade.update_layout(
+        yaxis_title="Quantidade de Pacientes",
+        xaxis_title="Faixa Etária"
+    )
+
+    # =============================
+    # GRÁFICO 4 - Atendimentos por mês
+    # =============================
+
+    df["ultimo_atendimento"] = pd.to_datetime(df["ultimo_atendimento"])
+
+    df["mes"] = df["ultimo_atendimento"].dt.to_period("M")
+
+    atendimentos_mes = (
+        df
+        .groupby("mes")
+        .size()
+        .reset_index(name="Quantidade")
+    )
+
+    atendimentos_mes["mes"] = atendimentos_mes["mes"].astype(str)
+
+    grafico_atendimentos = px.bar(
+        atendimentos_mes,
+        x="mes",
+        y="Quantidade",
+        title="Atendimentos por Mês",
+        text="Quantidade"
+    )
+
+    grafico_atendimentos.update_traces(textposition="outside")
+
+    grafico_atendimentos.update_layout(
+        xaxis_title="Mês",
+        yaxis_title="Quantidade de Atendimentos"
     )
 
     # =============================
@@ -88,48 +147,64 @@ def layout():
             dbc.Col(
                 dbc.Card(
                     dbc.CardBody([
-                        html.H6("👥 Total Pacientes"),
-                        html.H3(total)
+                        html.Div("Total Pacientes", className="card-title"),
+                        html.H3(total, className="fw-bold")
                     ]),
-                    color="secondary",
-                    inverse=True
-                ), width=3
+                    style={
+                        "backgroundColor": "#6c757d",
+                        "color": "white",
+                        "borderRadius": "10px"
+                    }
+                ),
+                width=3
             ),
 
             dbc.Col(
                 dbc.Card(
                     dbc.CardBody([
-                        html.H6("🚨 Perigo"),
-                        html.H3(perigo)
+                        html.Div("Perigo", className="card-title"),
+                        html.H3(perigo, className="fw-bold")
                     ]),
-                    color="danger",
-                    inverse=True
-                ), width=3
+                    style={
+                        "backgroundColor": "#dc3545",
+                        "color": "white",
+                        "borderRadius": "10px"
+                    }
+                ),
+                width=3
             ),
 
             dbc.Col(
                 dbc.Card(
                     dbc.CardBody([
-                        html.H6("⚠️ Atenção"),
-                        html.H3(atencao)
+                        html.Div("Atenção", className="card-title"),
+                        html.H3(atencao, className="fw-bold")
                     ]),
-                    color="warning",
-                    inverse=True
-                ), width=3
+                    style={
+                        "backgroundColor": "#ffc107",
+                        "color": "#000",
+                        "borderRadius": "10px"
+                    }
+                ),
+                width=3
             ),
 
             dbc.Col(
                 dbc.Card(
                     dbc.CardBody([
-                        html.H6("✅ Ok"),
-                        html.H3(ok)
+                        html.Div("Ok", className="card-title"),
+                        html.H3(ok, className="fw-bold")
                     ]),
-                    color="success",
-                    inverse=True
-                ), width=3
+                    style={
+                        "backgroundColor": "#198754",
+                        "color": "white",
+                        "borderRadius": "10px"
+                    }
+                ),
+                width=3
             ),
 
-        ], className="mb-4"),
+        ], className="mb-4 g-3"),
 
         # 🔹 PRIMEIRA LINHA
         dbc.Row([
@@ -139,8 +214,8 @@ def layout():
 
         # 🔹 SEGUNDA LINHA
         dbc.Row([
-            dbc.Col(dcc.Graph(figure=grafico_recencia), width=6),
-            dbc.Col(dcc.Graph(figure=grafico_top10), width=6),
+            dbc.Col(dcc.Graph(figure=grafico_idade), width=6),
+            dbc.Col(dcc.Graph(figure=grafico_atendimentos), width=6),
         ])
 
     ])
