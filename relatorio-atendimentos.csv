@@ -1,4 +1,14 @@
 ﻿Data;Paciente;Cidade;CPF;Celular;E-mail;Serviço;Tipo;Orçamento;Médico;CNS;Número do cartão;Convênio;Sala / Equipamento;Valor;Valor líquido;Valor total;Status do pagamento;Estoque utilizado;Lucro líquido;Observações
+26/03/2026;Benjamin Faria Naleto;Presidente Prudente;51236284879;18996752402;-;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+25/03/2026;Clarice Luiza Belgas Castro;São Luís;12850280313;98991336897;ayres.belga@gmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+18/03/2026;Augusto Gaillac Perucci;Lagoa Santa;19395578602;31988813552;dragaillac@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+18/03/2026;Eduarda Bueno Pamplona;São Bernardo Do Campo;37658634832;11966202141;pbarbosabueno@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+17/03/2026;Davi Almeida Rodrigues;São José do Rio Preto;-;17991684521;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+17/03/2026;Henrique Reticena Pegoraro;São José do Rio Preto;-;44999283808;guilherme-pegoraro@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+13/03/2026;Ravy Oliveira Guimarães;Ruy Barbosa;96526335500;75999199666;rita.oliveirasouza@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/03/2026;Ada Pivotto;Penápolis;60517260808;17991019665;paularf2005@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/03/2026;Aarão Vicente Fernandes Bijos;Penápolis;56872076860;17991019665;paularf2005@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/03/2026;Miguel Rocha Agreli;Palestina;55116852830;17991108903;joyce_poleia@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
 10/03/2026;Clara Sousa de Oliveira;São José do Rio Preto;15330736862;16992219085;-;Consulta;Retorno;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Isento;-;0;-
 04/03/2026;Bárbara Campaneli Teixeira;São José Do Rio Preto;10129742864;17981741300;lucianicampaneli@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
 03/03/2026;Kalel Vieira Ozana;Itajobi;61091878870;17991003548;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
@@ -99,3 +109,327 @@
 28/10/2025;José Freitas Jara;Ibriá;08252906869;17991328299;jordanabfreitas@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
 24/10/2025;Leonardo Luchini Nunes Feitosa;Brasília;11092107100;61982701869;marcellaluchiniwb@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
 23/10/2025;Ada Pivotto;Penápolis;60517260808;17991019665;paularf2005@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+23/10/2025;Aarão Vicente Fernandes Bijos;Penápolis;56872076860;17991019665;paularf2005@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+21/10/2025;João Pardo Romani;São José do Rio Preto;-;19982027643;fer_mfgp@yahoo.com.br;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+21/10/2025;José Branco Copello Ferraz;Nova Iguaçu;03909474748;21964746140;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+15/10/2025;Gustavo Bilges Ribeiro Fujii;Bragança Paulista;56444080860;11996791400;g.bilges@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+15/10/2025;Miguel Rocha Agreli;Palestina;55116852830;17991108903;joyce_poleia@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+14/10/2025;Maria Eduarda Toschi Naves;-;-;17981084895;anatoschi@yahoo.com.br;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+14/10/2025;Maria Alice Toschi Naves;-;-;17981084895;anatoschi@yahoo.com.br;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+14/10/2025;Ana Clara Pukar Dos Santos;Mirassol;-;17981241445;sarahpukar@yahoo.com.br;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+07/10/2025;Isaac Santiago de Oliveira;Nova Iguaçu;21276191707;21971777190;-;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+01/10/2025;Amanda Dos Santos Maciel;-;08380418921;43999316222;amandamacielest-@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+01/10/2025;Serena Luna Nunes De Araújo;Fortaleza;11853453374;8588590461;tamiresbranu@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+30/09/2025;Maria Eduarda Soler Feijó;São José Do Rio Preto;-;17997534626;debora_soler@yahoo.com.br;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+24/09/2025;Henrique Alves Fumis;Ipigua;56764403848;17988209646;dayanefumis@icloud.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+24/09/2025;Davi Almeida Rodrigues;São José do Rio Preto;-;17991684521;-;Consulta;Retorno;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Isento;-;0;-
+23/09/2025;Aurora Raimundo Rocha;São José do Rio Preto;-;48996344266;-;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+23/09/2025;José Freitas Jara;Ibriá;08252906869;17991328299;jordanabfreitas@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+17/09/2025;Lorena Goes Serroni;São José Do Rio Preto;34693275808;17996553222;samanthaparrilha@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+17/09/2025;Antonella Morgueta Carvalho;São José Do Rio Preto;35726336801;17997191304;nath_mary@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+16/09/2025;Samyra Cesar da Silva;Elisio Medrado;11915996554;-;milleidycezar17@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+16/09/2025;José Branco Copello Ferraz;Nova Iguaçu;03909474748;21964746140;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/09/2025;Isabel Ramos Andrade;Quijingue;13466134510;75998070723;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/09/2025;Davi Almeida Rodrigues;São José do Rio Preto;-;17991684521;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/09/2025;Rafael Serafim;Londres;-;-;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+09/09/2025;Francisco Menezes Lourencin;São José Do Rio Preto;08080732817;17997913693;ry_menezes@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+09/09/2025;Sarah Hadassa Prado Beltran;Icém;60604057890;17991287635;danielle.fma31@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+03/09/2025;Maria Isabel Branco Copello Ferraz;Nova Iguaçu;18474358744;21964746140;alinealvernaz@gmail.com;Consulta;Retorno;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Isento;-;0;-
+03/09/2025;José Freitas Jara;Ibriá;08252906869;17991328299;jordanabfreitas@gmail.com;Consulta;Retorno;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Isento;-;0;-
+03/09/2025;Sophia Dartibale Gerbaudo;São José Do Rio Preto;36869838852;17997941410;tali.dart.amado@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+03/09/2025;Pedro Henrique de Souza Amin;Olímpia;45692397811;17997316989;gracielecarinasouza@gmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+02/09/2025;Gabriel Dalbem;Jales;09136338877;17996213931;flaviazanettoni@gmail.com;Consulta;Retorno;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Isento;-;0;-
+02/09/2025;Cecilia Andrade;Ponta Grossa;19213523610;21965470226;laurieny_alves@hotmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+02/09/2025;Manuela Lima Leão;Palmas;11715543114;63984279571;danilalimaleao@hotmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+27/08/2025;Mateus De Oliveira Magalhães;Manaus;08585694262;9284382932;deilaoliveira.oliveira@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+27/08/2025;Marcos Francisco De Oliveira Magalhães;Manaus;70486382222;9284382932;deilaoliveira.oliveira@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+27/08/2025;Eloah Dos Santos Neves;Brumado;08581022502;77999089661;giulianneavila@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+27/08/2025;Antonela Gonsales Chaves Antunes;Paranaíba;10433590106;67981755290;gislainegonsales@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+26/08/2025;José Donizetti Graia Dias;Brumado;12754741526;77999545600;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+20/08/2025;Mizael Nunes Argolo;Elísio Medrado;02124793500;71996091765;bns.amanda@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+20/08/2025;José Freitas Jara;Ibriá;08252906869;17991328299;jordanabfreitas@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+19/08/2025;Glória Quinália Francisco;Jales;33827118859;17996738161;camilaquinalia1@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+19/08/2025;Davi Luiz Gomes Motta;Mirassol;58748000850;17996394891;karina.thayna2611@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+19/08/2025;Glória Quinália Francisco;Jales;33827118859;17996738161;camilaquinalia1@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+19/08/2025;Calebe Almeida Santos Oliveira;Salvador;10618940537;75999472162;ralmeidasantosoliveira@gmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+18/08/2025;Gabriel Dalbem;Jales;09136338877;17996213931;flaviazanettoni@gmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+06/08/2025;Marina Lucas Lima Alegria;Mágda;32110370807;17997045542;robertagraziela@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+06/08/2025;Bárbara Campaneli Teixeira;São José Do Rio Preto;10129742864;17981741300;lucianicampaneli@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/08/2025;Maria Isabel Branco Copello Ferraz;Nova Iguaçu;18474358744;21964746140;alinealvernaz@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/08/2025;José Branco Copello Ferraz;Nova Iguaçu;03909474748;21964746140;-;Consulta;Retorno;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Isento;-;0;-
+30/07/2025;João Fabiano dos Santos;Tomazina;12614758957;43998436850;jrcamilasantos@gmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+30/07/2025;Maria Luisa Dias Rissatti;São José do Rio Preto;56577421846;17981484861;-;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+29/07/2025;Leonardo Luchini Nunes Feitosa;Brasília;11092107100;61982701869;marcellaluchiniwb@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+29/07/2025;Ana Clara Pukar Dos Santos;Mirassol;-;17981241445;sarahpukar@yahoo.com.br;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+22/07/2025;Jhennifer Cambuhy Oliveira;São José Do Rio Preto;33798653895;17988287015;michele_tathiana@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+22/07/2025;José Freitas Jara;Ibriá;08252906869;17991328299;jordanabfreitas@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+22/07/2025;Rafael Serafim;Londres;-;-;-;Consulta;Retorno;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Isento;-;0;-
+16/07/2025;Davi Almeida Rodrigues;São José do Rio Preto;-;17991684521;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+16/07/2025;Cecília Marretto Gardesani;São José do Rio Preto;59399485889;11970877480;-;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+16/07/2025;Lorenzo Henare De Oliveira;São José Do Rio Preto;37871437852;17992138377;stephaniehenare@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+15/07/2025;José Branco Copello Ferraz;Nova Iguaçu;03909474748;21964746140;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+15/07/2025;Henrico Mancini Orniz Esteves;Uchoa;39327714865;17991408428;manciniesteves@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/07/2025;Isaac Alves De Paula;Jales;60616543832;17992244994;fealvess1@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/07/2025;Gabriel Lima Simon;São José do Rio Preto;56121874830;19999662273;clara_lima@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/07/2025;Cecília Lima Simon;São José do Rio Preto;60101817800;17999662273;clara_lima@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/07/2025;Otavio Medina Furlan Silva;Araçatuba;36278925850;34993424768;natalia.alimentese04@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+09/07/2025;Matheus de Deus Oliveira;Olímpia;52197466852;17997293220;-;Consulta;Retorno;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Isento;-;0;-
+02/07/2025;Matheus de Deus Oliveira;Olímpia;52197466852;17997293220;-;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+02/07/2025;Francisco Menezes Lourencin;São José Do Rio Preto;08080732817;17997913693;ry_menezes@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+02/07/2025;Rafael Serafim;Londres;-;-;-;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+01/07/2025;Maria Regina Dias Rissatti;São José do Rio Preto;56577476829;17981484861;-;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+01/07/2025;Maria Clara Dias Rissatti;São José do Rio Preto;12190545935;17981484861;-;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+01/07/2025;Serena Horianski Roque;Santo André;60924151862;11976143443;agustinahorianski@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+25/06/2025;Rebeca Lopes Lazarin;Potirendaba;-;17981348716;angelalopesl90@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+25/06/2025;Inácio José Domingues Peixoto;Anhembi;60864976801;14991315593;domingues.rosani@gmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+25/06/2025;Isabel Ramos Andrade;Quijingue;13466134510;75998070723;-;Consulta;Retorno;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Isento;-;0;-
+24/06/2025;Davi Luiz Gomes Motta;Mirassol;58748000850;17996394891;karina.thayna2611@gmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+24/06/2025;Joaquim Freitas Jara;Ibirá;50638521149;17991328299;jordanabfreitas5@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+24/06/2025;José Freitas Jara;Ibriá;08252906869;17991328299;jordanabfreitas@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+18/06/2025;Lara Borges Faresin;Caxias Do Sul;06661457090;54999140402;ferferborges08@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+18/06/2025;Antônio De Souza Trefíglio;Catanduva;57357209881;17997242575;mel-ps@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+17/06/2025;Sarah Hadassa Prado Beltran;Icém;60604057890;17991287635;danielle.fma31@gmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/06/2025;Lorena Goes Serroni;São José Do Rio Preto;34693275808;17996553222;samanthaparrilha@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/06/2025;Isabel Ramos Andrade;Quijingue;13466134510;75998070723;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/06/2025;João Pardo Romani;São José do Rio Preto;-;19982027643;fer_mfgp@yahoo.com.br;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/06/2025;José Branco Copello Ferraz;Nova Iguaçu;03909474748;21964746140;-;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/06/2025;Maria Flor Gomes Tassinari;São José Do Rio Preto;02616978890;17997343608;isadora_green@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/06/2025;Helena Bacarissa Souza;Mirassol;55764963885;17991347013;moalhp@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+03/06/2025;Calel Cantesani Carmona;São José do Rio Preto;01267618841;11933572202;fernandaclperes@gmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+03/06/2025;Vitor Maciel Scariot;Pitanga;14487834961;43999316222;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+03/06/2025;Aurora Guedes Rigobello Gimenez;Votuporanga;-;17981116060;ricardoasgimenez@gmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+28/05/2025;Samyra Cesar da Silva;Elisio Medrado;11915996554;-;milleidycezar17@hotmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+27/05/2025;Emanuelly Garcia Dias;Uberlândia;02219785696;34996729234;andressagarcia300@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+27/05/2025;Enzo Gabriel França Brandão;Ipirá;86804836561;7196146351;arianamachadofranca@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+21/05/2025;José Freitas Jara;Ibriá;08252906869;17991328299;jordanabfreitas@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+21/05/2025;Arthur Jesus Sordi;Neves Paulista;50170647889;17981696462;toinhosordi@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+20/05/2025;Liz Helena Machado Mendes;Lucas Do Rio Verde;11841153117;65999513226;deca_machado@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+20/05/2025;Davi Almeida Rodrigues;São José do Rio Preto;-;17991684521;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+14/05/2025;Maria Júlia Chiccoli Spera;São José do Rio Preto;59314438864;17996701996;isabelacfml@hotmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+14/05/2025;Noah Sales de Oliveira Simas Leite;Petrópolis;22642557731;24988421236;hammeretamires@icloud.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+14/05/2025;Helena Garcia Segovia Guimaraes;São José do Rio Preto;01773399853;-;danielafgarcia@gmail.com;Consulta;Retorno;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Isento;-;0;-
+14/05/2025;Aurora Mandelsberg Monteiro Assunção;Manaus;11280470208;-;-;Consulta;Retorno;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Isento;-;0;-
+13/05/2025;Valentina Morgueta Carvalho;São José Do Rio Preto;35726336801;17997191304;nath_mary@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+13/05/2025;Antonella Morgueta Carvalho;São José Do Rio Preto;35726336801;17997191304;nath_mary@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+13/05/2025;Yuri Claro Lopes;São Pedro;58012529831;19982266677;therullypassos@gmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+07/05/2025;Matteo Andreas Aragão Martin;São José Do Rio Preto;33861898810;17991414581;carolaragao1984@yahoo.com.br;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+07/05/2025;Isabelle Paula Barbosa;São José Do Rio Preto;33566947822;17991376924;lynneappb15@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+06/05/2025;Serena Zandonato Fonseca;Toledo;00306949903;45998031238;karin7462a@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+06/05/2025;Isabella Emanuely Couto De Brito;Nova União;16806491677;31992182983;coutocriscouto@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+06/05/2025;Gabriela Fernandes Maia Braz;São José Do Rio Preto;06305050988;41991440803;mayra.maia1@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+30/04/2025;Samuel de Paula Garcez;São José do Rio Preto;53764205822;17997592990;meiremonicagarcez@gmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+29/04/2025;Nicole Zanetini Ferreira;São José Do Rio Preto;31863202838;11976783235;luciana_pz@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+29/04/2025;Miguel Rocha Agreli;Palestina;55116852830;17991108903;joyce_poleia@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+25/04/2025;Aurora Mandelsberg Monteiro Assunção;Manaus;11280470208;-;-;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+23/04/2025;Maria Eloah Oliveira Melo;José Bonifácio;07751859814;17981075451;marcinhaoliveira0707@gmail.com;Consulta;Retorno;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Isento;-;0;-
+23/04/2025;Anthony Inocencio Sérgio;São José Do Rio Preto;-;17991765592;vi.therock@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+23/04/2025;Jose Miguel Ribeiro Lopes;Novo Horizonte Do Oeste;09732902264;69999525813;stellamrlopes@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+23/04/2025;Mariana Pedroso Ferreira;Campo Grande;12330178107;67991668675;jupedroso02@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+22/04/2025;Helena Garcia Segovia Guimaraes;São José do Rio Preto;01773399853;-;danielafgarcia@gmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+22/04/2025;Hadassa Bordini Vieira;São José Do Rio Preto;32464937827;17996698775;marcelaabordini@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+22/04/2025;José Freitas Jara;Ibriá;08252906869;17991328299;jordanabfreitas@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+22/04/2025;Davi Almeida Rodrigues;São José do Rio Preto;-;17991684521;-;Consulta;Retorno;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Isento;-;0;-
+16/04/2025;Isabel Ramos Andrade;Quijingue;13466134510;75998070723;-;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+16/04/2025;Tomas Faruthe Martinez;Jales;01948842874;17996360977;alinefaruthe.fotografia@hotmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+16/04/2025;Guilherme Bueno Pamplona;São Bernardo Do Campo;60690553811;11966202141;pbarbosabueno@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+15/04/2025;Aline de Alvernaz Branco Ferraz;-;09884957754;21964746140;-;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+15/04/2025;Isaac Bolini Menck;São José Do Rio Preto;60370679881;14997728399;gabrielabolini@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/04/2025;Glória Quinália Francisco;Jales;33827118859;17996738161;camilaquinalia1@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/04/2025;Bernardo Carroll Soares;Mirassol;04252489504;81984918006;samarasoares557@gmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+09/04/2025;Maria Eloah Oliveira Melo;José Bonifácio;07751859814;17981075451;marcinhaoliveira0707@gmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+09/04/2025;Davi Almeida Rodrigues;São José do Rio Preto;-;17991684521;-;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+08/04/2025;Rafaela Clemente Coutinho;Fernandópolis;21990273840;17997041802;lucout07.lc@gmail.com;Procedimento;ERRO.;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+07/04/2025;Liz Helena Machado Mendes;Lucas Do Rio Verde;11841153117;65999513226;deca_machado@hotmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+07/04/2025;Liz Helena Machado Mendes;Lucas Do Rio Verde;11841153117;65999513226;deca_machado@hotmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/04/2025;Kyara Claro Lopes;São Pedro;51166495809;19982266677;-;Procedimento;RECEITA MEDICAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/04/2025;Pedro de Almeida Gama Matioli;São José do Rio Preto;28241844859;17981328641;ninagama@hotmail.com;Procedimento;RECEITA MEDICAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/04/2025;Rafaela Clemente Coutinho;Fernandópolis;21990273840;17997041802;lucout07.lc@gmail.com;Procedimento;RECEITA MEDICAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/04/2025;Maria Clara Clemente Coutinho;Fernandópolis;21990273840;17997041802;lucout07.lc@gmail.com;Procedimento;RECEITA MEDICAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/04/2025;Matheus Clemente Coutinho;Fernandópolis;21990273840;17997041802;lucout07.lc@gmail.com;Procedimento;RECEITA MEDICAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/04/2025;Matheus Clemente Coutinho;Fernandópolis;21990273840;17997041802;lucout07.lc@gmail.com;Procedimento;"ENCAMINHAMENTOS, RECEITA - SUPLEMENTAÇÃO";Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/04/2025;Rafaela Clemente Coutinho;Fernandópolis;21990273840;17997041802;lucout07.lc@gmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/04/2025;Maria Clara Clemente Coutinho;Fernandópolis;21990273840;17997041802;lucout07.lc@gmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/04/2025;Rafaela Clemente Coutinho;Fernandópolis;21990273840;17997041802;lucout07.lc@gmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+03/04/2025;Catarina de Almeida Gama;São José do Rio Preto;28241844859;17981328641;ninagama@hotmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+03/04/2025;Cecília Lima Simon;São José do Rio Preto;60101817800;17999662273;clara_lima@hotmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+03/04/2025;Gabriel Lima Simon;São José do Rio Preto;56121874830;19999662273;clara_lima@hotmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+02/04/2025;Kyara Claro Lopes;São Pedro;51166495809;19982266677;-;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+02/04/2025;Pedro de Almeida Gama Matioli;São José do Rio Preto;28241844859;17981328641;ninagama@hotmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+02/04/2025;Arthur Jesus Sordi;Neves Paulista;50170647889;17981696462;toinhosordi@hotmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+02/04/2025;Gustavo Bilges Ribeiro Fujii;Bragança Paulista;56444080860;11996791400;g.bilges@gmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+01/04/2025;Jordana Borges Freitas Jara;-;-;17991328299;jordanabfreitas5@gmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+01/04/2025;Ana Beatriz Guimarães Pereira;Araraquara;61426644353;61996542484;anatarcia@hotmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+01/04/2025;José Marcelo Gontijo Saraiva;Aracaju;09968855103;61998201390;mgontijo340@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+01/04/2025;Francisco Menezes Lourencin;São José Do Rio Preto;08080732817;17997913693;ry_menezes@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+28/03/2025;Dinovan de Menezes Agreli;-;06673823640;17991108903;-;Exame;EXAMES GERAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+27/03/2025;Marina Lucas Lima Alegria;Mágda;32110370807;17997045542;robertagraziela@gmail.com;Procedimento;RECEITA MEDICAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+27/03/2025;Dinovan de Menezes Agreli;-;06673823640;17991108903;-;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+27/03/2025;Natália Lisboa Viscardi da Silva;Neves Paulista;03025681152;17981103651;-;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+26/03/2025;Dinovan de Menezes Agreli;-;06673823640;17991108903;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+26/03/2025;Gustavo Bilges Ribeiro Fujii;Bragança Paulista;56444080860;11996791400;g.bilges@gmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+26/03/2025;Ana Clara Pukar Dos Santos;Mirassol;-;17981241445;sarahpukar@yahoo.com.br;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+26/03/2025;Natália Lisboa Viscardi da Silva;Neves Paulista;03025681152;17981103651;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+25/03/2025;Ana Beatriz Guimarães Pereira;Araraquara;61426644353;61996542484;anatarcia@hotmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+25/03/2025;Gabriela Fernandes Maia Braz;São José Do Rio Preto;06305050988;41991440803;mayra.maia1@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+25/03/2025;José Freitas Jara;Ibriá;08252906869;17991328299;jordanabfreitas@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+25/03/2025;Ana Beatriz Guimarães Pereira;Araraquara;61426644353;61996542484;anatarcia@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+24/03/2025;Sophia Dartibale Gerbaudo;São José Do Rio Preto;36869838852;17997941410;tali.dart.amado@gmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+20/03/2025;Sophia Dartibale Gerbaudo;São José Do Rio Preto;36869838852;17997941410;tali.dart.amado@gmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+20/03/2025;Marcos Francisco De Oliveira Magalhães;Manaus;70486382222;9284382932;deilaoliveira.oliveira@gmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+19/03/2025;Marcos Francisco De Oliveira Magalhães;Manaus;70486382222;9284382932;deilaoliveira.oliveira@gmail.com;Procedimento;ANTROPOMETRIA;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+19/03/2025;Benjamin De Souza Estadella;São José Do Rio Preto;29290423897;17991336104;adriestadella@hotmai.com;Procedimento;ENCAMINHAMENTOS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+19/03/2025;Thiago Atilio Buzatto;Mirassol;-;17997413788;anabeatrizpediatra@tabclin.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+19/03/2025;Maria Helena Buzatto;São José Do Rio Preto;-;17996565616;anabeatrizpediatra@tabclin.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+18/03/2025;Marina Lucas Lima Alegria;Mágda;32110370807;17997045542;robertagraziela@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+18/03/2025;Gustavo Bilges Ribeiro Fujii;Bragança Paulista;56444080860;11996791400;g.bilges@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+18/03/2025;Sophia Dartibale Gerbaudo;São José Do Rio Preto;36869838852;17997941410;tali.dart.amado@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+18/03/2025;Pedro de Almeida Gama Matioli;São José do Rio Preto;28241844859;17981328641;ninagama@hotmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+18/03/2025;Marcos Francisco De Oliveira Magalhães;Manaus;70486382222;9284382932;deilaoliveira.oliveira@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+18/03/2025;Mizael Nunes Argolo;Elísio Medrado;02124793500;71996091765;bns.amanda@gmail.com;Procedimento;RECEITA MEDICAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+18/03/2025;Rayane Claro Lopes;São Pedro;51166551806;19982266677;therullypassos@gmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+17/03/2025;Lucas Almeida Rodrigues;São José Do Rio Preto;-;17991684521;banguelasnutri@gmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+14/03/2025;Rayane Claro Lopes;São Pedro;51166551806;19982266677;therullypassos@gmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+14/03/2025;Lorena Goes Serroni;São José Do Rio Preto;34693275808;17996553222;samanthaparrilha@hotmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+14/03/2025;Maria Clara Clemente Coutinho;Fernandópolis;21990273840;17997041802;lucout07.lc@gmail.com;Procedimento;RECEITA MEDICAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+13/03/2025;Lorenzo Henare De Oliveira;São José Do Rio Preto;37871437852;17992138377;stephaniehenare@hotmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+12/03/2025;Lorenzo Henare De Oliveira;São José Do Rio Preto;37871437852;17992138377;stephaniehenare@hotmail.com;Procedimento;ANTROPOMETRIA;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+12/03/2025;Samuel Ângelo Belluzi;São José do Rio Preto;34956601867;17997023183;-;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+12/03/2025;Maria Alice Toreti;-;60340327847;17997795852;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+12/03/2025;Samuel Ângelo Belluzi;São José do Rio Preto;34956601867;17997023183;-;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+12/03/2025;Mateus Oliveira Moraes e Souza;Araçatuba;02695850875;17991794804;-;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/03/2025;Ravy Oliveira Guimarães;Ruy Barbosa;96526335500;75999199666;rita.oliveirasouza@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/03/2025;Maria Clara Clemente Coutinho;Fernandópolis;21990273840;17997041802;lucout07.lc@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/03/2025;Lorenzo Henare De Oliveira;São José Do Rio Preto;37871437852;17992138377;stephaniehenare@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/03/2025;Sophia Dartibale Gerbaudo;São José Do Rio Preto;36869838852;17997941410;tali.dart.amado@gmail.com;Procedimento;RECEITA MEDICAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/03/2025;Lara Borges Faresin;Caxias Do Sul;06661457090;54999140402;ferferborges08@gmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/03/2025;Sophia Dartibale Gerbaudo;São José Do Rio Preto;36869838852;17997941410;tali.dart.amado@gmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+08/03/2025;Liz Zanusso Garcia Da Silva;Americana;29664040860;11993403113;mariellenzg@gmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+08/03/2025;Francisco Antônio Branco Copello Ferraz;Nova Iguaçu;21952210704;21964746140;alinealvernaz@gmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+08/03/2025;Maria Isabel Branco Copello Ferraz;Nova Iguaçu;18474358744;21964746140;alinealvernaz@gmail.com;Procedimento;RECEITA - SUPLEMENTAÇÃO;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+07/03/2025;Anthony Inocencio Sérgio;São José Do Rio Preto;-;17991765592;vi.therock@hotmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+07/03/2025;Marina Lucas Lima Alegria;Mágda;32110370807;17997045542;robertagraziela@gmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+07/03/2025;José Freitas Jara;Ibriá;08252906869;17991328299;jordanabfreitas@gmail.com;Consulta;Retorno;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Isento;-;0;-
+05/03/2025;Lorena Goes Serroni;São José Do Rio Preto;34693275808;17996553222;samanthaparrilha@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/03/2025;Isaac Alves De Paula;Jales;60616543832;17992244994;fealvess1@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/03/2025;Francisco Menezes Lourencin;São José Do Rio Preto;08080732817;17997913693;ry_menezes@hotmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/03/2025;Maria Flor Gomes Tassinari;São José Do Rio Preto;02616978890;17997343608;isadora_green@hotmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/03/2025;Matheus Clemente Coutinho;Fernandópolis;21990273840;17997041802;lucout07.lc@gmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/03/2025;Rafaela Clemente Coutinho;Fernandópolis;21990273840;17997041802;lucout07.lc@gmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/03/2025;Matheus Clemente Coutinho;Fernandópolis;21990273840;17997041802;lucout07.lc@gmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/03/2025;Rafaela Clemente Coutinho;Fernandópolis;21990273840;17997041802;lucout07.lc@gmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/03/2025;Catarina de Almeida Gama;São José do Rio Preto;28241844859;17981328641;ninagama@hotmail.com;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/03/2025;Cecília Lima Simon;São José do Rio Preto;60101817800;17999662273;clara_lima@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/03/2025;Gabriel Lima Simon;São José do Rio Preto;56121874830;19999662273;clara_lima@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/03/2025;Sophia Bastos Silva;Bebedouro;37739992836;17997675705;halanabastos@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/03/2025;Maria Isabel Branco Copello Ferraz;Nova Iguaçu;18474358744;21964746140;alinealvernaz@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/03/2025;Mariana Lacerda Buzatto;-;41023899892;17997068791;-;Exame;EXAMES LABORATORIAIS;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+01/03/2025;Maria Helena Buzatto;São José Do Rio Preto;-;17996565616;anabeatrizpediatra@tabclin.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+28/02/2025;Maria Helena Buzatto;São José Do Rio Preto;-;17996565616;anabeatrizpediatra@tabclin.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+28/02/2025;Catarina de Almeida Gama;São José do Rio Preto;28241844859;17981328641;ninagama@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+28/02/2025;José Freitas Jara;Ibriá;08252906869;17991328299;jordanabfreitas@gmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+28/02/2025;Francisco Antônio Branco Copello Ferraz;Nova Iguaçu;21952210704;21964746140;alinealvernaz@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+26/02/2025;Catarina de Almeida Gama;São José do Rio Preto;28241844859;17981328641;ninagama@hotmail.com;Consulta;Primeira Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+26/02/2025;Maria Flor Gomes Tassinari;São José Do Rio Preto;02616978890;17997343608;isadora_green@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+26/02/2025;Matheus Clemente Coutinho;Fernandópolis;21990273840;17997041802;lucout07.lc@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+26/02/2025;Rafaela Clemente Coutinho;Fernandópolis;21990273840;17997041802;lucout07.lc@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+25/02/2025;Francisco Menezes Lourencin;São José Do Rio Preto;08080732817;17997913693;ry_menezes@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+25/02/2025;Liz Zanusso Garcia Da Silva;Americana;29664040860;11993403113;mariellenzg@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+25/02/2025;Rayane Claro Lopes;São Pedro;51166551806;19982266677;therullypassos@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+13/02/2025;Liz Cayres Morais;Cachoeira;07000695501;7191826291;carol.cayres@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+13/02/2025;Theo Cayres Morais;Cachoeira;07812716570;71991826291;carol.cayres@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+13/02/2025;José Marcelo Gontijo Saraiva;Aracaju;09968855103;61998201390;mgontijo340@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+12/02/2025;Lucas Almeida Rodrigues;São José Do Rio Preto;-;17991684521;banguelasnutri@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+12/02/2025;Juliana Almeida;São José Do Rio Preto;34958302867;17991684521;banguelasnutri@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+12/02/2025;Jordana Borges Freitas Jara;-;-;17991328299;jordanabfreitas5@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+12/02/2025;Jordana Borges Freitas Jara;-;-;17991328299;jordanabfreitas5@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+12/02/2025;Gael Maximiano De Oliveira Viana;Planura;18028798624;17981517954;patiog@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+12/02/2025;Yasmin Volpe Franz Moreira;São José Do Rio Preto;39825339888;17996021025;annac_volpe@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+12/02/2025;Flora Volpe Franz Moreira;São José Do Rio Preto;39825339888;17996021025;annac_volpe@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+12/02/2025;Liz Helena Machado Mendes;Lucas Do Rio Verde;11841153117;65999513226;deca_machado@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+12/02/2025;Isaac Alves De Paula;Jales;60616543832;17992244994;fealvess1@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/02/2025;Davi Gomes Borduchi;Monte Azul Paulista;36579030895;17992746860;claudiagomesmap@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/02/2025;Eduarda Bueno Pamplona;São Bernardo Do Campo;37658634832;11966202141;pbarbosabueno@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/02/2025;Sara Gomes Borduchi;Monte Azul Paulista;36579030895;17992746860;claudiagomesmap@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/02/2025;Davi Gomes Borduchi;Monte Azul Paulista;36579030895;17992746860;claudiagomesmap@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+11/02/2025;José Marcelo Gontijo Saraiva;Aracaju;09968855103;61998201390;mgontijo340@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/02/2025;Isaac Alves De Paula;Jales;60616543832;17992244994;fealvess1@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/02/2025;Bárbara Campaneli Teixeira;São José Do Rio Preto;10129742864;17981741300;lucianicampaneli@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/02/2025;Jhennifer Cambuhy Oliveira;São José Do Rio Preto;33798653895;17988287015;michele_tathiana@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/02/2025;Gabriela Fernandes Maia Braz;São José Do Rio Preto;06305050988;41991440803;mayra.maia1@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/02/2025;Helena Faruthe Martinez;Jales;59671063837;17996360977;alinefaruthe.fotografia@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+07/02/2025;Mateus De Oliveira Magalhães;Manaus;08585694262;9284382932;deilaoliveira.oliveira@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/02/2025;Maria Leticia Shimomura Bertin;Colômbia;-;34997096124;marcela.shi@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/02/2025;Maria Eduarda Shimomura Bertin;-;-;34997096124;marcela.shi@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/02/2025;Miguel Candido Pagotto Rossi;Bady Bassitt;41731800800;17991602275;leandropagottorossi@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/02/2025;Maria Leticia Shimomura Bertin;Colômbia;-;34997096124;marcela.shi@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/02/2025;Bárbara Campaneli Teixeira;São José Do Rio Preto;10129742864;17981741300;lucianicampaneli@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/02/2025;Gabriela Fernandes Maia Braz;São José Do Rio Preto;06305050988;41991440803;mayra.maia1@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/02/2025;Vida Pinheiro Barros;Lauro De Freitas;10636855597;71986036705;eulalia_pinheiro@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/02/2025;Francisco Magazoni Saconato;Catanduva;39243353896;17981227794;mjmagazoni@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/02/2025;Serena Horianski Roque;Santo André;60924151862;11976143443;agustinahorianski@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/02/2025;Ana Beatriz Alves Buzatto;Mirassol;35437735855;17996565616;anabeatrizpediatra@tabclin.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+04/02/2025;Yuna Hiroko Martinez Kanasiro;Jaciara;-;17997583025;queulia.martinez@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+31/01/2025;Serena Horianski Roque;Santo André;60924151862;11976143443;agustinahorianski@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+31/01/2025;Helena Faruthe Martinez;Jales;59671063837;17996360977;alinefaruthe.fotografia@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+31/01/2025;Helena Faruthe Martinez;Jales;59671063837;17996360977;alinefaruthe.fotografia@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+31/01/2025;Francisco Magazoni Saconato;Catanduva;39243353896;17981227794;mjmagazoni@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+31/01/2025;Yasmin Volpe Franz Moreira;São José Do Rio Preto;39825339888;17996021025;annac_volpe@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+31/01/2025;Flora Volpe Franz Moreira;São José Do Rio Preto;39825339888;17996021025;annac_volpe@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+29/01/2025;Jhennifer Cambuhy Oliveira;São José Do Rio Preto;33798653895;17988287015;michele_tathiana@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+29/01/2025;Sophia Dartibale Gerbaudo;São José Do Rio Preto;36869838852;17997941410;tali.dart.amado@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+29/01/2025;Lucas Almeida Rodrigues;São José Do Rio Preto;-;17991684521;banguelasnutri@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+28/01/2025;Mateus De Oliveira Magalhães;Manaus;08585694262;9284382932;deilaoliveira.oliveira@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+28/01/2025;Heitor Oliones Lima;Catanduva;34986473859;17992280766;alineoliondes@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+28/01/2025;Samantha Parrilha Goes Serroni;São José Do Rio Preto;34693275808;17996553222;samanthaparrilha@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+28/01/2025;Lorena Goes Serroni;São José Do Rio Preto;34693275808;17996553222;samanthaparrilha@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+25/01/2025;Juliana Almeida;São José Do Rio Preto;34958302867;17991684521;banguelasnutri@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+24/01/2025;Serena Zandonato Fonseca;Toledo;00306949903;45998031238;karin7462a@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+22/01/2025;Lorena Goes Serroni;São José Do Rio Preto;34693275808;17996553222;samanthaparrilha@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+22/01/2025;Liz Helena Machado Mendes;Lucas Do Rio Verde;11841153117;65999513226;deca_machado@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+22/01/2025;Manuela Rodrigues Dos Santos;Valentim Gentil;33293944809;17991297503;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+21/01/2025;Vida Pinheiro Barros;Lauro De Freitas;10636855597;71986036705;eulalia_pinheiro@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+21/01/2025;Manuela Rodrigues Dos Santos;Valentim Gentil;33293944809;17991297503;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+21/01/2025;Theo Cayres Morais;Cachoeira;07812716570;71991826291;carol.cayres@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+21/01/2025;Serena Horianski Roque;Santo André;60924151862;11976143443;agustinahorianski@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+21/01/2025;Serena Zandonato Fonseca;Toledo;00306949903;45998031238;karin7462a@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+20/01/2025;Eloah Dos Santos Neves;Brumado;08581022502;77999089661;giulianneavila@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+20/01/2025;Eloah Dos Santos Neves;Brumado;08581022502;77999089661;giulianneavila@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+20/01/2025;Maria Julia Bonfim De Almeida Tedeschi;São José Do Rio Preto;-;17997766802;almeidabrunathais@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+17/01/2025;José Marcelo Gontijo Saraiva;Aracaju;09968855103;61998201390;mgontijo340@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+17/01/2025;Mizael Nunes Argolo;Elísio Medrado;02124793500;71996091765;bns.amanda@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+17/01/2025;Enzo Gabriel De Almeida Tedeschi;São José Do Rio Preto;-;17997766802;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+17/01/2025;Maria Julia Bonfim De Almeida Tedeschi;São José Do Rio Preto;-;17997766802;almeidabrunathais@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+17/01/2025;Ana Clara Pukar Dos Santos;Mirassol;-;17981241445;sarahpukar@yahoo.com.br;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+17/01/2025;Theo Cayres Morais;Cachoeira;07812716570;71991826291;carol.cayres@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+16/01/2025;Maria Helena Buzatto;São José Do Rio Preto;-;17996565616;anabeatrizpediatra@tabclin.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+16/01/2025;Isabelle Paula Barbosa;São José Do Rio Preto;33566947822;17991376924;lynneappb15@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+15/01/2025;Vida Pinheiro Barros;Lauro De Freitas;10636855597;71986036705;eulalia_pinheiro@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+15/01/2025;Liz Cayres Morais;Cachoeira;07000695501;7191826291;carol.cayres@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+15/01/2025;Theo Cayres Morais;Cachoeira;07812716570;71991826291;carol.cayres@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+15/01/2025;Theo Cayres Morais;Cachoeira;07812716570;71991826291;carol.cayres@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+15/01/2025;Manuela Rodrigues Dos Santos;Valentim Gentil;33293944809;17991297503;-;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+14/01/2025;Rafaela Akemi Cardozo Sato;São José Do Rio Preto;-;17981619578;regianesato@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/01/2025;Otavio Medina Furlan Silva;Araçatuba;36278925850;34993424768;natalia.alimentese04@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/01/2025;Gustavo Bilges Ribeiro Fujii;Bragança Paulista;56444080860;11996791400;g.bilges@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/01/2025;Juliana Almeida;São José Do Rio Preto;34958302867;17991684521;banguelasnutri@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/01/2025;Maria Isabel Branco Copello Ferraz;Nova Iguaçu;18474358744;21964746140;alinealvernaz@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/01/2025;Francisco Antônio Branco Copello Ferraz;Nova Iguaçu;21952210704;21964746140;alinealvernaz@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/01/2025;Gustavo Bilges Ribeiro Fujii;Bragança Paulista;56444080860;11996791400;g.bilges@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/01/2025;Jessica Dos Santos Pereira;Praia Grande;39774812824;11959800013;jessicavi2429@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/01/2025;Gabriel Ronchi Da Costa Gonzaga;São Paulo;15251526881;11995164043;pmsaninho@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+10/01/2025;Francisco Menezes Lourencin;São José Do Rio Preto;08080732817;17997913693;ry_menezes@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+08/01/2025;Samantha Parrilha Goes Serroni;São José Do Rio Preto;34693275808;17996553222;samanthaparrilha@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+08/01/2025;Lorena Goes Serroni;São José Do Rio Preto;34693275808;17996553222;samanthaparrilha@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+08/01/2025;Malu Aguiar Carvalho;Montes Claros;-;38997480077;pollyaguiar2013@yahoo.com.br;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+08/01/2025;Malu Aguiar Carvalho;Montes Claros;-;38997480077;pollyaguiar2013@yahoo.com.br;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+08/01/2025;Juliana Almeida;São José Do Rio Preto;34958302867;17991684521;banguelasnutri@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+08/01/2025;Maria Flor Gomes Tassinari;São José Do Rio Preto;02616978890;17997343608;isadora_green@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+08/01/2025;Maria Flor Gomes Tassinari;São José Do Rio Preto;02616978890;17997343608;isadora_green@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+07/01/2025;Olivia Ziroldo Takao;Taubaté;57563636889;12991730520;danielaziroldo@hotmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+07/01/2025;Malu Aguiar Carvalho;Montes Claros;-;38997480077;pollyaguiar2013@yahoo.com.br;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+07/01/2025;Sara Gomes Borduchi;Monte Azul Paulista;36579030895;17992746860;claudiagomesmap@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+07/01/2025;Davi Gomes Borduchi;Monte Azul Paulista;36579030895;17992746860;claudiagomesmap@gmail.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/01/2025;Thiago Atilio Buzatto;Mirassol;-;17997413788;anabeatrizpediatra@tabclin.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/01/2025;Ana Beatriz Alves Buzatto;Mirassol;35437735855;17996565616;anabeatrizpediatra@tabclin.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/01/2025;Maria Helena Buzatto;São José Do Rio Preto;-;17996565616;anabeatrizpediatra@tabclin.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-
+05/01/2025;Maria Helena Buzatto;São José Do Rio Preto;-;17996565616;anabeatrizpediatra@tabclin.com;Consulta;Consulta;Não;Ana Beatriz Alves Buzatto;-;-;Particular;-;0;0;0;Pendente;-;0;-

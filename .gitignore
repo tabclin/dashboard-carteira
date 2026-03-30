@@ -1,0 +1,32 @@
+# Next.js
+.next/
+out/
+node_modules/
+npm-debug.log*
+
+# Environment variables (NUNCA commitar!)
+.env.local
+.env.production.local
+.env.development.local
+.env*.local
+
+# Python (scripts legados)
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Build
+build/
+dist/
