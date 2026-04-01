@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import { cn, formatarMoeda } from '@/lib/utils'
 import { Plus, Pencil, Trash2, Settings2, Package } from 'lucide-react'
 import AlocacaoForm from './alocacao-form'
+import ConfirmDialog from '@/components/ui/confirm-dialog'
 import type { Servico, FinAlocacao, FinCategoria } from '@/types'
 import type { ProdutoFinanceiro } from '@/app/(dashboard)/financeiro/produtos/page'
 import ServicoForm from '@/components/planos/planos-servicos/servico-form'
@@ -23,9 +24,9 @@ export default function ProdutosList({ produtos, categorias, alocacoes, mesLabel
   const [editandoServico, setEditandoServico] = useState<Servico | null>(null)
   const [showNovoServico, setShowNovoServico] = useState(false)
   const [editandoAlocacao, setEditandoAlocacao] = useState<Servico | null>(null)
+  const [confirmando, setConfirmando] = useState<Servico | null>(null)
 
   async function excluirServico(s: Servico) {
-    if (!confirm(`Excluir serviço "${s.nome}"? Esta ação não pode ser desfeita.`)) return
     await supabase.from('servicos').delete().eq('id', s.id)
     router.refresh()
   }
@@ -100,7 +101,7 @@ export default function ProdutosList({ produtos, categorias, alocacoes, mesLabel
                   <Pencil className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => excluirServico(s)}
+                  onClick={() => setConfirmando(s)}
                   className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
                   title="Excluir"
                 >
@@ -178,6 +179,14 @@ export default function ProdutosList({ produtos, categorias, alocacoes, mesLabel
           onClose={() => setEditandoAlocacao(null)}
         />
       )}
+
+      <ConfirmDialog
+        open={confirmando !== null}
+        mensagem={`Excluir serviço "${confirmando?.nome}"?`}
+        detalhe="Esta ação não pode ser desfeita."
+        onConfirmar={() => { excluirServico(confirmando!); setConfirmando(null) }}
+        onCancelar={() => setConfirmando(null)}
+      />
     </div>
   )
 }

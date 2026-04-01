@@ -49,7 +49,7 @@ export default function LoginPage() {
             <div className="w-14 h-14 bg-brand-500 rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-brand-500/30">
               <Stethoscope className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white">ClinKPI</h1>
+            <h1 className="text-2xl font-bold text-white">TabClin Consultoria</h1>
             <p className="text-slate-400 text-sm mt-1">Gestão Inteligente de Pacientes</p>
           </div>
 
@@ -125,7 +125,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-slate-600 text-xs mt-6">
-          © {new Date().getFullYear()} ClinKPI · Todos os direitos reservados
+          © {new Date().getFullYear()} TabClin Consultoria · Todos os direitos reservados
         </p>
       </div>
     </div>

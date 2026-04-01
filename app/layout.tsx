@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'ClinKPI — Gestão de Pacientes',
+  title: 'TabClin Consultoria — Gestão de Pacientes',
   description: 'Sistema de gestão de carteira de pacientes',
   icons: {
     icon: '/favicon.ico',

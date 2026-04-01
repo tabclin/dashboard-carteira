@@ -3,13 +3,15 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { Users, LayoutDashboard, TrendingUp, Upload } from 'lucide-react'
+import { Users, LayoutDashboard, TrendingUp, Upload, Settings2, UserX } from 'lucide-react'
 
 const tabs = [
-  { href: '/carteira',             label: 'Carteira de Pacientes', icon: Users           },
-  { href: '/carteira/dashboard',   label: 'Dashboard',             icon: LayoutDashboard },
-  { href: '/carteira/indicadores', label: 'Indicadores',           icon: TrendingUp      },
-  { href: '/carteira/upload',      label: 'Upload de Dados',       icon: Upload          },
+  { href: '/carteira',               label: 'Carteira de Pacientes', icon: Users           },
+  { href: '/carteira/dashboard',     label: 'Dashboard',             icon: LayoutDashboard },
+  { href: '/carteira/indicadores',   label: 'Indicadores',           icon: TrendingUp      },
+  { href: '/carteira/upload',        label: 'Upload de Dados',       icon: Upload          },
+  { href: '/carteira/configuracao',  label: 'Configuração',          icon: Settings2       },
+  { href: '/carteira/desativados',   label: 'Desativados',           icon: UserX           },
 ]
 
 export default function CarteiraTabNav() {

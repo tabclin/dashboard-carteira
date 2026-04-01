@@ -9,14 +9,14 @@ import {
 } from 'lucide-react'
 
 const tabs = [
-  { href: '/financeiro',               label: 'Dashboard',    icon: LayoutDashboard },
+  { href: '/financeiro',               label: 'Dashboard',     icon: LayoutDashboard },
   { href: '/financeiro/movimentacoes', label: 'Movimentações', icon: ArrowLeftRight  },
   { href: '/financeiro/fluxo',         label: 'Fluxo de Caixa', icon: TrendingUp    },
-  { href: '/financeiro/produtos',      label: 'Produtos',     icon: Package         },
-  { href: '/financeiro/categorias',    label: 'Categorias',   icon: Tag             },
-  { href: '/financeiro/planejamento',  label: 'Planejamento', icon: CalendarDays    },
-  { href: '/financeiro/dre',           label: 'DRE',          icon: BarChart3       },
-  { href: '/financeiro/importar',      label: 'Importar',     icon: FileUp          },
+  { href: '/financeiro/planejamento',  label: 'Planejamento',  icon: CalendarDays    },
+  { href: '/financeiro/dre',           label: 'DRE',           icon: BarChart3       },
+  { href: '/financeiro/produtos',      label: 'Produtos',      icon: Package         },
+  { href: '/financeiro/categorias',    label: 'Categorias',    icon: Tag             },
+  { href: '/financeiro/importar',      label: 'Importar',      icon: FileUp          },
 ]
 
 export default function FinTabNav() {

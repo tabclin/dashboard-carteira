@@ -10,6 +10,18 @@ export interface Paciente {
   recencia_dias: number | null
   idade_dias: number | null
   status: StatusPaciente
+  retorno_ideal_dias?: number | null   // calculado em runtime pelo app
+  retorno_custom_dias?: number | null  // override manual salvo no banco
+  ativo?: boolean                      // false = oculto da carteira principal
+}
+
+export interface ConfigRetornoFaixa {
+  id: string
+  user_id: string
+  idade_min_dias: number
+  idade_max_dias: number | null
+  retorno_dias: number
+  ordem: number
 }
 
 export interface AtendimentoMes {

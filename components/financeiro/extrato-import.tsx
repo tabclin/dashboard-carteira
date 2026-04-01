@@ -85,6 +85,7 @@ export default function ExtratoImport({ categorias }: ExtratoImportProps) {
       })
       const data = await res.json()
       if (!res.ok || data.error) throw new Error(data.error ?? 'Erro na análise')
+      if (!Array.isArray(data.transacoes)) throw new Error('A IA não retornou transações identificadas. Tente novamente ou verifique o formato do extrato.')
 
       const txs: Transacao[] = (data.transacoes as Omit<Transacao, 'selecionada' | 'categoria_id_final'>[]).map(t => ({
         ...t,

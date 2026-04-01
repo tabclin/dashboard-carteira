@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { cn, formatarMoeda } from '@/lib/utils'
-import { X, Loader2, ChevronDown, Search, Check } from 'lucide-react'
+import { X, Loader2, ChevronDown, ChevronUp, Search, Check } from 'lucide-react'
 import type { FinCategoria, FinOrcamento } from '@/types'
 
 const MESES = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
@@ -25,6 +25,8 @@ export default function PlanejamentoGrid({ ano, categorias, orcamento: orcamento
   const supabase = createClient()
   const [orcamento, setOrcamento] = useState<FinOrcamento[]>(orcamentoInicial)
 
+  const [receitasAbertas, setReceitasAbertas] = useState(true)
+  const [gastosAbertos, setGastosAbertos] = useState(true)
   const [celula, setCelula] = useState<CelulaEditando | null>(null)
   const [modo, setModo] = useState<'fixo' | 'percentual'>('fixo')
   const [valorInput, setValorInput] = useState('')
@@ -269,20 +271,40 @@ export default function PlanejamentoGrid({ ano, categorias, orcamento: orcamento
             <tbody>
               {entradas.length > 0 && (
                 <>
-                  <tr className="bg-emerald-50">
-                    <td colSpan={14} className="px-4 py-1.5 text-xs font-bold text-emerald-700 uppercase tracking-wide">Receitas</td>
+                  <tr
+                    className="bg-emerald-50 cursor-pointer select-none hover:bg-emerald-100/70 transition-colors"
+                    onClick={() => setReceitasAbertas(v => !v)}
+                  >
+                    <td colSpan={14} className="px-4 py-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-emerald-700 uppercase tracking-wide">Receitas</span>
+                        {receitasAbertas
+                          ? <ChevronUp className="w-3.5 h-3.5 text-emerald-500" />
+                          : <ChevronDown className="w-3.5 h-3.5 text-emerald-500" />}
+                      </div>
+                    </td>
                   </tr>
-                  <CatRows cats={entradas} />
+                  {receitasAbertas && <CatRows cats={entradas} />}
                   <TotaisRow label="Total Receitas" cats={entradas} />
                 </>
               )}
               {saidas.length > 0 && (
                 <>
-                  <tr className="bg-red-50">
-                    <td colSpan={14} className="px-4 py-1.5 text-xs font-bold text-red-700 uppercase tracking-wide">Despesas</td>
+                  <tr
+                    className="bg-red-50 cursor-pointer select-none hover:bg-red-100/70 transition-colors"
+                    onClick={() => setGastosAbertos(v => !v)}
+                  >
+                    <td colSpan={14} className="px-4 py-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-red-700 uppercase tracking-wide">Gastos</span>
+                        {gastosAbertos
+                          ? <ChevronUp className="w-3.5 h-3.5 text-red-500" />
+                          : <ChevronDown className="w-3.5 h-3.5 text-red-500" />}
+                      </div>
+                    </td>
                   </tr>
-                  <CatRows cats={saidas} />
-                  <TotaisRow label="Total Despesas" cats={saidas} />
+                  {gastosAbertos && <CatRows cats={saidas} />}
+                  <TotaisRow label="Total de Gastos" cats={saidas} />
                 </>
               )}
               {(entradas.length > 0 || saidas.length > 0) && (

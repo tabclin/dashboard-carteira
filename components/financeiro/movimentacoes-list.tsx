@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import { cn, formatarMoeda, formatarData } from '@/lib/utils'
 import { Plus, Pencil, Trash2, Clock, CheckCircle2, Filter } from 'lucide-react'
 import MovimentacaoForm from './movimentacao-form'
+import ConfirmDialog from '@/components/ui/confirm-dialog'
 import type { FinMovimentacao, FinCategoria, Servico } from '@/types'
 
 interface MovimentacoesListProps {
@@ -22,6 +23,7 @@ export default function MovimentacoesList({ movimentacoes, categorias, servicos 
   const [filtroTipo, setFiltroTipo] = useState<'todos' | 'entrada' | 'saida'>('todos')
   const [filtroMes, setFiltroMes] = useState('')
   const [filtroCategoria, setFiltroCategoria] = useState('')
+  const [confirmando, setConfirmando] = useState<FinMovimentacao | null>(null)
 
   const mesesDisponiveis = useMemo(() => {
     const set = new Set<string>()
@@ -48,7 +50,6 @@ export default function MovimentacoesList({ movimentacoes, categorias, servicos 
   }, [filtradas])
 
   async function excluir(m: FinMovimentacao) {
-    if (!confirm(`Excluir "${m.descricao}"?`)) return
     await supabase.from('fin_movimentacoes').delete().eq('id', m.id)
     router.refresh()
   }
@@ -200,7 +201,7 @@ export default function MovimentacoesList({ movimentacoes, categorias, servicos 
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
                         <button
-                          onClick={() => excluir(m)}
+                          onClick={() => setConfirmando(m)}
                           className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -228,6 +229,13 @@ export default function MovimentacoesList({ movimentacoes, categorias, servicos 
           onClose={() => setShowModal(false)}
         />
       )}
+
+      <ConfirmDialog
+        open={confirmando !== null}
+        mensagem={`Excluir "${confirmando?.descricao}"?`}
+        onConfirmar={() => { excluir(confirmando!); setConfirmando(null) }}
+        onCancelar={() => setConfirmando(null)}
+      />
     </div>
   )
 }

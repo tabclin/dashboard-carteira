@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { formatarData } from '@/lib/utils'
-import { STATUS_LABELS, formatarMesAno } from '@/lib/planos-utils'
+import { formatarMesAno } from '@/lib/planos-utils'
 import PlanoStatusBadge from '@/components/planos/plano-status-badge'
 import PlanoAgendamentoBadge from './plano-agendamento-badge'
 import { Search, ChevronRight } from 'lucide-react'
@@ -40,7 +40,10 @@ export default function PlanosList({ planos, agendamentoMap }: PlanosListProps) 
   const [filtro, setFiltro] = useState<FiltroKey>('todos')
 
   const filtrados = planos.filter(p => {
-    const matchBusca = p.responsavel_nome.toLowerCase().includes(busca.toLowerCase())
+    const nomesPacientes = (p.plano_pacientes ?? []).map((pac: any) => pac.nome).join(' ')
+    const matchBusca =
+      p.responsavel_nome.toLowerCase().includes(busca.toLowerCase()) ||
+      nomesPacientes.toLowerCase().includes(busca.toLowerCase())
     if (!matchBusca) return false
 
     if (filtro === 'todos') return true
@@ -120,6 +123,7 @@ export default function PlanosList({ planos, agendamentoMap }: PlanosListProps) 
             <thead>
               <tr>
                 <th className="table-th">Responsável</th>
+                <th className="table-th">Paciente(s)</th>
                 <th className="table-th">Plano de Pagamento</th>
                 <th className="table-th">Status</th>
                 <th className="table-th">Agendamento</th>
@@ -141,6 +145,18 @@ export default function PlanosList({ planos, agendamentoMap }: PlanosListProps) 
                         <p className="text-xs text-slate-400 mt-0.5">
                           {formatarData(p.data_inicio)} → {formatarData(p.data_fim)}
                         </p>
+                      )}
+                    </td>
+
+                    <td className="table-td">
+                      {(p.plano_pacientes ?? []).length === 0 ? (
+                        <span className="text-slate-400">—</span>
+                      ) : (
+                        <div className="flex flex-col gap-0.5">
+                          {(p.plano_pacientes as any[]).map((pac, i) => (
+                            <span key={i} className="text-xs text-slate-400">{pac.nome}</span>
+                          ))}
+                        </div>
                       )}
                     </td>
 

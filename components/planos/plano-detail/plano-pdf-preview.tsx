@@ -53,7 +53,7 @@ export default function PlanoPdfPreview({ plano }: PlanoPdfPreviewProps) {
       <div style={{ borderBottom: '3px solid #0ea5e9', paddingBottom: '20px', marginBottom: '28px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
           <div style={{ fontSize: '24px', fontWeight: '800', color: '#0ea5e9', letterSpacing: '-0.5px' }}>
-            ClinKPI
+            TabClin Consultoria
           </div>
           <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>
             Proposta de Plano de Acompanhamento
@@ -230,7 +230,7 @@ export default function PlanoPdfPreview({ plano }: PlanoPdfPreviewProps) {
 
       {/* ── Rodapé ── */}
       <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#cbd5e1' }}>
-        <span>Gerado pelo ClinKPI</span>
+        <span>Gerado pela TabClin Consultoria</span>
         <span>Este documento é uma proposta de acompanhamento clínico. Não tem valor fiscal.</span>
       </div>
     </div>

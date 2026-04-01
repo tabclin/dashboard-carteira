@@ -7,6 +7,7 @@ import { cn, formatarMoeda } from '@/lib/utils'
 import { Plus, Pencil, Trash2, Eye, EyeOff, X, Loader2, Tags } from 'lucide-react'
 import CategoriaForm from './categoria-form'
 import ClassificacaoModal from './classificacao-modal'
+import ConfirmDialog from '@/components/ui/confirm-dialog'
 import type { FinCategoria, FinClassificacao, Servico } from '@/types'
 
 interface CategoriasListProps {
@@ -22,6 +23,7 @@ export default function CategoriasList({ categorias, servicos, classificacoes }:
   const [editando, setEditando] = useState<FinCategoria | null>(null)
   const [showInativos, setShowInativos] = useState(false)
   const [showClassificacaoModal, setShowClassificacaoModal] = useState(false)
+  const [confirmando, setConfirmando] = useState<FinCategoria | null>(null)
 
   // Estado para edição inline de entrada (serviço)
   const [editandoEntrada, setEditandoEntrada] = useState<Servico | null>(null)
@@ -57,7 +59,6 @@ export default function CategoriasList({ categorias, servicos, classificacoes }:
   }
 
   async function excluir(c: FinCategoria) {
-    if (!confirm(`Excluir categoria "${c.nome}"? Movimentações vinculadas perderão a categoria.`)) return
     await supabase.from('fin_categorias').delete().eq('id', c.id)
     router.refresh()
   }
@@ -236,7 +237,7 @@ export default function CategoriasList({ categorias, servicos, classificacoes }:
                           {c.ativo ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                         </button>
                         <button
-                          onClick={() => excluir(c)}
+                          onClick={() => setConfirmando(c)}
                           className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
                           title="Excluir"
                         >
@@ -308,7 +309,7 @@ export default function CategoriasList({ categorias, servicos, classificacoes }:
                         {c.ativo ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                       </button>
                       <button
-                        onClick={() => excluir(c)}
+                        onClick={() => setConfirmando(c)}
                         className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
                         title="Excluir"
                       >
@@ -403,6 +404,14 @@ export default function CategoriasList({ categorias, servicos, classificacoes }:
           </div>
         </div>
       )}
+
+      <ConfirmDialog
+        open={confirmando !== null}
+        mensagem={`Excluir categoria "${confirmando?.nome}"?`}
+        detalhe="Movimentações vinculadas perderão a categoria."
+        onConfirmar={() => { excluir(confirmando!); setConfirmando(null) }}
+        onCancelar={() => setConfirmando(null)}
+      />
     </div>
   )
 }

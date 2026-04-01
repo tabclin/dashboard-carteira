@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { X, Plus, Pencil, Trash2, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import ConfirmDialog from '@/components/ui/confirm-dialog'
 import type { FinClassificacao } from '@/types'
 
 interface ClassificacaoModalProps {
@@ -25,6 +26,7 @@ export default function ClassificacaoModal({ classificacoes, onClose }: Classifi
   const [movimentacao, setMovimentacao] = useState<'entrada' | 'saida'>('saida')
   const [saving, setSaving] = useState(false)
   const [erro, setErro] = useState('')
+  const [confirmando, setConfirmando] = useState<FinClassificacao | null>(null)
 
   function iniciarNova() {
     setEditando(null)
@@ -59,7 +61,6 @@ export default function ClassificacaoModal({ classificacoes, onClose }: Classifi
   }
 
   async function excluir(c: FinClassificacao) {
-    if (!confirm(`Excluir classificação "${c.nome}"? Categorias vinculadas perderão a classificação.`)) return
     await supabase.from('fin_classificacoes').delete().eq('id', c.id)
     router.refresh()
   }
@@ -123,7 +124,7 @@ export default function ClassificacaoModal({ classificacoes, onClose }: Classifi
                         <Pencil className="w-3.5 h-3.5" />
                       </button>
                       <button
-                        onClick={() => excluir(c)}
+                        onClick={() => setConfirmando(c)}
                         className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -208,6 +209,14 @@ export default function ClassificacaoModal({ classificacoes, onClose }: Classifi
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={confirmando !== null}
+        mensagem={`Excluir classificação "${confirmando?.nome}"?`}
+        detalhe="Categorias vinculadas perderão a classificação."
+        onConfirmar={() => { excluir(confirmando!); setConfirmando(null) }}
+        onCancelar={() => setConfirmando(null)}
+      />
     </div>
   )
 }

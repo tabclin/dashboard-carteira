@@ -59,6 +59,8 @@ export default async function PlanosPage({ searchParams }: PageProps) {
         *,
         plano_pagamento:planos_pagamento(*),
         plano_pacientes(
+          nome,
+          nascimento,
           plano_consultas(*)
         )
       `)
