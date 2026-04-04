@@ -1,3 +1,20 @@
+// ─── Check Exames (CkEx) — status configs ────────────────────────────────────
+
+export const ANALYSIS_STATUS_CONFIG = {
+  DRAFT: { label: 'Rascunho', color: 'text-slate-500', bg: 'bg-slate-100' },
+  IN_REVIEW: { label: 'Em revisão', color: 'text-blue-700', bg: 'bg-blue-50' },
+  FINALIZED: { label: 'Finalizada', color: 'text-green-700', bg: 'bg-green-50' },
+}
+
+export const RESULT_STATUS_CONFIG = {
+  NOT_EVALUATED: { label: 'Não avaliado', color: 'text-slate-500', bg: 'bg-slate-100', dot: 'bg-slate-400' },
+  NORMAL: { label: 'Normal', color: 'text-green-700', bg: 'bg-green-50', dot: 'bg-green-500' },
+  ATTENTION: { label: 'Atenção', color: 'text-yellow-700', bg: 'bg-yellow-50', dot: 'bg-yellow-500' },
+  DANGER: { label: 'Perigo', color: 'text-red-700', bg: 'bg-red-50', dot: 'bg-red-500' },
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export type StatusPaciente = 'Ok' | 'Atenção' | 'Perigo'
 
 export interface Paciente {
@@ -13,6 +30,9 @@ export interface Paciente {
   retorno_ideal_dias?: number | null   // calculado em runtime pelo app
   retorno_custom_dias?: number | null  // override manual salvo no banco
   ativo?: boolean                      // false = oculto da carteira principal
+  // Origem dos dados (vindos da VIEW carteira após INTEGRACAO_CARTEIRA.sql)
+  origem_ultimo_atend?: 'import' | 'agenda' | null
+  origem_agendado?: 'import' | 'agenda' | null
 }
 
 export interface ConfigRetornoFaixa {
@@ -130,6 +150,7 @@ export interface PlanoConsulta {
   servico_nome: string
   data_sugerida: string | null
   data_agendamento: string | null  // data real de agendamento na agenda
+  agendamento_id: string | null    // FK para agendamentos.id (vínculo 1-para-1)
   valor_cheio: number          // centavos
   valor_com_plano: number      // centavos
   cashback_gerado: number      // centavos
@@ -287,6 +308,173 @@ export interface FinChartMes {
 export interface FinCategoriaPie {
   nome: string
   valor: number
+}
+
+// ── Módulo: Agenda ──────────────────────────────────────────────
+
+export type AgendaStatus = 'agendado' | 'confirmado' | 'em_consulta' | 'realizado' | 'faltou' | 'cancelado'
+
+export interface Profissional {
+  id: string
+  user_id: string
+  nome: string
+  especialidade: string | null
+  cor: string
+  ativo: boolean
+  criado_em: string
+}
+
+export interface Agendamento {
+  id: string
+  user_id: string
+  paciente_id: string | null
+  paciente_nome: string
+  profissional_id: string | null
+  servico_id: string | null
+  servico_nome: string | null
+  data: string             // ISO date YYYY-MM-DD
+  hora_inicio: string      // HH:MM
+  hora_fim: string         // HH:MM
+  status: AgendaStatus
+  observacoes: string | null
+  origem: 'manual' | 'plano'
+  criado_em: string
+  atualizado_em: string
+  // Telemedicina
+  telemedicina: boolean
+  telemedicina_token: string | null
+  telemedicina_cpf_rg: string | null
+  // relações opcionais
+  profissional?: Profissional | null
+  paciente_status?: StatusPaciente | null  // da carteira, para badge
+}
+
+// ── Módulo: Prontuário Eletrônico ───────────────────────────────
+
+export interface Prontuario {
+  id: string
+  user_id: string
+  paciente_id: string
+  alergias: string | null
+  medicamentos_uso_continuo: string | null
+  historico_familiar: string | null
+  habitos: string | null
+  observacoes_gerais: string | null
+  dados_anamnese: Record<string, any> | null
+  template_id: string | null
+  template_snapshot: CampoAnamnese[] | null
+  criado_em: string
+  atualizado_em: string
+}
+
+// ── Anamnese configurável ───────────────────────────────────────
+
+export type CampoAnamneseTipo =
+  | 'texto_curto'
+  | 'texto_longo'
+  | 'imc'
+  | 'data'
+  | 'selecao_unica'
+  | 'multipla_escolha'
+
+export interface CampoAnamnese {
+  id: string
+  titulo: string
+  tipo: CampoAnamneseTipo
+  opcoes?: string[]
+}
+
+export interface AnamneseTemplate {
+  id: string
+  user_id: string
+  nome: string
+  is_padrao: boolean
+  campos: CampoAnamnese[]
+  criado_em: string
+  atualizado_em: string
+}
+
+export interface ProntuarioConsulta {
+  id: string
+  user_id: string
+  prontuario_id: string
+  agendamento_id: string | null
+  data: string             // ISO date
+  profissional_nome: string | null
+  queixa_principal: string | null
+  historia_doenca_atual: string | null
+  exame_fisico: string | null
+  hipotese_diagnostica: string | null
+  conduta: string | null
+  evolucao: string | null
+  criado_em: string
+  atualizado_em: string
+  // Controle de ciclo de consulta
+  status: 'rascunho' | 'em_atendimento' | 'finalizado'
+  iniciado_em: string | null
+  finalizado_em: string | null
+  duracao_minutos: number | null
+  orientacao: string | null
+  // relações opcionais
+  prescricoes?: ProntuarioPrescricao[]
+}
+
+export interface ProntuarioPrescricao {
+  id: string
+  user_id: string
+  consulta_id: string
+  medicamento: string
+  dosagem: string | null
+  frequencia: string | null
+  duracao: string | null
+  instrucoes: string | null
+  ordem: number
+}
+
+export interface ProntuarioExame {
+  id: string
+  user_id: string
+  prontuario_id: string
+  consulta_id: string | null
+  nome: string
+  tipo: 'laboratorial' | 'imagem' | 'outro' | null
+  arquivo_url: string | null
+  arquivo_nome: string | null
+  data_exame: string | null
+  resultado: string | null
+  criado_em: string
+}
+
+// ── Módulo: Curva de Crescimento ────────────────────────────────
+
+export interface CrescimentoMedicao {
+  id: string
+  user_id: string
+  prontuario_id: string
+  data: string
+  peso_kg: number | null
+  altura_cm: number | null
+  perimetro_cefalico_cm: number | null
+  idade_gestacional_semanas: number | null
+  criado_em: string
+  atualizado_em: string
+}
+
+export type CrescimentoMedida = 'peso' | 'comprimento' | 'pc' | 'imc'
+
+export interface CrescimentoModelo {
+  key: string
+  label: string
+  sexo: 'menino' | 'menina'
+  preterm: boolean
+  medida: CrescimentoMedida
+  xMax: number   // meses (cronológico) ou semanas IG (pré-termo)
+}
+
+export interface WhoZRow {
+  x: number
+  sd3n: number; sd2n: number; sd1n: number; sd0: number
+  sd1p: number; sd2p: number; sd3p: number
 }
 
 // ── KPIs da tela de gestão ──────────────────────────────────────

@@ -1,0 +1,225 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Organization {
+  id            String         @id @default(cuid())
+  name          String
+  plan          Plan           @default(FREE)
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  professionals Professional[]
+  usageLogs     UsageLog[]
+
+  @@map("organizations")
+}
+
+model Professional {
+  id           String        @id @default(cuid())
+  orgId        String        @map("org_id")
+  authUserId   String        @unique @map("auth_user_id")
+  name         String
+  email        String        @unique
+  crm          String?
+  specialty    String?
+  avatarUrl    String?       @map("avatar_url")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  analyses               Analysis[]
+  catalog                ExamCatalog[]
+  patients               Patient[]
+  examReferenceOverrides ExamReferenceOverride[]
+  organization           Organization  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("professionals")
+}
+
+model Patient {
+  id             String       @id @default(cuid())
+  professionalId String       @map("professional_id")
+  name           String
+  birthDate      DateTime?    @map("birth_date") @db.Date
+  email          String?
+  phone          String?
+  sex            String?
+  notes          String?
+  clinikpiId     String?      @unique @map("clinikpi_id")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  analyses       Analysis[]
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+
+  @@map("patients")
+}
+
+model Analysis {
+  id             String         @id @default(cuid())
+  patientId      String         @map("patient_id")
+  professionalId String         @map("professional_id")
+  collectedAt    DateTime       @map("collected_at") @db.Date
+  labName        String?        @map("lab_name")
+  status         AnalysisStatus @default(DRAFT)
+  pdfUrl         String?        @map("pdf_url")
+  pdfStoragePath String?        @map("pdf_storage_path")
+  notes          String?
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+  finalizedAt    DateTime?      @map("finalized_at")
+  patient        Patient        @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  professional   Professional   @relation(fields: [professionalId], references: [id])
+  results        Result[]
+
+  @@map("analyses")
+}
+
+model Result {
+  id               String       @id @default(cuid())
+  analysisId       String       @map("analysis_id")
+  catalogId        String?      @map("catalog_id")
+  examName         String       @map("exam_name")
+  examSlug         String       @map("exam_slug")
+  extractedName    String?      @map("extracted_name")
+  category         String?
+  value            String?
+  valueNumeric     Decimal?     @map("value_numeric") @db.Decimal(10, 4)
+  unit             String?
+  refMin           Decimal?     @map("ref_min") @db.Decimal(10, 4)
+  refMax           Decimal?     @map("ref_max") @db.Decimal(10, 4)
+  refText          String?      @map("ref_text")
+  status           ResultStatus @default(NOT_EVALUATED)
+  professionalNote String?      @map("professional_note")
+  sortOrder        Int          @default(0) @map("sort_order")
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt        DateTime     @updatedAt @map("updated_at")
+  analysis         Analysis     @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  catalog          ExamCatalog? @relation(fields: [catalogId], references: [id])
+
+  @@map("results")
+}
+
+model ExamCatalog {
+  id             String       @id @default(cuid())
+  slug           String
+  professionalId String       @map("professional_id")
+  displayName    String       @map("display_name")
+  category       String?
+  description    String?
+  unit           String?
+  criticalLow    Decimal?     @map("critical_low")   @db.Decimal(10, 4)
+  criticalHigh   Decimal?     @map("critical_high")  @db.Decimal(10, 4)
+  refMinMale     Decimal?     @map("ref_min_male")   @db.Decimal(10, 4)
+  refMaxMale     Decimal?     @map("ref_max_male")   @db.Decimal(10, 4)
+  refMinFemale   Decimal?     @map("ref_min_female") @db.Decimal(10, 4)
+  refMaxFemale   Decimal?     @map("ref_max_female") @db.Decimal(10, 4)
+  aliases        String[]
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt      @map("updated_at")
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  results        Result[]
+
+  @@unique([slug, professionalId])
+  @@map("exam_catalog")
+}
+
+model ExamCatalogTemplate {
+  id           String         @id @default(cuid())
+  slug         String         @unique
+  displayName  String         @map("display_name")
+  category     String?
+  description  String?
+  unit         String?
+  criticalLow  Decimal?       @map("critical_low")   @db.Decimal(10, 4)
+  criticalHigh Decimal?       @map("critical_high")  @db.Decimal(10, 4)
+  refMinMale   Decimal?       @map("ref_min_male")   @db.Decimal(10, 4)
+  refMaxMale   Decimal?       @map("ref_max_male")   @db.Decimal(10, 4)
+  refMinFemale Decimal?       @map("ref_min_female") @db.Decimal(10, 4)
+  refMaxFemale Decimal?       @map("ref_max_female") @db.Decimal(10, 4)
+  aliases      String[]
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt      @map("updated_at")
+  references   ExamReference[]
+
+  @@map("exam_catalog_template")
+}
+
+model ExamReference {
+  id                String                  @id @default(cuid())
+  catalogTemplateId String                  @map("catalog_template_id")
+  catalogTemplate   ExamCatalogTemplate     @relation(fields: [catalogTemplateId], references: [id], onDelete: Cascade)
+  unit              String
+  sex               String                  @default("U")
+  ageMinMonths      Int?                    @map("age_min_months")
+  ageMaxMonths      Int?                    @map("age_max_months")
+  refMin            Decimal?                @map("ref_min") @db.Decimal(10, 4)
+  refMax            Decimal?                @map("ref_max") @db.Decimal(10, 4)
+  overrides         ExamReferenceOverride[]
+  createdAt         DateTime                @default(now()) @map("created_at")
+  updatedAt         DateTime                @updatedAt      @map("updated_at")
+
+  @@map("exam_reference")
+}
+
+model UnitAlias {
+  id        String @id @default(cuid())
+  canonical String
+  alias     String @unique
+
+  @@map("unit_alias")
+}
+
+model ExamReferenceOverride {
+  id              String        @id @default(cuid())
+  professionalId  String        @map("professional_id")
+  professional    Professional  @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  examReferenceId String        @map("exam_reference_id")
+  examReference   ExamReference @relation(fields: [examReferenceId], references: [id], onDelete: Cascade)
+  refMin          Decimal?      @map("ref_min") @db.Decimal(10, 4)
+  refMax          Decimal?      @map("ref_max") @db.Decimal(10, 4)
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt      @map("updated_at")
+
+  @@unique([professionalId, examReferenceId])
+  @@map("exam_reference_override")
+}
+
+model UsageLog {
+  id           String       @id @default(cuid())
+  orgId        String       @map("org_id")
+  action       UsageAction
+  metadata     Json?
+  createdAt    DateTime     @default(now()) @map("created_at")
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("usage_logs")
+}
+
+enum Plan {
+  FREE
+  PRO
+  CLINIC
+}
+
+enum AnalysisStatus {
+  DRAFT
+  IN_REVIEW
+  FINALIZED
+}
+
+enum ResultStatus {
+  NOT_EVALUATED
+  NORMAL
+  ATTENTION
+  DANGER
+}
+
+enum UsageAction {
+  PDF_UPLOAD
+  AI_EXTRACTION
+  AI_INTERPRETATION
+  REPORT_GENERATED
+  REPORT_SENT
+}

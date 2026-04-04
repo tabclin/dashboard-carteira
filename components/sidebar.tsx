@@ -13,14 +13,20 @@ import {
   ClipboardList,
   DollarSign,
   UserCog,
+  CalendarDays,
+  FileText,
+  FlaskConical,
 } from 'lucide-react'
 
 const navItems = [
   { href: '/carteira',   label: 'Carteira',   icon: Users        },
+  { href: '/agenda',     label: 'Agenda',     icon: CalendarDays },
+  { href: '/prontuario', label: 'Prontuário', icon: FileText     },
   { href: '/planos',     label: 'Planos',     icon: ClipboardList },
   { href: '/financeiro', label: 'Financeiro', icon: DollarSign   },
   { href: '/usuarios',   label: 'Usuários',   icon: UserCog      },
 ]
+
 
 interface SidebarProps {
   userEmail?: string
@@ -116,6 +122,33 @@ export default function Sidebar({ userEmail, collapsed = false, onToggle }: Side
             </Link>
           )
         })}
+
+        {/* ─ Divisor + Check Exames ─ */}
+        {!collapsed && (
+          <p className="text-slate-600 text-xs font-semibold uppercase tracking-widest px-3 mt-4 mb-2">
+            Ferramentas
+          </p>
+        )}
+        <Link
+          href="/check-exames"
+          title={collapsed ? 'Check Exames' : undefined}
+          className={cn(
+            'sidebar-link group',
+            pathname?.startsWith('/check-exames') && 'sidebar-link-active',
+            collapsed && 'justify-center px-0 py-2.5'
+          )}
+        >
+          <FlaskConical className={cn(
+            'w-4 h-4 flex-shrink-0 transition-colors',
+            pathname?.startsWith('/check-exames') ? 'text-brand-400' : 'text-slate-500 group-hover:text-slate-300'
+          )} />
+          {!collapsed && (
+            <>
+              <span className="flex-1">Check Exames</span>
+              {pathname?.startsWith('/check-exames') && <ChevronRight className="w-3 h-3 text-brand-400 opacity-70" />}
+            </>
+          )}
+        </Link>
       </nav>
 
       {/* User + Logout */}

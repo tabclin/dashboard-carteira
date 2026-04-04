@@ -9,7 +9,7 @@ import type { Paciente, StatusPaciente, ConfigRetornoFaixa } from '@/types'
 import {
   Search, ChevronUp, ChevronDown, ChevronsUpDown,
   Calendar, X, CheckCircle2, Loader2,
-  Phone, MapPin, Mail, CreditCard, RotateCcw,
+  Phone, MapPin, Mail, CreditCard, RotateCcw, FileText,
 } from 'lucide-react'
 
 type SortField = 'paciente' | 'ultimo_atendimento' | 'qtd_at' | 'recencia_dias' | 'status'
@@ -455,6 +455,11 @@ export default function PatientTable({
                           <Calendar className="w-3.5 h-3.5 text-slate-300" />
                           {formatarData(p.ultimo_atendimento)}
                         </div>
+                        {p.origem_ultimo_atend && (
+                          <p className="text-[10px] text-slate-300 mt-0.5 leading-none pl-0.5">
+                            {p.origem_ultimo_atend === 'agenda' ? 'agenda' : 'import'}
+                          </p>
+                        )}
                       </td>
 
                       <td className="table-td">
@@ -479,9 +484,17 @@ export default function PatientTable({
 
                       <td className="table-td">
                         {p.agendado ? (
-                          <span className="inline-flex items-center gap-1 text-xs text-emerald-600 font-medium">
-                            <CheckCircle2 className="w-3.5 h-3.5" /> Sim
-                          </span>
+                          <div>
+                            <span className="inline-flex items-center gap-1 text-xs text-emerald-600 font-medium">
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              {formatarData(p.agendado)}
+                            </span>
+                            {p.origem_agendado && (
+                              <p className="text-[10px] text-slate-300 mt-0.5 leading-none pl-0.5">
+                                {p.origem_agendado === 'agenda' ? 'agenda' : 'import'}
+                              </p>
+                            )}
+                          </div>
                         ) : (
                           <span className="text-xs text-slate-400">—</span>
                         )}
@@ -664,11 +677,20 @@ export default function PatientTable({
               </div>
             </div>
 
-            <div className="flex gap-2 px-5 pb-5 pt-2 border-t border-slate-100">
-              <button onClick={() => setDetalhePaciente(null)} className="btn-secondary flex-1">Fechar</button>
-              <button onClick={salvarObservacaoDetalhe} disabled={salvandoDetalhe} className="btn-primary flex-1">
-                {salvandoDetalhe ? 'Salvando...' : 'Salvar Observação'}
-              </button>
+            <div className="px-5 pb-2 pt-2 border-t border-slate-100">
+              <a
+                href={`/prontuario/${encodeURIComponent(detalhePaciente.paciente)}`}
+                className="flex items-center justify-center gap-2 w-full py-2 rounded-lg border border-brand-200 text-brand-600 text-sm font-medium hover:bg-brand-50 transition-colors mb-2"
+                onClick={() => setDetalhePaciente(null)}
+              >
+                <FileText className="w-4 h-4" /> Abrir Prontuário
+              </a>
+              <div className="flex gap-2">
+                <button onClick={() => setDetalhePaciente(null)} className="btn-secondary flex-1">Fechar</button>
+                <button onClick={salvarObservacaoDetalhe} disabled={salvandoDetalhe} className="btn-primary flex-1">
+                  {salvandoDetalhe ? 'Salvando...' : 'Salvar Observação'}
+                </button>
+              </div>
             </div>
           </div>
         </div>

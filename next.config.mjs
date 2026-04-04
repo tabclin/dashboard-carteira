@@ -5,6 +5,7 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '10mb',
     },
+    serverComponentsExternalPackages: ['pdfjs-dist', '@prisma/client', '@prisma/adapter-pg', 'pg'],
   },
 }
 

@@ -48,6 +48,15 @@ export function formatarIdade(dias: number | null | undefined): string {
   return `${anos} ${anos === 1 ? 'ano' : 'anos'}`
 }
 
+export function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_|_$/g, '')
+}
+
 export function getMesLabel(mes: string): string {
   const meses: Record<string, string> = {
     '01': 'Jan', '02': 'Fev', '03': 'Mar', '04': 'Abr',

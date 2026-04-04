@@ -7,25 +7,30 @@ import { formatarMesAno } from '@/lib/planos-utils'
 import PlanoStatusBadge from '@/components/planos/plano-status-badge'
 import PlanoAgendamentoBadge from './plano-agendamento-badge'
 import { Search, ChevronRight } from 'lucide-react'
-import type { PlanoAcompanhamento, PlanoStatus, PlanoAgendamentoAlerta, PlanoAgendamentoInfo } from '@/types'
+import type { PlanoAcompanhamento, PlanoAgendamentoAlerta, PlanoAgendamentoInfo } from '@/types'
 
 // ── Filtros ──────────────────────────────────────────────────────
 
-type FiltroKey = PlanoStatus | 'todos' | PlanoAgendamentoAlerta
+type NivelKey = 'todos' | 'nivel1' | 'nivel2' | 'nivel3'
 
-const FILTROS_STATUS: { key: FiltroKey; label: string }[] = [
-  { key: 'todos',            label: 'Todos'            },
-  { key: 'rascunho',         label: 'Rascunho'         },
-  { key: 'proposta_enviada', label: 'Proposta Enviada' },
-  { key: 'em_andamento',     label: 'Em Andamento'     },
-  { key: 'nao_aderido',      label: 'Não Aderido'      },
-  { key: 'concluido',        label: 'Concluído'        },
+const NIVEIS: { key: NivelKey; label: string }[] = [
+  { key: 'todos',  label: 'Todos'      },
+  { key: 'nivel1', label: 'Nível 1'    },
+  { key: 'nivel2', label: 'Nível 2'    },
+  { key: 'nivel3', label: 'Nível 3'    },
 ]
 
-const FILTROS_AGENDAMENTO: { key: FiltroKey; label: string; color: string }[] = [
-  { key: 'atrasado',        label: '🔴 Atrasados',        color: 'bg-red-50    text-red-700    border-red-200'     },
-  { key: 'precisa_agendar', label: '⚠️ Precisa Agendar',  color: 'bg-amber-50  text-amber-700  border-amber-200'   },
-  { key: 'em_dia',          label: '✅ Em Dia',            color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+const NIVEL_LABELS: Record<NivelKey, string> = {
+  todos:  'Todos',
+  nivel1: 'Rascunho · Proposta Enviada',
+  nivel2: 'Em Andamento',
+  nivel3: 'Não Aderido · Concluído',
+}
+
+const FILTROS_AGENDAMENTO: { key: PlanoAgendamentoAlerta; label: string; color: string }[] = [
+  { key: 'atrasado',        label: '🔴 Atrasados',       color: 'bg-red-50    text-red-700    border-red-200'      },
+  { key: 'precisa_agendar', label: '⚠️ Precisa Agendar', color: 'bg-amber-50  text-amber-700  border-amber-200'    },
+  { key: 'em_dia',          label: '✅ Em Dia',           color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
 ]
 
 // ── Componente ───────────────────────────────────────────────────
@@ -37,27 +42,33 @@ interface PlanosListProps {
 
 export default function PlanosList({ planos, agendamentoMap }: PlanosListProps) {
   const [busca, setBusca] = useState('')
-  const [filtro, setFiltro] = useState<FiltroKey>('todos')
+  const [nivel, setNivel] = useState<NivelKey>('todos')
+  const [filtroAgendamento, setFiltroAgendamento] = useState<PlanoAgendamentoAlerta | null>(null)
+
+  function selecionarNivel(n: NivelKey) {
+    setNivel(n)
+    setFiltroAgendamento(null)
+  }
 
   const filtrados = planos.filter(p => {
     const nomesPacientes = (p.plano_pacientes ?? []).map((pac: any) => pac.nome).join(' ')
-    const matchBusca =
-      p.responsavel_nome.toLowerCase().includes(busca.toLowerCase()) ||
-      nomesPacientes.toLowerCase().includes(busca.toLowerCase())
+    const matchBusca = nomesPacientes.toLowerCase().includes(busca.toLowerCase())
     if (!matchBusca) return false
 
-    if (filtro === 'todos') return true
+    if (nivel === 'nivel1' && p.status !== 'rascunho' && p.status !== 'proposta_enviada') return false
+    if (nivel === 'nivel2' && p.status !== 'em_andamento') return false
+    if (nivel === 'nivel3' && p.status !== 'nao_aderido' && p.status !== 'concluido') return false
 
-    // Filtro por status CRM
-    const statusKeys: FiltroKey[] = [
-      'rascunho', 'proposta_enviada', 'em_andamento', 'nao_aderido', 'concluido'
-    ]
-    if (statusKeys.includes(filtro)) return p.status === filtro
+    if (nivel === 'nivel2' && filtroAgendamento) {
+      const info = agendamentoMap[p.id]
+      return info?.alerta === filtroAgendamento
+    }
 
-    // Filtro por alerta de agendamento
-    const info = agendamentoMap[p.id]
-    return info?.alerta === filtro
+    return true
   })
+
+  const mostrarStatus      = nivel !== 'nivel2'
+  const mostrarAgendamento = nivel === 'nivel2'
 
   return (
     <div className="card">
@@ -67,46 +78,51 @@ export default function PlanosList({ planos, agendamentoMap }: PlanosListProps) 
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             className="input pl-9"
-            placeholder="Buscar por responsável..."
+            placeholder="Buscar por paciente..."
             value={busca}
             onChange={e => setBusca(e.target.value)}
           />
         </div>
 
-        {/* Filtros de status CRM */}
-        <div className="flex gap-1 flex-wrap">
-          {FILTROS_STATUS.map(f => (
+        {/* Filtros por Nível */}
+        <div className="flex gap-1 flex-wrap items-center">
+          {NIVEIS.map(n => (
             <button
-              key={f.key}
-              onClick={() => setFiltro(f.key)}
+              key={n.key}
+              onClick={() => selecionarNivel(n.key)}
               className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${
-                filtro === f.key
+                nivel === n.key
                   ? 'bg-brand-500 text-white border-brand-500'
                   : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
               }`}
             >
-              {f.label}
+              {n.label}
             </button>
           ))}
+          {nivel !== 'todos' && (
+            <span className="text-xs text-slate-400 ml-1">{NIVEL_LABELS[nivel]}</span>
+          )}
         </div>
 
-        {/* Filtros de agendamento */}
-        <div className="flex gap-1 flex-wrap items-center">
-          <span className="text-xs text-slate-400 font-medium mr-1">Agendamento:</span>
-          {FILTROS_AGENDAMENTO.map(f => (
-            <button
-              key={f.key}
-              onClick={() => setFiltro(filtro === f.key ? 'todos' : f.key)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${
-                filtro === f.key
-                  ? `${f.color} font-semibold`
-                  : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
+        {/* Sub-filtros de agendamento — só no Nível 2 */}
+        {nivel === 'nivel2' && (
+          <div className="flex gap-1 flex-wrap items-center">
+            <span className="text-xs text-slate-400 font-medium mr-1">Agendamento:</span>
+            {FILTROS_AGENDAMENTO.map(f => (
+              <button
+                key={f.key}
+                onClick={() => setFiltroAgendamento(filtroAgendamento === f.key ? null : f.key)}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${
+                  filtroAgendamento === f.key
+                    ? `${f.color} font-semibold`
+                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Tabela */}
@@ -124,9 +140,8 @@ export default function PlanosList({ planos, agendamentoMap }: PlanosListProps) 
               <tr>
                 <th className="table-th">Responsável</th>
                 <th className="table-th">Paciente(s)</th>
-                <th className="table-th">Plano de Pagamento</th>
-                <th className="table-th">Status</th>
-                <th className="table-th">Agendamento</th>
+                {mostrarStatus      && <th className="table-th">Status</th>}
+                {mostrarAgendamento && <th className="table-th">Agendamento</th>}
                 <th className="table-th">Próxima Ação</th>
                 <th className="table-th text-right">Ações</th>
               </tr>
@@ -138,9 +153,6 @@ export default function PlanosList({ planos, agendamentoMap }: PlanosListProps) 
                   <tr key={p.id} className="hover:bg-slate-50 transition-colors">
                     <td className="table-td">
                       <p className="font-medium text-slate-800">{p.responsavel_nome}</p>
-                      {p.responsavel_telefone && (
-                        <p className="text-xs text-slate-400 mt-0.5">{p.responsavel_telefone}</p>
-                      )}
                       {p.data_inicio && p.data_fim && (
                         <p className="text-xs text-slate-400 mt-0.5">
                           {formatarData(p.data_inicio)} → {formatarData(p.data_fim)}
@@ -160,21 +172,21 @@ export default function PlanosList({ planos, agendamentoMap }: PlanosListProps) 
                       )}
                     </td>
 
-                    <td className="table-td text-slate-600">
-                      {p.plano_pagamento?.nome ?? <span className="text-slate-400">—</span>}
-                    </td>
+                    {mostrarStatus && (
+                      <td className="table-td">
+                        <PlanoStatusBadge status={p.status} />
+                      </td>
+                    )}
 
-                    <td className="table-td">
-                      <PlanoStatusBadge status={p.status} />
-                    </td>
-
-                    <td className="table-td">
-                      {info ? (
-                        <PlanoAgendamentoBadge alerta={info.alerta} />
-                      ) : (
-                        <span className="text-xs text-slate-400">—</span>
-                      )}
-                    </td>
+                    {mostrarAgendamento && (
+                      <td className="table-td">
+                        {info ? (
+                          <PlanoAgendamentoBadge alerta={info.alerta} />
+                        ) : (
+                          <span className="text-xs text-slate-400">—</span>
+                        )}
+                      </td>
+                    )}
 
                     <td className="table-td">
                       {info?.proxima_data_sugerida ? (

@@ -6,7 +6,7 @@ import PlanoHeader from '@/components/planos/plano-detail/plano-header'
 import PlanoPacientesView from '@/components/planos/plano-detail/plano-pacientes-view'
 import PlanoPdfPreview from '@/components/planos/plano-detail/plano-pdf-preview'
 import PlanoPdfButton from '@/components/planos/plano-detail/plano-pdf-button'
-import type { PlanoAcompanhamento } from '@/types'
+import type { PlanoAcompanhamento, Servico, Profissional } from '@/types'
 
 export const revalidate = 0
 
@@ -17,7 +17,7 @@ interface PageProps {
 export default async function PlanoDetailPage({ params }: PageProps) {
   const supabase = createClient()
 
-  const [{ data }, { data: servicosData }] = await Promise.all([
+  const [{ data }, { data: servicosData }, { data: profissionaisData }] = await Promise.all([
     supabase
       .from('planos_acompanhamento')
       .select(`*, plano_pagamento:planos_pagamento(*), plano_pacientes(*, plano_consultas(*))`)
@@ -25,14 +25,21 @@ export default async function PlanoDetailPage({ params }: PageProps) {
       .single(),
     supabase
       .from('servicos')
-      .select('id, antecedencia_dias'),
+      .select('id, nome, descricao, valor_cheio, valor_recorrente, antecedencia_dias, ativo, criado_em, atualizado_em'),
+    supabase
+      .from('profissionais')
+      .select('*')
+      .eq('ativo', true)
+      .order('nome', { ascending: true }),
   ])
 
   if (!data) notFound()
 
   const plano = data as PlanoAcompanhamento
+  const servicos = (servicosData ?? []) as Servico[]
+  const profissionais = (profissionaisData ?? []) as Profissional[]
   const antecedenciaMap: Record<string, number> = {}
-  for (const s of servicosData ?? []) {
+  for (const s of servicos) {
     antecedenciaMap[s.id] = s.antecedencia_dias
   }
 
@@ -73,7 +80,12 @@ export default async function PlanoDetailPage({ params }: PageProps) {
       </div>
 
       {/* Pacientes e consultas */}
-      <PlanoPacientesView pacientes={plano.plano_pacientes ?? []} antecedenciaMap={antecedenciaMap} />
+      <PlanoPacientesView
+        pacientes={plano.plano_pacientes ?? []}
+        antecedenciaMap={antecedenciaMap}
+        servicos={servicos}
+        profissionais={profissionais}
+      />
 
       {/* ── Proposta / PDF ── */}
       <div className="card">
