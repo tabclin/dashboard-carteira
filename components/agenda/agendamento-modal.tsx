@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { cn, formatarData } from '@/lib/utils'
-import { X, Loader2, Search, UserPlus, Trash2, ExternalLink, Video, Copy, Check } from 'lucide-react'
+import { X, Loader2, Search, UserPlus, Trash2, ExternalLink, Video, Copy, Check, AlertTriangle } from 'lucide-react'
 import StatusBadge from './status-badge'
 import ConfirmDialog from '@/components/ui/confirm-dialog'
 import type { Agendamento, AgendaStatus, Servico, Profissional } from '@/types'
@@ -79,6 +79,7 @@ export default function AgendamentoModal({
   const [saving, setSaving]                   = useState(false)
   const [erro, setErro]                       = useState('')
   const [confirmandoExcluir, setConfirmandoExcluir] = useState(false)
+  const [encaixePendente, setEncaixePendente] = useState(false)
 
   // Preencher ao editar ou pré-preencher paciente
   useEffect(() => {
@@ -167,7 +168,7 @@ export default function AgendamentoModal({
     }
   }
 
-  async function salvar() {
+  async function salvar(ignorarConflito = false) {
     const nomeFinal = novoMode ? novoNome.trim() : pacienteNome.trim()
     if (!nomeFinal) { setErro('Selecione ou crie um paciente.'); return }
     if (!servicoId)  { setErro('Selecione o tipo de consulta.'); return }
@@ -204,8 +205,8 @@ export default function AgendamentoModal({
         .gt('hora_fim', horaInicio)
         .neq('id', editando?.id ?? '00000000-0000-0000-0000-000000000000')
 
-      if ((conflitos ?? []).length > 0) {
-        setErro('Conflito de horário: já existe um agendamento neste período para este profissional.')
+      if ((conflitos ?? []).length > 0 && !ignorarConflito) {
+        setEncaixePendente(true)
         setSaving(false)
         return
       }
@@ -355,11 +356,37 @@ export default function AgendamentoModal({
             </div>
             <div>
               <label className="label">Início *</label>
-              <input type="time" className="input" value={horaInicio} onChange={e => setHoraInicio(e.target.value)} />
+              <div className="flex gap-1">
+                <select className="input flex-1 px-2" value={horaInicio.slice(0, 2)}
+                  onChange={e => setHoraInicio(`${e.target.value}:${horaInicio.slice(3, 5)}`)}>
+                  {Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0')).map(h => (
+                    <option key={h} value={h}>{h}h</option>
+                  ))}
+                </select>
+                <select className="input flex-1 px-2" value={horaInicio.slice(3, 5)}
+                  onChange={e => setHoraInicio(`${horaInicio.slice(0, 2)}:${e.target.value}`)}>
+                  {[0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55].map(m => (
+                    <option key={m} value={String(m).padStart(2, '0')}>{String(m).padStart(2, '0')}min</option>
+                  ))}
+                </select>
+              </div>
             </div>
             <div>
               <label className="label">Término *</label>
-              <input type="time" className="input" value={horaFim} onChange={e => setHoraFim(e.target.value)} />
+              <div className="flex gap-1">
+                <select className="input flex-1 px-2" value={horaFim.slice(0, 2)}
+                  onChange={e => setHoraFim(`${e.target.value}:${horaFim.slice(3, 5)}`)}>
+                  {Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0')).map(h => (
+                    <option key={h} value={h}>{h}h</option>
+                  ))}
+                </select>
+                <select className="input flex-1 px-2" value={horaFim.slice(3, 5)}
+                  onChange={e => setHoraFim(`${horaFim.slice(0, 2)}:${e.target.value}`)}>
+                  {[0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55].map(m => (
+                    <option key={m} value={String(m).padStart(2, '0')}>{String(m).padStart(2, '0')}min</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
@@ -526,6 +553,38 @@ export default function AgendamentoModal({
         onConfirmar={() => { excluir(); setConfirmandoExcluir(false) }}
         onCancelar={() => setConfirmandoExcluir(false)}
       />
+
+      {/* Modal de confirmação de encaixe */}
+      {encaixePendente && (
+        <div className="fixed inset-0 z-[70] bg-black/40 flex items-center justify-center">
+          <div className="bg-white rounded-2xl shadow-2xl w-[340px] p-6 space-y-4">
+            <div className="flex items-center gap-3">
+              <span className="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                <AlertTriangle className="w-4 h-4 text-amber-600" />
+              </span>
+              <h4 className="font-semibold text-slate-800">Criar encaixe?</h4>
+            </div>
+            <p className="text-sm text-slate-500">
+              Já existe um agendamento neste horário para este profissional.
+              Deseja criar um <strong className="text-slate-700">encaixe</strong> mesmo assim?
+            </p>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => setEncaixePendente(false)}
+                className="px-4 py-2 text-sm border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => { setEncaixePendente(false); salvar(true) }}
+                className="px-4 py-2 text-sm bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-medium transition-colors"
+              >
+                Confirmar encaixe
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

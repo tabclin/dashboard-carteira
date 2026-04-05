@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { cn, formatarMoeda } from '@/lib/utils'
-import { X, Loader2, ChevronDown, ChevronUp, Search, Check } from 'lucide-react'
+import { X, Loader2, ChevronDown, ChevronUp, Search, Check, Lightbulb } from 'lucide-react'
 import type { FinCategoria, FinOrcamento } from '@/types'
 
 const MESES = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
@@ -19,6 +19,12 @@ interface CelulaEditando {
   catId: string
   mes: number
   catNome: string
+  servicoId: string | null
+}
+
+interface SugestaoVendas {
+  quantidade: number
+  valorServico: number  // centavos
 }
 
 export default function PlanejamentoGrid({ ano, categorias, orcamento: orcamentoInicial, realizado }: PlanejamentoGridProps) {
@@ -35,6 +41,7 @@ export default function PlanejamentoGrid({ ano, categorias, orcamento: orcamento
   const [saving, setSaving] = useState(false)
   const [dropdownAberto, setDropdownAberto] = useState(false)
   const [busca, setBusca] = useState('')
+  const [sugestao, setSugestao] = useState<SugestaoVendas | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -69,7 +76,7 @@ export default function PlanejamentoGrid({ ano, categorias, orcamento: orcamento
 
   // ── Abrir modal ───────────────────────────────────────────────────
 
-  function startEdit(cat: FinCategoria, mes: number) {
+  async function startEdit(cat: FinCategoria, mes: number) {
     const orc = getOrcEntry(cat.id, mes)
     if (orc?.tipo_calculo === 'percentual') {
       setModo('percentual')
@@ -83,7 +90,29 @@ export default function PlanejamentoGrid({ ano, categorias, orcamento: orcamento
       setPercentualInput('')
       setCategoriaRefIds([])
     }
-    setCelula({ catId: cat.id, mes, catNome: cat.nome })
+    setSugestao(null)
+    setCelula({ catId: cat.id, mes, catNome: cat.nome, servicoId: cat.servico_id ?? null })
+
+    // Busca sugestão do Planejamento de Vendas para categorias de receita vinculadas a serviço
+    if (cat.tipo === 'entrada' && cat.servico_id) {
+      const [{ data: planejRow }, { data: svcRow }] = await Promise.all([
+        supabase
+          .from('fin_planejamento_vendas')
+          .select('quantidade')
+          .eq('servico_id', cat.servico_id)
+          .eq('ano', ano)
+          .eq('mes', mes)
+          .maybeSingle(),
+        supabase
+          .from('servicos')
+          .select('valor_cheio')
+          .eq('id', cat.servico_id)
+          .maybeSingle(),
+      ])
+      if (planejRow?.quantidade && svcRow?.valor_cheio) {
+        setSugestao({ quantidade: planejRow.quantidade, valorServico: svcRow.valor_cheio })
+      }
+    }
   }
 
   function toggleRef(id: string) {
@@ -372,16 +401,43 @@ export default function PlanejamentoGrid({ ano, categorias, orcamento: orcamento
               </div>
 
               {modo === 'fixo' ? (
-                <div>
-                  <label className="label">Valor previsto (R$)</label>
-                  <input
-                    autoFocus
-                    className="input"
-                    placeholder="0,00"
-                    value={valorInput}
-                    onChange={e => setValorInput(e.target.value)}
-                    onKeyDown={e => { if (e.key === 'Enter') salvar() }}
-                  />
+                <div className="space-y-3">
+                  <div>
+                    <label className="label">Valor previsto (R$)</label>
+                    <input
+                      autoFocus
+                      className="input"
+                      placeholder="0,00"
+                      value={valorInput}
+                      onChange={e => setValorInput(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') salvar() }}
+                    />
+                  </div>
+
+                  {sugestao && (
+                    <div className="rounded-xl border border-violet-200 bg-violet-50 px-3 py-2.5 space-y-1.5">
+                      <div className="flex items-center gap-1.5">
+                        <Lightbulb className="w-3.5 h-3.5 text-violet-500 flex-shrink-0" />
+                        <p className="text-[11px] font-semibold text-violet-700">Sugestão do Planejamento de Vendas</p>
+                      </div>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-1.5 text-xs text-slate-600">
+                          <span className="font-bold text-slate-800">{sugestao.quantidade}</span>
+                          <span className="text-slate-400">×</span>
+                          <span className="font-medium">{formatarMoeda(sugestao.valorServico)}</span>
+                        </div>
+                        <span className="text-slate-400 text-xs">=</span>
+                        <span className="font-bold text-violet-700 text-sm">{formatarMoeda(sugestao.quantidade * sugestao.valorServico)}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setValorInput(((sugestao.quantidade * sugestao.valorServico) / 100).toFixed(2).replace('.', ','))}
+                        className="w-full text-[11px] font-medium text-violet-600 hover:text-violet-800 bg-violet-100 hover:bg-violet-200 rounded-lg py-1 transition-colors"
+                      >
+                        Usar este valor
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <>

@@ -98,6 +98,7 @@ export interface Servico {
   valor_cheio: number        // centavos
   valor_recorrente: number | null
   antecedencia_dias: number  // dias de antecedência necessários para agendamento
+  duracao_minutos: number | null  // duração média do serviço em minutos
   ativo: boolean
   criado_em: string
   atualizado_em: string
@@ -286,6 +287,15 @@ export interface FinOrcamento {
   criado_em: string
 }
 
+export interface FinPlanejamentoVenda {
+  id: string
+  servico_id: string | null
+  servico_nome: string
+  ano: number
+  mes: number
+  quantidade: number
+}
+
 export interface FinKpis {
   receita_total: number
   despesa_total: number
@@ -313,6 +323,23 @@ export interface FinCategoriaPie {
 // ── Módulo: Agenda ──────────────────────────────────────────────
 
 export type AgendaStatus = 'agendado' | 'confirmado' | 'em_consulta' | 'realizado' | 'faltou' | 'cancelado'
+
+export interface AgendaConfig {
+  id: string
+  hora_inicio: string   // ex: "07:00"
+  hora_fim:    string   // ex: "20:00"
+  dias_ativos: number[] // [1,2,3,4,5,6] → 0=Dom,1=Seg…6=Sáb
+  slot_min:    number   // duração de cada slot em minutos (5,10,15,20,30,45,60)
+}
+
+export interface AgendaBloqueio {
+  id: string
+  data_inicio: string
+  data_fim:    string
+  hora_inicio: string | null  // null = dia inteiro bloqueado
+  hora_fim:    string | null
+  motivo:      string | null
+}
 
 export interface Profissional {
   id: string

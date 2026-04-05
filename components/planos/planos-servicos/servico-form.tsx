@@ -27,6 +27,9 @@ export default function ServicoForm({ servico, onClose, onSaved }: ServicoFormPr
   const [antecedenciaDias, setAntecedenciaDias] = useState(
     String(servico?.antecedencia_dias ?? 30)
   )
+  const [duracaoMinutos, setDuracaoMinutos] = useState(
+    servico?.duracao_minutos != null ? String(servico.duracao_minutos) : ''
+  )
 
   function parseBRL(v: string): number {
     return Math.round(parseFloat(v.replace(',', '.')) * 100) || 0
@@ -45,6 +48,7 @@ export default function ServicoForm({ servico, onClose, onSaved }: ServicoFormPr
       valor_cheio: parseBRL(valorCheio),
       valor_recorrente: valorRecorrente ? parseBRL(valorRecorrente) : null,
       antecedencia_dias: Math.max(1, parseInt(antecedenciaDias, 10) || 30),
+      duracao_minutos: duracaoMinutos ? Math.max(1, parseInt(duracaoMinutos, 10) || 30) : null,
     }
 
     const { error } = servico
@@ -97,14 +101,25 @@ export default function ServicoForm({ servico, onClose, onSaved }: ServicoFormPr
             </div>
           </div>
 
-          <div>
-            <label className="label">Antecedência para agendar (dias)</label>
-            <input className="input" type="number" min="1" step="1"
-              value={antecedenciaDias} onChange={e => setAntecedenciaDias(e.target.value)}
-              placeholder="30" />
-            <p className="text-xs text-slate-400 mt-1">
-              Com quantos dias de antecedência este serviço precisa ser agendado
-            </p>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="label">Antecedência (dias)</label>
+              <input className="input" type="number" min="1" step="1"
+                value={antecedenciaDias} onChange={e => setAntecedenciaDias(e.target.value)}
+                placeholder="30" />
+              <p className="text-xs text-slate-400 mt-1">
+                Dias de antecedência para agendamento
+              </p>
+            </div>
+            <div>
+              <label className="label">Duração (min)</label>
+              <input className="input" type="number" min="1" step="1"
+                value={duracaoMinutos} onChange={e => setDuracaoMinutos(e.target.value)}
+                placeholder="30" />
+              <p className="text-xs text-slate-400 mt-1">
+                Tempo médio da consulta/serviço
+              </p>
+            </div>
           </div>
 
           {erro && <p className="text-sm text-red-500">{erro}</p>}
