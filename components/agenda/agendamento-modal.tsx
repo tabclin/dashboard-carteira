@@ -540,7 +540,7 @@ export default function AgendamentoModal({
             </button>
           )}
           <button onClick={onClose} className="btn-secondary flex-1">Cancelar</button>
-          <button onClick={salvar} disabled={saving} className="btn-primary flex-1">
+          <button onClick={() => salvar()} disabled={saving} className="btn-primary flex-1">
             {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Salvando...</> : editando ? 'Salvar alterações' : 'Agendar'}
           </button>
         </div>
