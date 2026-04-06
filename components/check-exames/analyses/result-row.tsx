@@ -4,7 +4,8 @@ import { useState, useRef, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { Trash2, ChevronDown, MessageSquare, Link2, Unlink2, Search, BookPlus, X, ListFilter } from 'lucide-react'
 import { toast } from 'sonner'
-import type { Result, ResultStatus } from '@prisma/client'
+import type { Result, $Enums } from '@prisma/client'
+type ResultStatus = $Enums.ResultStatus
 import type { MatchedRef } from '@/lib/exam/normalize'
 
 interface CatalogEntry {

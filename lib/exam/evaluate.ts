@@ -1,4 +1,5 @@
-import type { ResultStatus } from '@prisma/client'
+import type { $Enums } from '@prisma/client'
+type ResultStatus = $Enums.ResultStatus
 
 /**
  * Avalia automaticamente o status de um exame com base no valor e referência.

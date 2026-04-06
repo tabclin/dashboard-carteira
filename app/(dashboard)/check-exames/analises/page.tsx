@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import Link from 'next/link'
 import { FlaskConical, Plus } from 'lucide-react'
-import type { AnalysisStatus } from '@prisma/client'
+import type { $Enums } from '@prisma/client'
+type AnalysisStatus = $Enums.AnalysisStatus
 import { ANALYSIS_STATUS_CONFIG } from '@/types'
 
 const STATUS_OPTIONS = [

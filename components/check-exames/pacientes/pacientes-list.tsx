@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { User, Search, X, FlaskConical } from 'lucide-react'
-import type { AnalysisStatus } from '@prisma/client'
+import type { $Enums } from '@prisma/client'
+type AnalysisStatus = $Enums.AnalysisStatus
 
 interface PatientItem {
   id: string

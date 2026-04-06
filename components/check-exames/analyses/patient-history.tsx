@@ -7,7 +7,8 @@ import {
   Tooltip, ReferenceLine, ResponsiveContainer, Legend,
 } from 'recharts'
 import { ANALYSIS_STATUS_CONFIG } from '@/types'
-import type { AnalysisStatus } from '@prisma/client'
+import type { $Enums } from '@prisma/client'
+type AnalysisStatus = $Enums.AnalysisStatus
 import { TrendingUp, FlaskConical, ChevronRight } from 'lucide-react'
 
 interface ResultPoint {

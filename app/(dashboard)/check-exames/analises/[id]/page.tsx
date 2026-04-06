@@ -6,7 +6,8 @@ import { AnalysisNotes } from '@/components/check-exames/analyses/analysis-notes
 import { ANALYSIS_STATUS_CONFIG } from '@/types'
 import Link from 'next/link'
 import { ArrowLeft, FileDown, History } from 'lucide-react'
-import type { AnalysisStatus } from '@prisma/client'
+import type { $Enums } from '@prisma/client'
+type AnalysisStatus = $Enums.AnalysisStatus
 import { findMatchedRefsForResults } from '@/lib/exam/normalize'
 
 function formatDate(date: Date) {

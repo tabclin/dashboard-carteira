@@ -3,7 +3,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { toast } from 'sonner'
 import { Sparkles, Loader2 } from 'lucide-react'
-import type { AnalysisStatus } from '@prisma/client'
+import type { $Enums } from '@prisma/client'
+type AnalysisStatus = $Enums.AnalysisStatus
 
 interface AnalysisNotesProps {
   analysisId: string

@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
-import type { AnalysisStatus } from '@prisma/client'
+import type { $Enums } from '@prisma/client'
+type AnalysisStatus = $Enums.AnalysisStatus
 import { PacientesList } from '@/components/check-exames/pacientes/pacientes-list'
 
 export default async function PacientesCheckPage() {

@@ -2,7 +2,8 @@ import React from 'react'
 import {
   Document, Page, View, Text, StyleSheet,
 } from '@react-pdf/renderer'
-import type { ResultStatus } from '@prisma/client'
+import type { $Enums } from '@prisma/client'
+type ResultStatus = $Enums.ResultStatus
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 

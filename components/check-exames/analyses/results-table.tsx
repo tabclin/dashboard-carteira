@@ -12,7 +12,8 @@ import {
   CheckCircle2, Loader2, Plus, FlaskConical,
   AlertTriangle, Link2, X, Search, BookPlus
 } from 'lucide-react'
-import type { Result, AnalysisStatus } from '@prisma/client'
+import type { Result, $Enums } from '@prisma/client'
+type AnalysisStatus = $Enums.AnalysisStatus
 import type { MatchedRef } from '@/lib/exam/normalize'
 
 interface CatalogEntry {
