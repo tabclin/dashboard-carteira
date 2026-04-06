@@ -4,18 +4,17 @@ import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { cn, formatarMoeda, formatarData } from '@/lib/utils'
-import { Plus, Pencil, Trash2, Clock, CheckCircle2, Filter } from 'lucide-react'
+import { Plus, Pencil, Trash2, Clock, CheckCircle2 } from 'lucide-react'
 import MovimentacaoForm from './movimentacao-form'
 import ConfirmDialog from '@/components/ui/confirm-dialog'
-import type { FinMovimentacao, FinCategoria, Servico } from '@/types'
+import type { FinMovimentacao, FinCategoria } from '@/types'
 
 interface MovimentacoesListProps {
   movimentacoes: FinMovimentacao[]
   categorias: FinCategoria[]
-  servicos: Servico[]
 }
 
-export default function MovimentacoesList({ movimentacoes, categorias, servicos }: MovimentacoesListProps) {
+export default function MovimentacoesList({ movimentacoes, categorias }: MovimentacoesListProps) {
   const router = useRouter()
   const supabase = createClient()
   const [showModal, setShowModal] = useState(false)
@@ -225,7 +224,6 @@ export default function MovimentacoesList({ movimentacoes, categorias, servicos 
         <MovimentacaoForm
           editando={editando}
           categorias={categorias}
-          servicos={servicos}
           onClose={() => setShowModal(false)}
         />
       )}
