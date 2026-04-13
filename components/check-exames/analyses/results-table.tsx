@@ -235,11 +235,29 @@ export function ResultsTable({ analysisId, results: initialResults, analysisStat
   async function handleToggleDescription() {
     const next = !showDescription
     setShowDescription(next)
-    await fetch(`/api/ckex/analyses/${analysisId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ showDescription: next }),
-    })
+    try {
+      const res = await fetch(`/api/ckex/analyses/${analysisId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ showDescription: next }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        toast.error(`Erro ao salvar: ${JSON.stringify(data)}`)
+        setShowDescription(!next) // reverte
+        return
+      }
+      // Sincroniza com o valor retornado pelo servidor
+      if (typeof data.showDescription === 'boolean') {
+        setShowDescription(data.showDescription)
+        if (data.showDescription !== next) {
+          toast.error(`Servidor não atualizou o valor (retornou: ${data.showDescription})`)
+        }
+      }
+    } catch (e) {
+      toast.error(`Erro de rede: ${String(e)}`)
+      setShowDescription(!next)
+    }
   }
 
   // Finalizar análise
