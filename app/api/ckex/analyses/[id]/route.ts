@@ -80,6 +80,7 @@ const updateSchema = z.object({
   labName: z.string().optional(),
   notes: z.string().optional(),
   collectedAt: z.string().optional(),
+  showDescription: z.boolean().optional(),
 })
 
 export async function PATCH(

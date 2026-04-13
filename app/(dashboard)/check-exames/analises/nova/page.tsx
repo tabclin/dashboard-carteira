@@ -68,8 +68,8 @@ export default async function NovaAnalisePage({
   // Determina de onde o usuário veio para o link de voltar
   const backHref = preselectedPatientId
     ? `/check-exames/pacientes/${preselectedPatientId}`
-    : '/check-exames/analises'
-  const backLabel = preselectedPatientId ? 'Voltar ao paciente' : 'Voltar às análises'
+    : '/check-exames/pacientes'
+  const backLabel = preselectedPatientId ? 'Voltar ao paciente' : 'Voltar aos pacientes'
 
   return (
     <div className="p-6 max-w-2xl">

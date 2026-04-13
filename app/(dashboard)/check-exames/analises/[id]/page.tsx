@@ -66,7 +66,7 @@ export default async function AnaliseDetailPage({
       <div className="flex items-start justify-between mb-6">
         <div className="flex items-start gap-3">
           <Link
-            href="/check-exames/analises"
+            href={`/check-exames/pacientes/${analysis.patient.id}`}
             className="mt-0.5 text-slate-400 hover:text-slate-600 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -80,7 +80,7 @@ export default async function AnaliseDetailPage({
         </div>
         <div className="flex items-center gap-2">
           <Link
-            href={`/check-exames/analises/pacientes/${analysis.patient.id}`}
+            href={`/check-exames/pacientes/${analysis.patient.id}`}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
           >
             <History className="w-3.5 h-3.5" />
@@ -119,6 +119,7 @@ export default async function AnaliseDetailPage({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         })) as any}
         analysisStatus={analysis.status as AnalysisStatus}
+        showDescription={(analysis as any).showDescription ?? true}
         patientSex={analysis.patient.sex}
       />
       <AnalysisNotes

@@ -1,7 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
-import Link from 'next/link'
-import { Plus } from 'lucide-react'
 import type { $Enums } from '@prisma/client'
 type AnalysisStatus = $Enums.AnalysisStatus
 import { PacientesList } from '@/components/check-exames/pacientes/pacientes-list'
@@ -94,16 +92,6 @@ export default async function PacientesCheckPage() {
 
   return (
     <div className="p-6">
-      <div className="flex items-center justify-end mb-5">
-        <Link
-          href="/check-exames/analises/nova"
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          Nova análise
-        </Link>
-      </div>
-
       <PacientesList patients={patientItems} />
     </div>
   )

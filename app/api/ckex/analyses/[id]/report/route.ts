@@ -28,6 +28,7 @@ export async function GET(
       patient: true,
       results: {
         orderBy: [{ category: 'asc' }, { sortOrder: 'asc' }],
+        include: { catalog: { select: { description: true } } },
       },
     },
   })
@@ -55,6 +56,7 @@ export async function GET(
       collectedAt: analysis.collectedAt,
       labName: analysis.labName,
       notes: analysis.notes,
+      showDescription: (analysis as any).showDescription ?? true,
     },
     results: analysis.results.map((r) => {
       const matched = refMap.get(`${r.examSlug}::${r.unit ?? ''}`)
@@ -66,6 +68,7 @@ export async function GET(
         refMax: matched?.refMax ?? (r.refMax != null ? Number(r.refMax) : null),
         status: r.status,
         professionalNote: r.professionalNote,
+        description: r.catalog?.description ?? null,
         category: r.category,
       }
     }),

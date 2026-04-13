@@ -82,7 +82,7 @@ export default async function PatientHistoryPage({
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <Link
-          href="/check-exames/analises"
+          href="/check-exames/pacientes"
           className="text-slate-400 hover:text-slate-600 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />

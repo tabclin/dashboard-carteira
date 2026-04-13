@@ -6,7 +6,6 @@ import { FlaskConical, BookOpen, Users } from 'lucide-react'
 
 const TABS = [
   { href: '/check-exames/pacientes', label: 'Pacientes', icon: Users },
-  { href: '/check-exames/analises', label: 'Análises', icon: FlaskConical },
   { href: '/check-exames/catalogo', label: 'Catálogo', icon: BookOpen },
 ]
 

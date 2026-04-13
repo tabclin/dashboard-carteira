@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
-  Tooltip, ReferenceLine, ResponsiveContainer, Legend,
+  Tooltip, ReferenceLine, ResponsiveContainer, Legend, LabelList,
 } from 'recharts'
 import { ANALYSIS_STATUS_CONFIG } from '@/types'
 import type { $Enums } from '@prisma/client'
@@ -173,7 +173,14 @@ export function PatientHistory({ patient, analyses }: PatientHistoryProps) {
                   }}
                   activeDot={{ r: 7 }}
                   name={selectedMeta?.name}
-                />
+                >
+                  <LabelList
+                    dataKey="value"
+                    position="top"
+                    style={{ fontSize: 11, fontWeight: 600, fill: '#334155' }}
+                    formatter={(v: number) => `${v}${selectedMeta?.unit ? ` ${selectedMeta.unit}` : ''}`}
+                  />
+                </Line>
                 <Legend iconSize={0} formatter={() => (
                   <span style={{ fontSize: 11, color: '#64748b' }}>
                     {selectedMeta?.name} {selectedMeta?.unit ? `(${selectedMeta.unit})` : ''}

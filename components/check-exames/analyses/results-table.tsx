@@ -53,13 +53,15 @@ interface ResultsTableProps {
   analysisId: string
   results: ResultWithCatalog[]
   analysisStatus: AnalysisStatus
+  showDescription: boolean
   patientSex?: string | null
 }
 
-export function ResultsTable({ analysisId, results: initialResults, analysisStatus, patientSex }: ResultsTableProps) {
+export function ResultsTable({ analysisId, results: initialResults, analysisStatus, showDescription: initialShowDescription, patientSex }: ResultsTableProps) {
   const router = useRouter()
   const [results, setResults] = useState(initialResults)
   const [finalizing, setFinalizing] = useState(false)
+  const [showDescription, setShowDescription] = useState(initialShowDescription)
   type ActiveFilter = null | 'unlinked' | 'duplicates' | number
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>(null)
 
@@ -230,6 +232,16 @@ export function ResultsTable({ analysisId, results: initialResults, analysisStat
     }
   }, [initialResults])
 
+  async function handleToggleDescription() {
+    const next = !showDescription
+    setShowDescription(next)
+    await fetch(`/api/ckex/analyses/${analysisId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ showDescription: next }),
+    })
+  }
+
   // Finalizar análise
   async function handleFinalize() {
     if (unlinked > 0) {
@@ -311,15 +323,117 @@ export function ResultsTable({ analysisId, results: initialResults, analysisStat
 
   if (results.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center gap-3">
-        <div className="rounded-full bg-muted p-4">
-          <FlaskConical className="h-8 w-8 text-muted-foreground" />
+      <>
+        <div className="flex flex-col items-center justify-center py-20 text-center gap-3">
+          <div className="rounded-full bg-muted p-4">
+            <FlaskConical className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <p className="font-medium">Nenhum exame nesta análise</p>
+          <Button size="sm" onClick={openAddModal}>
+            <Plus className="h-4 w-4" /> Adicionar exame
+          </Button>
         </div>
-        <p className="font-medium">Nenhum exame nesta análise</p>
-        <Button size="sm" onClick={openAddModal}>
-          <Plus className="h-4 w-4" /> Adicionar exame
-        </Button>
-      </div>
+        {showAddModal && (
+          <>
+            <div
+              className="fixed inset-0 z-50 bg-black/40"
+              onClick={() => !addAdding && !qrSaving && setShowAddModal(false)}
+            />
+            <div
+              className="fixed z-50 bg-white border rounded-xl shadow-xl w-[480px]"
+              style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
+            >
+              <div className="flex items-center justify-between px-5 py-4 border-b">
+                <h4 className="font-semibold">Adicionar exame</h4>
+                <button
+                  onClick={() => setShowAddModal(false)}
+                  className="text-muted-foreground hover:text-foreground"
+                  disabled={addAdding || qrSaving}
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              {!showQR ? (
+                <>
+                  <div className="px-4 py-3 border-b flex items-center gap-2">
+                    <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                    <input
+                      autoFocus
+                      value={addCatQuery}
+                      onChange={(e) => setAddCatQuery(e.target.value)}
+                      placeholder="Buscar exame no catálogo..."
+                      className="flex-1 text-sm bg-transparent focus:outline-none"
+                    />
+                    {addCatLoading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+                  </div>
+                  <div className="max-h-64 overflow-y-auto py-1">
+                    {addCatResults.length === 0 ? (
+                      <div className="px-5 py-4 space-y-2">
+                        <p className="text-sm text-muted-foreground">
+                          {addCatSearched ? 'Nenhum resultado encontrado.' : 'Digite para buscar no catálogo.'}
+                        </p>
+                        {addCatSearched && (
+                          <button
+                            onClick={() => { setQrForm((f) => ({ ...f, displayName: addCatQuery })); setShowQR(true) }}
+                            className="flex items-center gap-2 text-sm text-red-600 underline font-medium hover:text-red-700"
+                          >
+                            <BookPlus className="h-4 w-4" />
+                            Cadastrar &quot;{addCatQuery}&quot; no catálogo
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      addCatResults.map((entry) => (
+                        <button
+                          key={entry.id}
+                          onClick={() => handleAddFromCatalog(entry)}
+                          disabled={addAdding}
+                          className="w-full text-left px-5 py-2.5 hover:bg-slate-50 transition-colors disabled:opacity-50"
+                        >
+                          <p className="text-sm font-medium">{entry.displayName}</p>
+                          {(entry.category || entry.unit) && (
+                            <p className="text-xs text-muted-foreground">
+                              {[entry.category, entry.unit].filter(Boolean).join(' · ')}
+                            </p>
+                          )}
+                        </button>
+                      ))
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div className="px-5 py-4 space-y-3">
+                  <p className="text-sm font-medium">Cadastrar novo exame no catálogo</p>
+                  {[
+                    { label: 'Nome do exame *', key: 'displayName' },
+                    { label: 'Categoria', key: 'category' },
+                    { label: 'Unidade', key: 'unit' },
+                  ].map(({ label, key }) => (
+                    <div key={key}>
+                      <label className="text-xs text-muted-foreground">{label}</label>
+                      <input
+                        value={qrForm[key as keyof typeof qrForm]}
+                        onChange={(e) => setQrForm((f) => ({ ...f, [key]: e.target.value }))}
+                        className="w-full border rounded-lg px-3 py-1.5 text-sm mt-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  ))}
+                  <div className="flex gap-2 pt-1">
+                    <button onClick={() => setShowQR(false)} className="flex-1 border rounded-lg py-1.5 text-sm hover:bg-slate-50">Voltar</button>
+                    <button
+                      onClick={handleQuickRegisterAndAdd}
+                      disabled={qrSaving}
+                      className="flex-1 bg-blue-600 text-white rounded-lg py-1.5 text-sm hover:bg-blue-700 disabled:opacity-50"
+                    >
+                      {qrSaving ? 'Salvando...' : 'Salvar e adicionar'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+      </>
     )
   }
 
@@ -361,7 +475,23 @@ export function ResultsTable({ analysisId, results: initialResults, analysisStat
               <span className="text-muted-foreground">normal</span>
             </span>
           )}
-          <div className="ml-auto flex gap-2">
+          <div className="ml-auto flex items-center gap-3">
+            <button
+              onClick={handleToggleDescription}
+              className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-700 transition-colors"
+              title="Exibir/ocultar descrição dos exames no relatório"
+            >
+              <span className={cn(
+                'relative inline-flex h-4 w-7 items-center rounded-full transition-colors',
+                showDescription ? 'bg-blue-500' : 'bg-slate-200'
+              )}>
+                <span className={cn(
+                  'inline-block h-3 w-3 rounded-full bg-white shadow transition-transform',
+                  showDescription ? 'translate-x-3.5' : 'translate-x-0.5'
+                )} />
+              </span>
+              Descrição no relatório
+            </button>
             {!isFinalized && (
               <>
                 <Button variant="outline" size="sm" onClick={openAddModal}>

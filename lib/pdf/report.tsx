@@ -15,6 +15,7 @@ export interface ReportResult {
   refMax: number | null
   status: ResultStatus
   professionalNote: string | null
+  description: string | null
   category: string | null
 }
 
@@ -33,6 +34,7 @@ export interface ReportData {
     collectedAt: Date
     labName: string | null
     notes: string | null
+    showDescription: boolean
   }
   results: ReportResult[]
 }
@@ -163,6 +165,7 @@ const s = StyleSheet.create({
   td: { fontSize: 8.5 },
   tdBold: { fontSize: 8.5, fontFamily: 'Helvetica-Bold' },
   note: { fontSize: 7.5, color: '#64748b', marginTop: 1, fontStyle: 'italic' },
+  description: { fontSize: 7.5, color: '#94a3b8', marginTop: 2, fontStyle: 'italic' },
 
   // Status dot
   statusDot: {
@@ -275,7 +278,8 @@ export function ReportDocument({ data }: { data: ReportData }) {
                 </View>
                 {/* Rows */}
                 {rows.map((r, i) => {
-                  const isLast = i === rows.length - 1 && !r.professionalNote
+                  const showDesc = analysis.showDescription && !!r.description
+                  const isLast = i === rows.length - 1 && !r.professionalNote && !showDesc
                   const rowStyle = isLast ? s.tableRowLast : s.tableRow
                   const statusColor = STATUS_COLOR[r.status]
                   return (
@@ -299,8 +303,13 @@ export function ReportDocument({ data }: { data: ReportData }) {
                         </View>
                       </View>
                       {r.professionalNote ? (
-                        <View style={[isLast ? s.tableRowLast : s.tableRow, { paddingTop: 0, paddingBottom: 5 }]}>
+                        <View style={[showDesc ? s.tableRow : (isLast ? s.tableRowLast : s.tableRow), { paddingTop: 0, paddingBottom: 5 }]}>
                           <Text style={[s.note, { flex: 1 }]}>↳ {r.professionalNote}</Text>
+                        </View>
+                      ) : null}
+                      {showDesc ? (
+                        <View style={[i === rows.length - 1 ? s.tableRowLast : s.tableRow, { paddingTop: 0, paddingBottom: 5 }]}>
+                          <Text style={[s.description, { flex: 1 }]}>{r.description}</Text>
                         </View>
                       ) : null}
                     </View>

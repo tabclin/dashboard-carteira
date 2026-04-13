@@ -364,7 +364,7 @@ export function NewAnalysisForm({ patients, preselectedPatientId }: NewAnalysisF
       if (!res.ok) throw new Error(data.error ?? 'Erro ao salvar')
 
       toast.success('Análise criada!')
-      router.push(`/check-exames/analises/${data.id}`)
+      router.push(`/check-exames/pacientes/${patientId}`)
       router.refresh()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Erro inesperado')
