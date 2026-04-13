@@ -62,6 +62,7 @@ export function ResultsTable({ analysisId, results: initialResults, analysisStat
   const [results, setResults] = useState(initialResults)
   const [finalizing, setFinalizing] = useState(false)
   const [showDescription, setShowDescription] = useState(initialShowDescription)
+  const [savingDescription, setSavingDescription] = useState(false)
   type ActiveFilter = null | 'unlinked' | 'duplicates' | number
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>(null)
 
@@ -235,6 +236,7 @@ export function ResultsTable({ analysisId, results: initialResults, analysisStat
   async function handleToggleDescription() {
     const next = !showDescription
     setShowDescription(next)
+    setSavingDescription(true)
     try {
       const res = await fetch(`/api/ckex/analyses/${analysisId}`, {
         method: 'PATCH',
@@ -244,19 +246,18 @@ export function ResultsTable({ analysisId, results: initialResults, analysisStat
       const data = await res.json()
       if (!res.ok) {
         toast.error(`Erro ao salvar: ${JSON.stringify(data)}`)
-        setShowDescription(!next) // reverte
+        setShowDescription(!next)
         return
       }
-      // Sincroniza com o valor retornado pelo servidor
       if (typeof data.showDescription === 'boolean') {
         setShowDescription(data.showDescription)
-        if (data.showDescription !== next) {
-          toast.error(`Servidor não atualizou o valor (retornou: ${data.showDescription})`)
-        }
       }
+      toast.success(next ? 'Descrição ativada no relatório' : 'Descrição desativada no relatório')
     } catch (e) {
       toast.error(`Erro de rede: ${String(e)}`)
       setShowDescription(!next)
+    } finally {
+      setSavingDescription(false)
     }
   }
 
@@ -496,12 +497,14 @@ export function ResultsTable({ analysisId, results: initialResults, analysisStat
           <div className="ml-auto flex items-center gap-3">
             <button
               onClick={handleToggleDescription}
-              className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-700 transition-colors"
+              disabled={savingDescription}
+              className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-700 transition-colors disabled:opacity-50"
               title="Exibir/ocultar descrição dos exames no relatório"
             >
               <span className={cn(
                 'relative inline-flex h-4 w-7 items-center rounded-full transition-colors',
-                showDescription ? 'bg-blue-500' : 'bg-slate-200'
+                showDescription ? 'bg-blue-500' : 'bg-slate-200',
+                savingDescription && 'opacity-60'
               )}>
                 <span className={cn(
                   'inline-block h-3 w-3 rounded-full bg-white shadow transition-transform',
