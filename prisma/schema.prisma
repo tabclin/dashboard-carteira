@@ -33,7 +33,11 @@ model Professional {
   catalog                ExamCatalog[]
   patients               Patient[]
   examReferenceOverrides ExamReferenceOverride[]
-  organization           Organization  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  driAvaliacoes          DriAvaliacao[]
+  planoAlimentares       PlanoAlimentar[]
+  orientacoes            Orientacao[]
+  orientacaoTemplates    OrientacaoTemplate[]
+  organization           Organization    @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
   @@map("professionals")
 }
@@ -51,6 +55,7 @@ model Patient {
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime     @updatedAt @map("updated_at")
   analyses       Analysis[]
+  orientacoes    Orientacao[]
   professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
 
   @@map("patients")
@@ -223,4 +228,89 @@ enum UsageAction {
   AI_INTERPRETATION
   REPORT_GENERATED
   REPORT_SENT
+}
+
+model DriAvaliacao {
+  id             String       @id @default(cuid())
+  professionalId String       @map("professional_id")
+  patientName    String?      @map("patient_name")
+  data           DateTime     @default(now())
+
+  // Dados de entrada
+  ageMonths      Int          @map("age_months")
+  weightKg       Decimal      @map("weight_kg")      @db.Decimal(6, 2)
+  heightCm       Decimal      @map("height_cm")      @db.Decimal(6, 2)
+  sexInput       String       @map("sex_input")       // 'M', 'F' ou 'both'
+  activityLevel  String       @map("activity_level")
+  growthFactorM  Decimal?     @map("growth_factor_m") @db.Decimal(6, 2)
+  growthFactorF  Decimal?     @map("growth_factor_f") @db.Decimal(6, 2)
+  intakeKcal     Decimal?     @map("intake_kcal")     @db.Decimal(8, 2)
+
+  // Resultados
+  eerMasc        Decimal?     @map("eer_masc")         @db.Decimal(8, 2)
+  eerFem         Decimal?     @map("eer_fem")          @db.Decimal(8, 2)
+  kcalPerKgMasc  Decimal?     @map("kcal_per_kg_masc") @db.Decimal(8, 5)
+  kcalPerKgFem   Decimal?     @map("kcal_per_kg_fem")  @db.Decimal(8, 5)
+  ageCategory    String       @map("age_category")
+
+  notes          String?
+  conduta        String?
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt      @map("updated_at")
+
+  professional   Professional   @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  planos         PlanoAlimentar[]
+
+  @@map("dri_avaliacoes")
+}
+
+model PlanoAlimentar {
+  id             String        @id @default(cuid())
+  professionalId String        @map("professional_id")
+  avaliacaoId    String?       @map("avaliacao_id")
+  patientName    String?       @map("patient_name")
+  eerKcal        Decimal       @map("eer_kcal")   @db.Decimal(8, 2)
+  ageMonths      Int           @map("age_months")
+  ageGroup       String        @map("age_group")
+  grupos         Json
+  refeicoes      Json
+  condutaIa      String?       @map("conduta_ia")
+  notes          String?
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt      @map("updated_at")
+  professional   Professional  @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  avaliacao      DriAvaliacao? @relation(fields: [avaliacaoId], references: [id], onDelete: SetNull)
+
+  @@map("planos_alimentares")
+}
+
+model OrientacaoTemplate {
+  id             String       @id @default(cuid())
+  professionalId String       @map("professional_id")
+  title          String
+  secoes         Json         @default("[]")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt      @map("updated_at")
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  orientacoes    Orientacao[]
+
+  @@map("orientacao_templates")
+}
+
+model Orientacao {
+  id               String              @id @default(cuid())
+  professionalId   String              @map("professional_id")
+  patientId        String?             @map("patient_id")
+  templateId       String?             @map("template_id")
+  patientName      String?             @map("patient_name")
+  title            String
+  secoes           Json                @default("[]")
+  orientacaoDate   DateTime?           @map("orientacao_date") @db.Date
+  createdAt        DateTime            @default(now()) @map("created_at")
+  updatedAt        DateTime            @updatedAt      @map("updated_at")
+  professional   Professional        @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  patient        Patient?            @relation(fields: [patientId], references: [id], onDelete: SetNull)
+  template       OrientacaoTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+
+  @@map("orientacoes")
 }

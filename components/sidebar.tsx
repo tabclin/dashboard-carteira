@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import {
   Users,
+  UserRound,
   LogOut,
   Stethoscope,
   ChevronRight,
@@ -16,9 +17,12 @@ import {
   CalendarDays,
   FileText,
   FlaskConical,
+  Flame,
+  ScrollText,
 } from 'lucide-react'
 
 const navItems = [
+  { href: '/pacientes',  label: 'Pacientes',  icon: UserRound    },
   { href: '/carteira',   label: 'Carteira',   icon: Users        },
   { href: '/agenda',     label: 'Agenda',     icon: CalendarDays },
   { href: '/prontuario', label: 'Prontuário', icon: FileText     },
@@ -146,6 +150,48 @@ export default function Sidebar({ userEmail, collapsed = false, onToggle }: Side
             <>
               <span className="flex-1">Check Exames</span>
               {pathname?.startsWith('/check-exames') && <ChevronRight className="w-3 h-3 text-brand-400 opacity-70" />}
+            </>
+          )}
+        </Link>
+
+        <Link
+          href="/dri"
+          title={collapsed ? 'DRI' : undefined}
+          className={cn(
+            'sidebar-link group',
+            pathname?.startsWith('/dri') && 'sidebar-link-active',
+            collapsed && 'justify-center px-0 py-2.5'
+          )}
+        >
+          <Flame className={cn(
+            'w-4 h-4 flex-shrink-0 transition-colors',
+            pathname?.startsWith('/dri') ? 'text-brand-400' : 'text-slate-500 group-hover:text-slate-300'
+          )} />
+          {!collapsed && (
+            <>
+              <span className="flex-1">DRI</span>
+              {pathname?.startsWith('/dri') && <ChevronRight className="w-3 h-3 text-brand-400 opacity-70" />}
+            </>
+          )}
+        </Link>
+
+        <Link
+          href="/orientacoes"
+          title={collapsed ? 'Orientações' : undefined}
+          className={cn(
+            'sidebar-link group',
+            pathname?.startsWith('/orientacoes') && 'sidebar-link-active',
+            collapsed && 'justify-center px-0 py-2.5'
+          )}
+        >
+          <ScrollText className={cn(
+            'w-4 h-4 flex-shrink-0 transition-colors',
+            pathname?.startsWith('/orientacoes') ? 'text-brand-400' : 'text-slate-500 group-hover:text-slate-300'
+          )} />
+          {!collapsed && (
+            <>
+              <span className="flex-1">Orientações</span>
+              {pathname?.startsWith('/orientacoes') && <ChevronRight className="w-3 h-3 text-brand-400 opacity-70" />}
             </>
           )}
         </Link>
