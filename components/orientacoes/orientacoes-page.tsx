@@ -95,8 +95,8 @@ function isMeaningfulEdit(currentHtml: string, resolvedTplHtml: string): boolean
   const rWords = words(resolved)
 
   const changed =
-    [...cWords].filter(w => !rWords.has(w)).length +
-    [...rWords].filter(w => !cWords.has(w)).length
+    Array.from(cWords).filter(w => !rWords.has(w)).length +
+    Array.from(rWords).filter(w => !cWords.has(w)).length
 
   const total = Math.max(cWords.size, rWords.size, 1)
 
