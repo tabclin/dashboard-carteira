@@ -28,7 +28,15 @@ export async function GET(
       patient: true,
       results: {
         orderBy: [{ category: 'asc' }, { sortOrder: 'asc' }],
-        include: { catalog: { select: { description: true } } },
+        include: {
+          catalog: {
+            select: {
+              description: true,
+              refMinMale: true, refMaxMale: true,
+              refMinFemale: true, refMaxFemale: true,
+            },
+          },
+        },
       },
     },
   })
@@ -41,6 +49,9 @@ export async function GET(
     professional.id,
   )
 
+  const patientSex = analysis.patient.sex
+  const isFemale = patientSex === 'F' || patientSex?.toLowerCase() === 'feminino' || patientSex?.toLowerCase() === 'female'
+
   const reportData: ReportData = {
     professional: {
       name: professional.name,
@@ -49,7 +60,7 @@ export async function GET(
     },
     patient: {
       name: analysis.patient.name,
-      sex: analysis.patient.sex,
+      sex: patientSex,
       birthDate: analysis.patient.birthDate,
     },
     analysis: {
@@ -60,12 +71,27 @@ export async function GET(
     },
     results: analysis.results.map((r) => {
       const matched = refMap.get(`${r.examSlug}::${r.unit ?? ''}`)
+
+      // Fallback to catalog sex-specific refs (same logic as screen)
+      let catalogRefMin: number | null = null
+      let catalogRefMax: number | null = null
+      if (r.catalog) {
+        const c = r.catalog
+        if (isFemale) {
+          catalogRefMin = c.refMinFemale != null ? Number(c.refMinFemale) : (c.refMinMale != null ? Number(c.refMinMale) : null)
+          catalogRefMax = c.refMaxFemale != null ? Number(c.refMaxFemale) : (c.refMaxMale != null ? Number(c.refMaxMale) : null)
+        } else {
+          catalogRefMin = c.refMinMale != null ? Number(c.refMinMale) : (c.refMinFemale != null ? Number(c.refMinFemale) : null)
+          catalogRefMax = c.refMaxMale != null ? Number(c.refMaxMale) : (c.refMaxFemale != null ? Number(c.refMaxFemale) : null)
+        }
+      }
+
       return {
         examName: r.examName,
         value: r.value,
         unit: r.unit,
-        refMin: matched?.refMin ?? (r.refMin != null ? Number(r.refMin) : null),
-        refMax: matched?.refMax ?? (r.refMax != null ? Number(r.refMax) : null),
+        refMin: matched?.refMin ?? catalogRefMin ?? (r.refMin != null ? Number(r.refMin) : null),
+        refMax: matched?.refMax ?? catalogRefMax ?? (r.refMax != null ? Number(r.refMax) : null),
         status: r.status,
         professionalNote: r.professionalNote,
         description: r.catalog?.description ?? null,
