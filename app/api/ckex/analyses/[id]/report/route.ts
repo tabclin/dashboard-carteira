@@ -8,14 +8,14 @@ import type { MatchedRef } from '@/lib/exam/normalize'
 import { ReportDocument } from '@/lib/pdf/report'
 import type { ReportData } from '@/lib/pdf/report'
 
-// Mirrors matchedRefText from result-row.tsx
+// Mirrors matchedRefText from result-row.tsx (uses >= / <= instead of ≥ / ≤ — Helvetica/WinAnsi doesn't support those glyphs)
 function matchedRefText(ref: MatchedRef): string {
   const { refMin, refMax, unit } = ref
   const u = unit ? ` ${unit}` : ''
   if (refMin != null && refMax != null) return `${refMin} a ${refMax}${u}`
-  if (refMin != null) return `≥ ${refMin}${u}`
-  if (refMax != null) return `≤ ${refMax}${u}`
-  return '—'
+  if (refMin != null) return `>= ${refMin}${u}`
+  if (refMax != null) return `<= ${refMax}${u}`
+  return '-'
 }
 
 type CatalogRefs = {
@@ -39,8 +39,8 @@ function catalogRefText(cat: CatalogRefs, isFemale: boolean): string | null {
   }
   const u = cat.unit ? ` ${cat.unit}` : ''
   if (min != null && max != null) return `${min} a ${max}${u}`
-  if (min != null) return `≥ ${min}${u}`
-  if (max != null) return `≤ ${max}${u}`
+  if (min != null) return `>= ${min}${u}`
+  if (max != null) return `<= ${max}${u}`
   return null
 }
 
