@@ -4,8 +4,59 @@ import React from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import { findMatchedRefsForResults } from '@/lib/exam/normalize'
+import type { MatchedRef } from '@/lib/exam/normalize'
 import { ReportDocument } from '@/lib/pdf/report'
 import type { ReportData } from '@/lib/pdf/report'
+
+// Mirrors matchedRefText from result-row.tsx
+function matchedRefText(ref: MatchedRef): string {
+  const { refMin, refMax, unit } = ref
+  const u = unit ? ` ${unit}` : ''
+  if (refMin != null && refMax != null) return `${refMin} a ${refMax}${u}`
+  if (refMin != null) return `≥ ${refMin}${u}`
+  if (refMax != null) return `≤ ${refMax}${u}`
+  return '—'
+}
+
+type CatalogRefs = {
+  refMinMale: { toNumber(): number } | null
+  refMaxMale: { toNumber(): number } | null
+  refMinFemale: { toNumber(): number } | null
+  refMaxFemale: { toNumber(): number } | null
+  unit: string | null
+}
+
+// Mirrors catalogRefText from result-row.tsx
+function catalogRefText(cat: CatalogRefs, isFemale: boolean): string | null {
+  let min: number | null
+  let max: number | null
+  if (isFemale) {
+    min = cat.refMinFemale != null ? cat.refMinFemale.toNumber() : (cat.refMinMale != null ? cat.refMinMale.toNumber() : null)
+    max = cat.refMaxFemale != null ? cat.refMaxFemale.toNumber() : (cat.refMaxMale != null ? cat.refMaxMale.toNumber() : null)
+  } else {
+    min = cat.refMinMale != null ? cat.refMinMale.toNumber() : (cat.refMinFemale != null ? cat.refMinFemale.toNumber() : null)
+    max = cat.refMaxMale != null ? cat.refMaxMale.toNumber() : (cat.refMaxFemale != null ? cat.refMaxFemale.toNumber() : null)
+  }
+  const u = cat.unit ? ` ${cat.unit}` : ''
+  if (min != null && max != null) return `${min} a ${max}${u}`
+  if (min != null) return `≥ ${min}${u}`
+  if (max != null) return `≤ ${max}${u}`
+  return null
+}
+
+function computeRefDisplay(
+  matched: MatchedRef | null | undefined,
+  catalog: CatalogRefs | null,
+  isFemale: boolean,
+  refText: string | null,
+): string {
+  // Priority 1: exam_reference (most specific: unit + sex + age)
+  if (matched != null) return matchedRefText(matched)
+  // Priority 2: catalog sex-specific refs (user-registered)
+  if (catalog) return catalogRefText(catalog, isFemale) ?? '—'
+  // Priority 3: raw AI-extracted text from lab PDF
+  return refText ?? '—'
+}
 
 export const runtime = 'nodejs'
 
@@ -71,27 +122,11 @@ export async function GET(
     },
     results: analysis.results.map((r) => {
       const matched = refMap.get(`${r.examSlug}::${r.unit ?? ''}`)
-
-      // Fallback to catalog sex-specific refs (same logic as screen)
-      let catalogRefMin: number | null = null
-      let catalogRefMax: number | null = null
-      if (r.catalog) {
-        const c = r.catalog
-        if (isFemale) {
-          catalogRefMin = c.refMinFemale != null ? Number(c.refMinFemale) : (c.refMinMale != null ? Number(c.refMinMale) : null)
-          catalogRefMax = c.refMaxFemale != null ? Number(c.refMaxFemale) : (c.refMaxMale != null ? Number(c.refMaxMale) : null)
-        } else {
-          catalogRefMin = c.refMinMale != null ? Number(c.refMinMale) : (c.refMinFemale != null ? Number(c.refMinFemale) : null)
-          catalogRefMax = c.refMaxMale != null ? Number(c.refMaxMale) : (c.refMaxFemale != null ? Number(c.refMaxFemale) : null)
-        }
-      }
-
       return {
         examName: r.examName,
         value: r.value,
         unit: r.unit,
-        refMin: matched?.refMin ?? catalogRefMin ?? (r.refMin != null ? Number(r.refMin) : null),
-        refMax: matched?.refMax ?? catalogRefMax ?? (r.refMax != null ? Number(r.refMax) : null),
+        refDisplay: computeRefDisplay(matched, r.catalog, isFemale, (r as any).refText ?? null),
         status: r.status,
         professionalNote: r.professionalNote,
         description: r.catalog?.description ?? null,

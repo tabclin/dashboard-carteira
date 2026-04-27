@@ -11,8 +11,7 @@ export interface ReportResult {
   examName: string
   value: string | null
   unit: string | null
-  refMin: number | null
-  refMax: number | null
+  refDisplay: string
   status: ResultStatus
   professionalNote: string | null
   description: string | null
@@ -60,12 +59,6 @@ function sexLabel(sex: string | null): string {
   return ''
 }
 
-function refRangeText(min: number | null, max: number | null): string {
-  if (min !== null && max !== null) return `${min} a ${max}`
-  if (min !== null) return `≥ ${min}`
-  if (max !== null) return `≤ ${max}`
-  return '—'
-}
 
 const STATUS_COLOR: Record<ResultStatus, string> = {
   NORMAL: '#16a34a',
@@ -290,8 +283,7 @@ export function ReportDocument({ data }: { data: ReportData }) {
                           {r.value ?? '—'}{r.unit ? ` ${r.unit}` : ''}
                         </Text>
                         <Text style={[s.td, s.colRef]}>
-                          {refRangeText(r.refMin, r.refMax)}
-                          {r.unit && (r.refMin !== null || r.refMax !== null) ? ` ${r.unit}` : ''}
+                          {r.refDisplay}
                         </Text>
                         <View style={[s.statusRow, s.colStatus]}>
                           {r.status !== 'NOT_EVALUATED' && (
