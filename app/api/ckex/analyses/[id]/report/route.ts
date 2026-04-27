@@ -83,6 +83,7 @@ export async function GET(
           catalog: {
             select: {
               description: true,
+              unit: true,
               refMinMale: true, refMaxMale: true,
               refMinFemale: true, refMaxFemale: true,
             },
