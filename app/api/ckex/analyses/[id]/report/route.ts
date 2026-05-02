@@ -127,7 +127,7 @@ export async function GET(
         examName: r.examName,
         value: r.value,
         unit: r.unit,
-        refDisplay: computeRefDisplay(matched, r.catalog, isFemale, (r as any).refText ?? null),
+        refDisplay: computeRefDisplay(matched, r.catalog, isFemale, r.refText ?? null),
         status: r.status,
         professionalNote: r.professionalNote,
         description: r.catalog?.description ?? null,
