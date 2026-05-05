@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 
 export const runtime = 'nodejs'
+export const maxDuration = 60
 
 async function getProfessionalId(): Promise<string | null> {
   try {
@@ -21,6 +22,8 @@ async function getProfessionalId(): Promise<string | null> {
 
 async function extractTextFromPdf(buffer: Buffer): Promise<string> {
   const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs')
+  // Disable web worker — mandatory for Node.js/serverless environments (Vercel)
+  pdfjsLib.GlobalWorkerOptions.workerSrc = ''
 
   const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(buffer) })
   const pdf = await loadingTask.promise
