@@ -62,7 +62,14 @@ export async function POST(request: Request) {
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
-    const text = await extractTextFromPdf(buffer)
+    // pdfjs-dist can fail in serverless environments (Vercel) — treat as non-fatal
+    // If it fails, text stays empty → triggers extractWithClaudePDF below
+    let text = ''
+    try {
+      text = await extractTextFromPdf(buffer)
+    } catch (pdfErr) {
+      console.warn('[PDF Extract] pdfjs falhou, usando Claude PDF vision:', pdfErr)
+    }
 
     const hasAI = !!(process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_API_KEY !== 'your-anthropic-api-key-here')
     const textIsEmpty = text.trim().length < 200
