@@ -68,6 +68,7 @@ export function AnalysisNotes({ analysisId, initialNotes, analysisStatus }: Anal
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       FontFamily,
     ],
+    immediatelyRender: false,
     content: initialNotes ?? '',
     editable: !isFinalized,
     editorProps: {
