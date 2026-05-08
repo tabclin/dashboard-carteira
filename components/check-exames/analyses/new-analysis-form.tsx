@@ -197,44 +197,63 @@ export function NewAnalysisForm({ patients, preselectedPatientId }: NewAnalysisF
       toast.error('Selecione um arquivo PDF')
       return
     }
+    if (!selectedPatientId) {
+      toast.error('Selecione um paciente antes de carregar o PDF')
+      return
+    }
+    if (!collectedAt) {
+      toast.error('Informe a data da coleta antes de carregar o PDF')
+      return
+    }
+
     setPdfFile(file)
     setExtracting(true)
 
     try {
+      // Extração via IA
       const formData = new FormData()
       formData.append('file', file)
       if (patientSex) formData.append('patientSex', patientSex)
       if (patientBirthDate) formData.append('patientBirthDate', new Date(patientBirthDate).toISOString())
 
-      const res = await fetch('/api/ckex/pdf/extract', { method: 'POST', body: formData })
-      const data = await res.json()
+      const extractRes = await fetch('/api/ckex/pdf/extract', { method: 'POST', body: formData })
+      const extractData = await extractRes.json()
+      if (!extractRes.ok) throw new Error(extractData.error)
 
-      if (!res.ok) throw new Error(data.error)
-
-      if (data.results.length === 0) {
-        toast.warning('Nenhum exame reconhecido automaticamente. Adicione manualmente.')
-      } else {
-        const aiLabel = data.usedAI ? ' (via IA)' : ''
-        toast.success(`${data.results.length} exame(s) extraído(s) com sucesso${aiLabel}!`)
-      }
-
-      setResults((data.results as ExtractedResult[]).map((r) => ({
+      const extracted: ReviewResult[] = (extractData.results as ExtractedResult[]).map((r) => ({
         ...r,
         status: autoEvaluate(
           r.valueNumeric,
           r.matchedRef?.refMin ?? r.refMin,
           r.matchedRef?.refMax ?? r.refMax,
         ),
-      })))
-      setRawText(data.rawText ?? '')
-      setUsedAI(data.usedAI ?? false)
-      setStep('review')
+      }))
+
+      // Salva automaticamente sem passar pela prévia
+      const saveRes = await fetch('/api/ckex/analyses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          patientId: selectedPatientId,
+          collectedAt,
+          labName: labName || null,
+          results: extracted.filter((r) => r.examName.trim()),
+        }),
+      })
+
+      const saveData = await saveRes.json()
+      if (!saveRes.ok) throw new Error(saveData.error ?? 'Erro ao salvar análise')
+
+      const aiLabel = extractData.usedAI ? ' (via IA)' : ''
+      toast.success(`${extracted.length} exame(s) extraído(s)${aiLabel}!`)
+      router.push(`/check-exames/analises/${saveData.id}`)
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Erro ao processar PDF')
+      setPdfFile(null)
     } finally {
       setExtracting(false)
     }
-  }, [])
+  }, [selectedPatientId, collectedAt, labName, patientSex, patientBirthDate, router])
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault()
