@@ -40,6 +40,23 @@ export interface ReportData {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
+function stripHtml(html: string): string {
+  return html
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<li>/gi, '• ')
+    .replace(/<\/li>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+}
+
 function formatDate(d: Date): string {
   return new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(d)
 }
@@ -316,7 +333,7 @@ export function ReportDocument({ data }: { data: ReportData }) {
         {analysis.notes ? (
           <View style={s.obsSection}>
             <Text style={s.obsTitle}>Observações</Text>
-            <Text style={s.obsText}>{analysis.notes}</Text>
+            <Text style={s.obsText}>{stripHtml(analysis.notes)}</Text>
           </View>
         ) : null}
 
