@@ -41,7 +41,7 @@ export interface ReportData {
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function formatDate(d: Date): string {
-  return new Intl.DateTimeFormat('pt-BR').format(d)
+  return new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(d)
 }
 
 function calcAge(birthDate: Date): string {

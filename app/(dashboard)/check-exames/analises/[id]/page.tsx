@@ -11,7 +11,7 @@ type AnalysisStatus = $Enums.AnalysisStatus
 import { findMatchedRefsForResults } from '@/lib/exam/normalize'
 
 function formatDate(date: Date) {
-  return new Intl.DateTimeFormat('pt-BR').format(new Date(date))
+  return new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(date))
 }
 
 export default async function AnaliseDetailPage({
