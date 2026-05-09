@@ -11,16 +11,18 @@ interface Props {
 
 export default async function ProntuarioPacientePage({ params }: Props) {
   const supabase = createClient()
-  const nome = decodeURIComponent(params.pacienteNome)
+  const param = decodeURIComponent(params.pacienteNome)
 
-  // Buscar dados básicos do paciente (apenas colunas que existem na tabela)
-  const { data: pacienteData } = await supabase
-    .from('pacientes')
-    .select('id, paciente, nascimento')
-    .eq('paciente', nome)
-    .maybeSingle()
+  // Suporte a navegação por UUID (paciente_id) ou por nome
+  const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(param)
+
+  const { data: pacienteData } = isUUID
+    ? await supabase.from('pacientes').select('id, paciente, nascimento').eq('id', param).maybeSingle()
+    : await supabase.from('pacientes').select('id, paciente, nascimento').ilike('paciente', param.trim()).maybeSingle()
 
   if (!pacienteData) notFound()
+
+  const nome = pacienteData.paciente
 
   // Queries paralelas: carteira + prontuário + template
   const [

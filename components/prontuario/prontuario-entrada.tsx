@@ -87,7 +87,7 @@ export default function ProntuarioEntrada({ hojeAgendamentos, proximosAgendament
             {resultados.map(p => (
               <button
                 key={p.id}
-                onClick={() => router.push(`/prontuario/${encodeURIComponent(p.paciente)}`)}
+                onClick={() => router.push(`/prontuario/${p.id}`)}
                 className="w-full text-left px-4 py-3 hover:bg-slate-50 flex items-center justify-between transition-colors border-b border-slate-100 last:border-0"
               >
                 <div>
@@ -134,7 +134,7 @@ export default function ProntuarioEntrada({ hojeAgendamentos, proximosAgendament
                 {hojeAgendamentos.map(ag => (
                   <button
                     key={ag.id}
-                    onClick={() => router.push(`/prontuario/${encodeURIComponent(ag.paciente_nome)}`)}
+                    onClick={() => router.push(`/prontuario/${ag.paciente_id ?? encodeURIComponent(ag.paciente_nome)}`)}
                     className="card w-full text-left flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors"
                   >
                     <div className="text-center flex-shrink-0 w-14">
@@ -169,7 +169,7 @@ export default function ProntuarioEntrada({ hojeAgendamentos, proximosAgendament
                       {ags.map(ag => (
                         <button
                           key={ag.id}
-                          onClick={() => router.push(`/prontuario/${encodeURIComponent(ag.paciente_nome)}`)}
+                          onClick={() => router.push(`/prontuario/${ag.paciente_id ?? encodeURIComponent(ag.paciente_nome)}`)}
                           className="card w-full text-left flex items-center gap-3 p-3 hover:bg-slate-50 transition-colors"
                         >
                           <p className="text-xs text-slate-500 w-12 flex-shrink-0">{ag.hora_inicio}</p>
@@ -202,7 +202,7 @@ export default function ProntuarioEntrada({ hojeAgendamentos, proximosAgendament
                 return (
                   <button
                     key={i}
-                    onClick={() => router.push(`/prontuario/${encodeURIComponent(p.paciente)}`)}
+                    onClick={() => router.push(`/prontuario/${p.id}`)}
                     className="w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-700 transition-colors group"
                   >
                     {/* Avatar inicial */}
