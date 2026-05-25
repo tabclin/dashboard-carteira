@@ -19,6 +19,7 @@ function normalizeForSearch(s: string) {
 import type { ExtractedResult } from '@/lib/pdf/parser'
 import { autoEvaluate } from '@/lib/exam/evaluate'
 import type { ResultStatus } from '@prisma/client'
+import { extractPdfAction } from '@/app/actions/extract-pdf'
 
 interface CatalogEntry {
   id: string
@@ -197,6 +198,10 @@ export function NewAnalysisForm({ patients, preselectedPatientId }: NewAnalysisF
       toast.error('Selecione um arquivo PDF')
       return
     }
+    if (file.size > 20 * 1024 * 1024) {
+      toast.error('PDF muito grande. Tamanho máximo: 20 MB')
+      return
+    }
     if (!selectedPatientId) {
       toast.error('Selecione um paciente antes de carregar o PDF')
       return
@@ -210,15 +215,14 @@ export function NewAnalysisForm({ patients, preselectedPatientId }: NewAnalysisF
     setExtracting(true)
 
     try {
-      // Extração via IA
+      // Extração via Server Action (sem limite de 4.5 MB do Vercel)
       const formData = new FormData()
       formData.append('file', file)
       if (patientSex) formData.append('patientSex', patientSex)
       if (patientBirthDate) formData.append('patientBirthDate', new Date(patientBirthDate).toISOString())
 
-      const extractRes = await fetch('/api/ckex/pdf/extract', { method: 'POST', body: formData })
-      const extractData = await extractRes.json()
-      if (!extractRes.ok) throw new Error(extractData.error)
+      const extractData = await extractPdfAction(formData)
+      if (extractData.error) throw new Error(extractData.error)
 
       const extracted: ReviewResult[] = (extractData.results as ExtractedResult[]).map((r) => ({
         ...r,
@@ -244,7 +248,7 @@ export function NewAnalysisForm({ patients, preselectedPatientId }: NewAnalysisF
       const saveData = await saveRes.json()
       if (!saveRes.ok) throw new Error(saveData.error ?? 'Erro ao salvar análise')
 
-      const aiLabel = extractData.usedAI ? ' (via IA)' : ''
+      const aiLabel = extractData.usedAI ? ' (via IA)' : ' (parser)'
       toast.success(`${extracted.length} exame(s) extraído(s)${aiLabel}!`)
       router.push(`/check-exames/analises/${saveData.id}`)
     } catch (err) {

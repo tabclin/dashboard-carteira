@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   experimental: {
     serverActions: {
-      bodySizeLimit: '10mb',
+      bodySizeLimit: '25mb',
     },
     serverComponentsExternalPackages: ['pdfjs-dist', '@prisma/client', '@prisma/adapter-pg', 'pg'],
   },
