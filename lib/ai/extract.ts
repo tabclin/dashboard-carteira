@@ -74,7 +74,7 @@ export async function extractWithClaudePDF(pdfBuffer: Buffer): Promise<Extracted
   const base64 = pdfBuffer.toString('base64')
 
   const message = await client.messages.create({
-    model: 'claude-sonnet-4-6',   // Sonnet suporta leitura nativa de PDF
+    model: 'claude-haiku-4-5',   // Haiku suporta PDF nativo e é 5-10x mais rápido
     max_tokens: MAX_TOKENS,
     messages: [
       {

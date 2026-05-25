@@ -62,13 +62,17 @@ export async function POST(request: Request) {
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
-    // pdfjs-dist can fail in serverless environments (Vercel) — treat as non-fatal
-    // If it fails, text stays empty → triggers extractWithClaudePDF below
+    // pdfjs can hang indefinitely in serverless — cap at 5 s then fall through to Claude
     let text = ''
     try {
-      text = await extractTextFromPdf(buffer)
+      text = await Promise.race([
+        extractTextFromPdf(buffer),
+        new Promise<string>((_, reject) =>
+          setTimeout(() => reject(new Error('pdfjs timeout')), 5000)
+        ),
+      ])
     } catch (pdfErr) {
-      console.warn('[PDF Extract] pdfjs falhou, usando Claude PDF vision:', pdfErr)
+      console.warn('[PDF Extract] pdfjs falhou/timeout, usando Claude PDF vision:', pdfErr)
     }
 
     const hasAI = !!(process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_API_KEY !== 'your-anthropic-api-key-here')
