@@ -20,6 +20,7 @@ import type { ExtractedResult } from '@/lib/pdf/parser'
 import { autoEvaluate } from '@/lib/exam/evaluate'
 import type { ResultStatus } from '@prisma/client'
 import { extractPdfAction } from '@/app/actions/extract-pdf'
+import { createClient } from '@/lib/supabase/client'
 
 interface CatalogEntry {
   id: string
@@ -198,8 +199,8 @@ export function NewAnalysisForm({ patients, preselectedPatientId }: NewAnalysisF
       toast.error('Selecione um arquivo PDF')
       return
     }
-    if (file.size > 20 * 1024 * 1024) {
-      toast.error('PDF muito grande. Tamanho máximo: 20 MB')
+    if (file.size > 100 * 1024 * 1024) {
+      toast.error('PDF muito grande. Tamanho máximo: 100 MB')
       return
     }
     if (!selectedPatientId) {
@@ -214,10 +215,27 @@ export function NewAnalysisForm({ patients, preselectedPatientId }: NewAnalysisF
     setPdfFile(file)
     setExtracting(true)
 
+    const supabase = createClient()
+    let storagePath: string | null = null
+
     try {
-      // Extração via Server Action (sem limite de 4.5 MB do Vercel)
+      // Upload direto ao Supabase Storage (contorna o limite de 4.5 MB do Vercel)
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Sessão expirada. Faça login novamente.')
+
+      storagePath = `${user.id}/${Date.now()}.pdf`
+      const { error: uploadError } = await supabase.storage
+        .from('ckex-pdf-temp')
+        .upload(storagePath, file, { contentType: 'application/pdf' })
+      if (uploadError) throw new Error(`Erro ao enviar PDF: ${uploadError.message}`)
+
+      const { data: signedData } = await supabase.storage
+        .from('ckex-pdf-temp')
+        .createSignedUrl(storagePath, 300)
+      if (!signedData?.signedUrl) throw new Error('Erro ao gerar URL temporária do PDF')
+
       const formData = new FormData()
-      formData.append('file', file)
+      formData.append('signedUrl', signedData.signedUrl)
       if (patientSex) formData.append('patientSex', patientSex)
       if (patientBirthDate) formData.append('patientBirthDate', new Date(patientBirthDate).toISOString())
 
@@ -255,6 +273,9 @@ export function NewAnalysisForm({ patients, preselectedPatientId }: NewAnalysisF
       toast.error(err instanceof Error ? err.message : 'Erro ao processar PDF')
       setPdfFile(null)
     } finally {
+      if (storagePath) {
+        supabase.storage.from('ckex-pdf-temp').remove([storagePath]).catch(() => null)
+      }
       setExtracting(false)
     }
   }, [selectedPatientId, collectedAt, labName, patientSex, patientBirthDate, router])
@@ -631,7 +652,7 @@ export function NewAnalysisForm({ patients, preselectedPatientId }: NewAnalysisF
                       <p className="text-sm font-medium">Arraste o PDF aqui</p>
                       <p className="text-xs text-muted-foreground mt-1">ou clique para selecionar</p>
                     </div>
-                    <p className="text-xs text-muted-foreground">Máximo 20MB</p>
+                    <p className="text-xs text-muted-foreground">Máximo 100MB</p>
                   </>
                 )}
                 <input

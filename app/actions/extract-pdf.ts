@@ -45,12 +45,20 @@ async function extractTextFromPdf(buffer: Buffer): Promise<string> {
 
 export async function extractPdfAction(formData: FormData): Promise<ExtractPdfResult> {
   try {
+    const signedUrl = formData.get('signedUrl') as string | null
     const file = formData.get('file') as File | null
-    if (!file) return { results: [], rawText: '', usedAI: false, error: 'Nenhum arquivo enviado' }
-    if (file.type !== 'application/pdf') return { results: [], rawText: '', usedAI: false, error: 'Apenas arquivos PDF são aceitos' }
 
-    const arrayBuffer = await file.arrayBuffer()
-    const buffer = Buffer.from(arrayBuffer)
+    let buffer: Buffer
+
+    if (signedUrl) {
+      const response = await fetch(signedUrl)
+      if (!response.ok) throw new Error(`Erro ao baixar PDF do storage: ${response.status}`)
+      buffer = Buffer.from(await response.arrayBuffer())
+    } else {
+      if (!file) return { results: [], rawText: '', usedAI: false, error: 'Nenhum arquivo enviado' }
+      if (file.type !== 'application/pdf') return { results: [], rawText: '', usedAI: false, error: 'Apenas arquivos PDF são aceitos' }
+      buffer = Buffer.from(await file.arrayBuffer())
+    }
 
     // pdfjs can hang indefinitely in serverless — cap at 5s then fall through to Claude
     let text = ''
