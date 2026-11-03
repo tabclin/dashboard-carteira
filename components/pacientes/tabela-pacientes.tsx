@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { Search, FlaskConical, Flame, ScrollText, ChevronRight } from 'lucide-react'
+import { Search, FlaskConical, Flame, ScrollText, ChevronRight, ArrowDown, ArrowUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { dataBR } from '@/lib/idade'
 
@@ -26,6 +26,31 @@ const FERRAMENTAS = [
 ] as const
 
 type Filtro = 'todos' | (typeof FERRAMENTAS)[number]['campo']
+type Ordem = { campo: 'nome' | 'ultima'; dir: 'asc' | 'desc' }
+
+/** Última consulta: sem consulta fica sempre no fim; empate desempata pelo nome. */
+function comparar(o: Ordem) {
+  const porNome = (a: LinhaPaciente, b: LinhaPaciente) => a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' })
+  return (a: LinhaPaciente, b: LinhaPaciente) => {
+    if (o.campo === 'nome') return (o.dir === 'asc' ? 1 : -1) * porNome(a, b)
+    if (a.ultimaConsulta === b.ultimaConsulta) return porNome(a, b)
+    if (!a.ultimaConsulta) return 1
+    if (!b.ultimaConsulta) return -1
+    return (o.dir === 'asc' ? 1 : -1) * a.ultimaConsulta.localeCompare(b.ultimaConsulta)
+  }
+}
+
+function TituloOrdenavel({ rotulo, campo, ordem, mudar }: { rotulo: string; campo: Ordem['campo']; ordem: Ordem; mudar: (c: Ordem['campo']) => void }) {
+  const ativo = ordem.campo === campo
+  const Seta = ordem.dir === 'asc' ? ArrowUp : ArrowDown
+  return (
+    <th className="px-4 py-3 font-semibold" aria-sort={ativo ? (ordem.dir === 'asc' ? 'ascending' : 'descending') : 'none'}>
+      <button type="button" onClick={() => mudar(campo)} className={cn('inline-flex items-center gap-1 uppercase tracking-wide hover:text-slate-800', ativo && 'text-slate-800')}>
+        {rotulo}{ativo ? <Seta className="w-3.5 h-3.5" aria-hidden /> : <ArrowDown className="w-3.5 h-3.5 opacity-0" aria-hidden />}
+      </button>
+    </th>
+  )
+}
 
 /** Selos de cada ferramenta: coloridos com a quantidade quando já foi feita, apagados quando não. */
 export function Indicadores({ p }: { p: Pick<LinhaPaciente, 'exames' | 'dri' | 'orientacoes'> }) {
@@ -50,6 +75,12 @@ export function TabelaPacientes({ linhas }: { linhas: LinhaPaciente[] }) {
   const [busca, setBusca] = useState('')
   const [filtro, setFiltro] = useState<Filtro>('todos')
   const [limite, setLimite] = useState(POR_PAGINA)
+  // padrão: quem consultou mais recentemente primeiro
+  const [ordem, setOrdem] = useState<Ordem>({ campo: 'ultima', dir: 'desc' })
+  const mudarOrdem = (campo: Ordem['campo']) => {
+    setOrdem((o) => o.campo === campo ? { campo, dir: o.dir === 'asc' ? 'desc' : 'asc' } : { campo, dir: campo === 'nome' ? 'asc' : 'desc' })
+    setLimite(POR_PAGINA)
+  }
 
   const indice = useMemo(() => linhas.map((l) => ({ l, k: chave(l.nome) })), [linhas])
   const filtradas = useMemo(() => {
@@ -57,7 +88,8 @@ export function TabelaPacientes({ linhas }: { linhas: LinhaPaciente[] }) {
     return indice
       .filter(({ l, k }) => termos.every((t) => k.includes(t)) && (filtro === 'todos' || l[filtro] > 0))
       .map(({ l }) => l)
-  }, [indice, busca, filtro])
+      .sort(comparar(ordem))
+  }, [indice, busca, filtro, ordem])
   const contagem = (f: Filtro) => (f === 'todos' ? linhas.length : linhas.filter((l) => l[f] > 0).length)
 
   return (
@@ -84,8 +116,8 @@ export function TabelaPacientes({ linhas }: { linhas: LinhaPaciente[] }) {
         <table className="w-full text-sm">
           <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
             <tr>
-              <th className="px-4 py-3 font-semibold">Paciente</th>
-              <th className="px-4 py-3 font-semibold">Última consulta</th>
+              <TituloOrdenavel rotulo="Paciente" campo="nome" ordem={ordem} mudar={mudarOrdem} />
+              <TituloOrdenavel rotulo="Última consulta" campo="ultima" ordem={ordem} mudar={mudarOrdem} />
               <th className="px-4 py-3 font-semibold">Ferramentas</th>
               <th className="px-4 py-3"><span className="sr-only">Detalhes</span></th>
             </tr>
