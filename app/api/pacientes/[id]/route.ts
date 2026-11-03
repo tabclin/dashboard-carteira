@@ -70,17 +70,6 @@ export async function PATCH(
     },
   })
 
-  // Sincronizar nome e data com Supabase se tiver clinikpiId
-  if (existing.clinikpiId && (d.name !== undefined || d.birthDate !== undefined)) {
-    await auth.supabase
-      .from('pacientes')
-      .update({
-        ...(d.name      !== undefined ? { paciente:    d.name }          : {}),
-        ...(d.birthDate !== undefined ? { nascimento:  d.birthDate ?? null } : {}),
-      })
-      .eq('id', existing.clinikpiId)
-  }
-
   return NextResponse.json(patient)
 }
 
@@ -106,13 +95,6 @@ export async function DELETE(
   }
 
   await prisma.patient.delete({ where: { id } })
-
-  if (existing.clinikpiId) {
-    await auth.supabase
-      .from('pacientes')
-      .update({ ativo: false })
-      .eq('id', existing.clinikpiId)
-  }
 
   return NextResponse.json({ ok: true })
 }

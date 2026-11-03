@@ -31,7 +31,7 @@ export async function middleware(request: NextRequest) {
 
   // Rotas públicas
   const publicRoutes = ['/login']
-  const isPublic = publicRoutes.includes(pathname) || pathname.startsWith('/telemedicina')
+  const isPublic = publicRoutes.includes(pathname)
 
   // Não autenticado tentando acessar rota protegida
   if (!user && !isPublic) {

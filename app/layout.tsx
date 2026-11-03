@@ -3,11 +3,8 @@ import { Toaster } from 'sonner'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'TabClin Consultoria — Gestão de Pacientes',
-  description: 'Sistema de gestão de carteira de pacientes',
-  icons: {
-    icon: '/favicon.ico',
-  },
+  title: 'TabClin Consultoria — Ferramentas clínicas',
+  description: 'Check Exames, DRI e Orientações',
 }
 
 export default function RootLayout({

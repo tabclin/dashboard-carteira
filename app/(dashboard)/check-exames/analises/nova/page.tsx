@@ -27,38 +27,6 @@ export default async function NovaAnalisePage({
     )
   }
 
-  // Busca pacientes direto da tabela nativa do ClinKPI
-  const { data: pacientes } = await supabase
-    .from('pacientes')
-    .select('id, paciente, nascimento')
-    .eq('user_id', user.id)
-    .eq('ativo', true)
-    .order('paciente')
-
-  // Garante que cada paciente existe na tabela `patients` (Prisma/CkEx)
-  if (pacientes && pacientes.length > 0) {
-    await Promise.all(
-      pacientes.map((p) =>
-        prisma.patient.upsert({
-          where: { clinikpiId: p.id },
-          update: { name: p.paciente },
-          create: {
-            id: p.id,
-            professionalId: professional.id,
-            name: p.paciente,
-            birthDate: (() => {
-              if (!p.nascimento) return null
-              const d = new Date(p.nascimento)
-              return isNaN(d.getTime()) ? null : d
-            })(),
-            clinikpiId: p.id,
-          },
-        })
-      )
-    )
-  }
-
-  // Busca a lista final com os IDs da tabela patients
   const patients = await prisma.patient.findMany({
     where: { professionalId: professional.id },
     orderBy: { name: 'asc' },

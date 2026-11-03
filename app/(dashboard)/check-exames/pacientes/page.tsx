@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
+import { obterProfissional } from '@/lib/profissional'
 import type { $Enums } from '@prisma/client'
 type AnalysisStatus = $Enums.AnalysisStatus
 import { PacientesList } from '@/components/check-exames/pacientes/pacientes-list'
@@ -9,65 +10,12 @@ export default async function PacientesCheckPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
 
-  let professional = await prisma.professional.findUnique({
-    where: { authUserId: user.id },
-  })
-
-  if (!professional) {
-    try {
-      const org = await prisma.organization.upsert({
-        where: { id: `org_${user.id}` },
-        update: {},
-        create: { id: `org_${user.id}`, name: user.email ?? 'Organização' },
-      })
-      professional = await prisma.professional.create({
-        data: {
-          orgId: org.id,
-          authUserId: user.id,
-          name: user.email?.split('@')[0] ?? 'Profissional',
-          email: user.email ?? '',
-        },
-      })
-    } catch {
-      professional = await prisma.professional.findUnique({ where: { authUserId: user.id } })
-    }
-    if (!professional) return (
-      <div className="p-6 text-center text-sm text-slate-500">
-        Erro ao configurar perfil. Recarregue a página.
-      </div>
-    )
-  }
-
-  // Sincroniza pacientes da tabela nativa do ClinKPI
-  const { data: pacientes } = await supabase
-    .from('pacientes')
-    .select('id, paciente, nascimento')
-    .eq('user_id', user.id)
-    .eq('ativo', true)
-    .order('paciente')
-
-  if (pacientes && pacientes.length > 0) {
-    const professionalId = professional.id
-    await Promise.all(
-      pacientes.map((p) =>
-        prisma.patient.upsert({
-          where: { clinikpiId: p.id },
-          update: { name: p.paciente },
-          create: {
-            id: p.id,
-            professionalId,
-            name: p.paciente,
-            birthDate: (() => {
-              if (!p.nascimento) return null
-              const d = new Date(p.nascimento)
-              return isNaN(d.getTime()) ? null : d
-            })(),
-            clinikpiId: p.id,
-          },
-        })
-      )
-    )
-  }
+  const professional = await obterProfissional(user)
+  if (!professional) return (
+    <div className="p-6 text-center text-sm text-slate-500">
+      Erro ao configurar perfil. Recarregue a página.
+    </div>
+  )
 
   const patients = await prisma.patient.findMany({
     where: {

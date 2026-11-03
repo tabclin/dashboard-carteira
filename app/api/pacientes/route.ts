@@ -66,24 +66,9 @@ export async function POST(request: Request) {
   const dup = all.find(p => normalize(p.name) === normalize(name))
   if (dup) return NextResponse.json({ error: 'duplicate', existingId: dup.id, existingName: dup.name }, { status: 409 })
 
-  // Criar no Supabase (ClinKPI nativo)
-  const { data: paciente, error: sbErr } = await auth.supabase
-    .from('pacientes')
-    .insert({ paciente: name, nascimento: birthDate || null, user_id: auth.user.id, ativo: true })
-    .select('id')
-    .single()
-
-  if (sbErr || !paciente) {
-    console.error('[pacientes POST] Supabase:', sbErr)
-    return NextResponse.json({ error: 'Erro ao criar paciente' }, { status: 500 })
-  }
-
   const parsedBirth = birthDate ? new Date(birthDate) : null
-  const patient = await prisma.patient.upsert({
-    where: { clinikpiId: paciente.id },
-    update: { name, sex: sex ?? null, email: email ?? null, phone: phone ?? null, notes: notes ?? null },
-    create: {
-      id:             paciente.id,
+  const patient = await prisma.patient.create({
+    data: {
       professionalId: auth.professional.id,
       name,
       birthDate:      parsedBirth && !isNaN(parsedBirth.getTime()) ? parsedBirth : null,
@@ -91,7 +76,6 @@ export async function POST(request: Request) {
       email:          email  ?? null,
       phone:          phone  ?? null,
       notes:          notes  ?? null,
-      clinikpiId:     paciente.id,
     },
   })
 

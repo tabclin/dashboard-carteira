@@ -41,29 +41,13 @@ export async function POST(request: Request) {
     )
   }
 
-  // Inserir na tabela nativa do ClinKPI
-  const { data: paciente, error: pacienteError } = await supabase
-    .from('pacientes')
-    .insert({ paciente: name, nascimento: birthDate || null, user_id: user.id, ativo: true })
-    .select('id')
-    .single()
-
-  if (pacienteError || !paciente) {
-    return NextResponse.json({ error: 'Erro ao criar paciente' }, { status: 500 })
-  }
-
-  // Upsert na tabela patients (Prisma/CkEx)
   const parsedBirth = birthDate ? new Date(birthDate) : null
-  const patient = await prisma.patient.upsert({
-    where: { clinikpiId: paciente.id },
-    update: { name, sex: sex ?? null },
-    create: {
-      id: paciente.id,
+  const patient = await prisma.patient.create({
+    data: {
       professionalId: professional.id,
       name,
       birthDate: parsedBirth && !isNaN(parsedBirth.getTime()) ? parsedBirth : null,
       sex: sex ?? null,
-      clinikpiId: paciente.id,
     },
   })
 
