@@ -10,7 +10,7 @@ export default function PacientesLayout({ children }: { children: React.ReactNod
           </div>
           <div>
             <h1 className="text-lg font-bold text-slate-800 leading-tight">Pacientes</h1>
-            <p className="text-xs text-slate-500">Gestão completa do cadastro de pacientes</p>
+            <p className="text-xs text-slate-500">Cada paciente com seus exames, DRI e orientações</p>
           </div>
         </div>
       </div>

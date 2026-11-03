@@ -7,9 +7,9 @@ import { ArrowLeft } from 'lucide-react'
 export default async function NovaAnalisePage({
   searchParams,
 }: {
-  searchParams: Promise<{ patientId?: string }>
+  searchParams: Promise<{ patientId?: string; de?: string }>
 }) {
-  const { patientId: preselectedPatientId } = await searchParams
+  const { patientId: preselectedPatientId, de } = await searchParams
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -35,9 +35,9 @@ export default async function NovaAnalisePage({
 
   // Determina de onde o usuário veio para o link de voltar
   const backHref = preselectedPatientId
-    ? `/check-exames/pacientes/${preselectedPatientId}`
+    ? (de === 'paciente' ? `/pacientes/${preselectedPatientId}` : `/check-exames/pacientes/${preselectedPatientId}`)
     : '/check-exames/pacientes'
-  const backLabel = preselectedPatientId ? 'Voltar ao paciente' : 'Voltar aos pacientes'
+  const backLabel = de === 'paciente' ? 'Voltar à ficha do paciente' : preselectedPatientId ? 'Voltar ao paciente' : 'Voltar aos pacientes'
 
   return (
     <div className="p-6 max-w-2xl">

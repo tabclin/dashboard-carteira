@@ -104,11 +104,11 @@ function isMeaningfulEdit(currentHtml: string, resolvedTplHtml: string): boolean
   return changed / total >= 0.10
 }
 
-export function OrientacoesPage() {
+export function OrientacoesPage({ pacienteInicial = null }: { pacienteInicial?: Patient | null } = {}) {
   const [tab, setTab] = useState<Tab>('criar')
 
   // ── Criar state ────────────────────────────────────────────────
-  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null)
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(pacienteInicial)
   const [patientQuery,    setPatientQuery]     = useState('')
   const [patientResults,  setPatientResults]   = useState<Patient[]>([])
   const [showPatientDD,   setShowPatientDD]    = useState(false)

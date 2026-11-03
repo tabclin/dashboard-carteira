@@ -52,10 +52,15 @@ export async function POST(request: Request) {
   }
 
   const d = parsed.data
+  // o plano herda o paciente da avaliação de origem
+  const avaliacao = d.avaliacaoId
+    ? await prisma.driAvaliacao.findFirst({ where: { id: d.avaliacaoId, professionalId: professional.id }, select: { patientId: true } })
+    : null
   try {
     const plano = await prisma.planoAlimentar.create({
       data: {
         professionalId: professional.id,
+        patientId:      avaliacao?.patientId ?? null,
         avaliacaoId:    d.avaliacaoId ?? null,
         patientName:    d.patientName ?? null,
         eerKcal:        d.eerKcal,

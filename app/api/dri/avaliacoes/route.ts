@@ -5,6 +5,7 @@ import { z } from 'zod'
 
 const saveSchema = z.object({
   patientName:   z.string().optional().nullable(),
+  patientId:     z.string().optional().nullable(),
   ageMonths:     z.number().int().min(0).max(227),
   weightKg:      z.number().positive(),
   heightCm:      z.number().positive(),
@@ -57,10 +58,15 @@ export async function POST(request: Request) {
   }
 
   const d = parsed.data
+  // só liga a um paciente do próprio login
+  const paciente = d.patientId
+    ? await prisma.patient.findFirst({ where: { id: d.patientId, professionalId: professional.id }, select: { id: true } })
+    : null
   try {
     const avaliacao = await prisma.driAvaliacao.create({
       data: {
         professionalId: professional.id,
+        patientId:      paciente?.id ?? null,
         patientName:    d.patientName   ?? null,
         ageMonths:      d.ageMonths,
         weightKg:       d.weightKg,

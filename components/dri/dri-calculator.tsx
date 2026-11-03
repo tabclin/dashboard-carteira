@@ -58,8 +58,28 @@ function adequacyStatus(pct: number): { label: string; color: string; bg: string
   return              { label: 'Adequado', color: 'text-green-700',  bg: 'bg-green-50 border-green-200' }
 }
 
-export default function DRICalculator() {
-  const [form,           setForm]           = useState<FormState>(DEFAULT)
+type PacienteDRI = { id: string; name: string; birthDate: string | null; sex: string | null }
+
+/** Preenche nome, idade (anos/meses) e sexo a partir do cadastro do paciente. */
+function aplicarPaciente(form: FormState, patient: PacienteDRI): FormState {
+  const novo = { ...form, patientName: patient.name }
+  // "AAAA-MM-DD..." lido como data local (new Date("AAAA-MM-DD") é UTC e no Brasil cai no dia anterior)
+  const m = patient.birthDate?.match(/^(\d{4})-(\d{2})-(\d{2})/)
+  if (!m) return novo
+  const birth = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]))
+  const now    = new Date()
+  let years    = now.getFullYear() - birth.getFullYear()
+  let months   = now.getMonth()    - birth.getMonth()
+  if (now.getDate() < birth.getDate()) months--   // ainda não completou o mês
+  if (months < 0) { years--; months += 12 }
+  const sexVal = patient.sex === 'M' ? 'M' : patient.sex === 'F' ? 'F' : form.sex
+  return { ...novo, ageYears: String(years), ageMonths: String(months), sex: sexVal as SexSelection }
+}
+
+export default function DRICalculator({ pacienteInicial = null }: { pacienteInicial?: PacienteDRI | null } = {}) {
+  const [form,           setForm]           = useState<FormState>(() => pacienteInicial ? aplicarPaciente(DEFAULT, pacienteInicial) : DEFAULT)
+  // paciente do cadastro escolhido (o nome digitado sem escolher fica sem vínculo)
+  const [patientId,      setPatientId]      = useState<string | null>(pacienteInicial?.id ?? null)
   const [results,        setResults]        = useState<EERResult[] | null>(null)
   const [macros,         setMacros]         = useState<MacroResult[] | null>(null)
   const [error,          setError]          = useState<string | null>(null)
@@ -148,6 +168,7 @@ export default function DRICalculator() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           patientName:   form.patientName || null,
+          patientId:     patientId,
           ageMonths:     totalMonths,
           weightKg:      parseFloat(form.weightKg),
           heightCm:      parseFloat(form.heightCm),
@@ -238,25 +259,8 @@ export default function DRICalculator() {
                 <PatientSearchInput
                   value={form.patientName}
                   onChange={(name, patient) => {
-                    setForm(p => ({ ...p, patientName: name }))
-                    if (patient?.birthDate) {
-                      const birth = new Date(patient.birthDate)
-                      if (!isNaN(birth.getTime())) {
-                        const now    = new Date()
-                        let years    = now.getFullYear() - birth.getFullYear()
-                        let months   = now.getMonth()    - birth.getMonth()
-                        if (months < 0) { years--; months += 12 }
-                        if (now.getDate() < birth.getDate()) months = Math.max(0, months - 1)
-                        const sexVal = patient.sex === 'M' ? 'M' : patient.sex === 'F' ? 'F' : form.sex
-                        setForm(p => ({
-                          ...p,
-                          patientName: patient.name,
-                          ageYears:    String(years),
-                          ageMonths:   String(months),
-                          sex:         sexVal as SexSelection,
-                        }))
-                      }
-                    }
+                    setPatientId(patient?.id ?? null)
+                    setForm(p => patient ? aplicarPaciente(p, patient) : ({ ...p, patientName: name }))
                   }}
                 />
               </div>
