@@ -30,3 +30,6 @@ Thumbs.db
 # Build
 build/
 dist/
+
+# Cache do TypeScript
+*.tsbuildinfo

@@ -1,16 +1,11 @@
-import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
-import { obterProfissional } from '@/lib/profissional'
+import { profissionalDoLogin } from '@/lib/profissional'
 import type { $Enums } from '@prisma/client'
 type AnalysisStatus = $Enums.AnalysisStatus
 import { PacientesList } from '@/components/check-exames/pacientes/pacientes-list'
 
 export default async function PacientesCheckPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-
-  const professional = await obterProfissional(user)
+  const professional = await profissionalDoLogin()
   if (!professional) return (
     <div className="p-6 text-center text-sm text-slate-500">
       Erro ao configurar perfil. Recarregue a página.

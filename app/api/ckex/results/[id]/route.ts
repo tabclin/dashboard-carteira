@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { usuarioAtual } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import { z } from 'zod'
 import { slugify } from '@/lib/utils'
@@ -19,8 +19,7 @@ const updateSchema = z.object({
 })
 
 async function getProfessional() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await usuarioAtual()
   if (!user) return null
   return prisma.professional.findUnique({ where: { authUserId: user.id } })
 }

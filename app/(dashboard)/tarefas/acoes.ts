@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
+import { usuarioAtual } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import { obterProfissional } from '@/lib/profissional'
 import { hojeSP, dataDoBanco, diasPadrao } from '@/lib/tarefas'
@@ -12,8 +12,7 @@ const TIPOS = TIPOS_TAREFA.map((t) => t.tipo)
 const DIA = /^\d{4}-\d{2}-\d{2}$/
 
 async function profissionalAtual() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await usuarioAtual()
   if (!user) throw new Error('Sessão expirada. Entre de novo.')
   const p = await obterProfissional(user)
   if (!p) throw new Error('Perfil não encontrado.')

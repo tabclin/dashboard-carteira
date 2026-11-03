@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { usuarioAtual } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import Anthropic from '@anthropic-ai/sdk'
 import { z } from 'zod'
@@ -47,8 +47,7 @@ function ageText(totalMonths: number): string {
 }
 
 export async function POST(request: Request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await usuarioAtual()
   if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
 
   const professional = await prisma.professional.findUnique({ where: { authUserId: user.id } })

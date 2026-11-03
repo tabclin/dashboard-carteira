@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
+import { usuarioAtual } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import { obterProfissional } from '@/lib/profissional'
 import { cifrar } from '@/lib/gestaods/chave'
@@ -14,8 +14,7 @@ type Resultado<T = object> = ({ ok: true } & T) | { ok: false; erro: string }
 
 /** Sempre o profissional do login atual: uma conta nunca mexe na chave ou nos dados de outra. */
 async function profissionalAtual() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await usuarioAtual()
   if (!user) throw new Error('Sessão expirada. Entre de novo.')
   const p = await obterProfissional(user)
   if (!p) throw new Error('Perfil não encontrado.')

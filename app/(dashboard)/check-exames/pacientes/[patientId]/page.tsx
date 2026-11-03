@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { usuarioAtual } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import { PatientHistory } from '@/components/check-exames/analyses/patient-history'
 import { findMatchedRefsForResults } from '@/lib/exam/normalize'
@@ -13,8 +13,7 @@ export default async function PatientDetailPage({
 }) {
   const { patientId } = await params
 
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await usuarioAtual()
   if (!user) return null
 
   const professional = await prisma.professional.findUnique({

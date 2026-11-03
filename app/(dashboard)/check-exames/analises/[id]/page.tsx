@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { usuarioAtual } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import { ResultsTable } from '@/components/check-exames/analyses/results-table'
 import { AnalysisNotes } from '@/components/check-exames/analyses/analysis-notes'
@@ -21,8 +21,7 @@ export default async function AnaliseDetailPage({
 }) {
   const { id } = await params
 
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await usuarioAtual()
   if (!user) return null
 
   const professional = await prisma.professional.findUnique({

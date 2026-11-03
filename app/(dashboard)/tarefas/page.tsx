@@ -1,8 +1,7 @@
 import Link from 'next/link'
 import { ListChecks, FlaskConical, ChevronRight } from 'lucide-react'
-import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
-import { obterProfissional } from '@/lib/profissional'
+import { profissionalDoLogin } from '@/lib/profissional'
 import { hojeSP, dataDoBanco } from '@/lib/tarefas'
 import { GRUPOS, grupoDoPrazo, somarDias, type Grupo } from '@/lib/tarefas-regras'
 import { dataBR } from '@/lib/idade'
@@ -17,10 +16,7 @@ const vista = (t: { id: string; tipo: string; prazo: Date; observacao: string | 
   ({ id: t.id, tipo: t.tipo, prazo: dia(t.prazo), observacao: t.observacao, status: t.status, concluidaComo: t.concluidaComo, paciente: { id: t.patient.id, nome: t.patient.name } })
 
 export default async function TarefasPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-  const prof = await obterProfissional(user)
+  const prof = await profissionalDoLogin()
   if (!prof) return null
   const hoje = hojeSP()
   const sel = { id: true, tipo: true, prazo: true, observacao: true, status: true, concluidaComo: true, patient: { select: { id: true, name: true } } }

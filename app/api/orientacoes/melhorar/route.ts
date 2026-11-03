@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { usuarioAtual } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import Anthropic from '@anthropic-ai/sdk'
 import type { SecaoValor } from '@/lib/orientacoes/types'
@@ -7,8 +7,7 @@ import type { SecaoValor } from '@/lib/orientacoes/types'
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 export async function POST(req: Request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await usuarioAtual()
   if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
 
   const professional = await prisma.professional.findUnique({ where: { authUserId: user.id } })

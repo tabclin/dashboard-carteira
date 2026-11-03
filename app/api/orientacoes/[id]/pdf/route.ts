@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { renderToBuffer } from '@react-pdf/renderer'
 import React from 'react'
-import { createClient } from '@/lib/supabase/server'
+import { usuarioAtual } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import { OrientacaoDocument } from '@/lib/pdf/orientacao'
 import type { SecaoValor } from '@/lib/orientacoes/types'
@@ -14,8 +14,7 @@ export async function GET(
 ) {
   const { id } = await params
 
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await usuarioAtual()
   if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
 
   const professional = await prisma.professional.findUnique({ where: { authUserId: user.id } })

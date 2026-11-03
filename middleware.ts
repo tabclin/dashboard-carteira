@@ -23,9 +23,9 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  // confere o login pela assinatura do token (local) e renova a sessão quando expira
+  const { data } = await supabase.auth.getClaims()
+  const user = data?.claims ?? null
 
   const { pathname } = request.nextUrl
 

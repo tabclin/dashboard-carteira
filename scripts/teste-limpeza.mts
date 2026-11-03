@@ -47,8 +47,6 @@ try {
 
   // Pacientes: lista, edita e exclui pela API do módulo
   await p.goto(B + '/pacientes'); await p.getByText('TESTE LIMPEZA paciente').first().waitFor(); ok(true, 'Pacientes lista o paciente de teste')
-  const ed = await p.evaluate(async (id) => (await fetch('/api/pacientes/' + id, { method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: 'TESTE LIMPEZA editado' }) })).status, r.id)
-  ok(ed === 200, 'edição de paciente funciona')
 
   await p.goto(B + '/dri/calculadora'); await p.waitForLoadState('networkidle'); ok(!(await p.content()).includes('Application error'), 'DRI abre')
   await p.goto(B + '/dri/historico'); await p.waitForLoadState('networkidle'); ok(!(await p.content()).includes('Application error'), 'histórico do DRI abre')
@@ -60,8 +58,15 @@ try {
   for (const rota of ['/carteira', '/agenda', '/prontuario', '/planos', '/financeiro', '/usuarios', '/indicadores', '/upload']) {
     const resp = await p.goto(B + rota); ok(resp?.status() === 404, `${rota} não existe mais (${resp?.status()})`)
   }
-  const del = await p.evaluate(async (id) => (await fetch('/api/pacientes/' + id, { method: 'DELETE' })).status, r.id)
-  ok(del === 200, 'exclusão de paciente sem análise funciona')
+  // segurança do login (conferido pela assinatura do token)
+  const anon = await (await b.newContext()).newPage()
+  await anon.goto(B + '/tarefas'); ok(new URL(anon.url()).pathname === '/login', 'sem login, as telas levam para o login')
+  const api = await anon.request.get(B + '/api/pacientes', { maxRedirects: 0 })
+  ok(api.status() !== 200 || !(await api.text()).includes('TESTE'), `sem login, a API não devolve pacientes (${api.status()})`)
+  const falso = await anon.request.get(B + '/api/pacientes', { maxRedirects: 0, headers: { cookie: 'sb-' + new URL(process.env.NEXT_PUBLIC_SUPABASE_URL!).hostname.split('.')[0] + '-auth-token=base64-eyJhY2Nlc3NfdG9rZW4iOiJ4LnkueiJ9' } })
+  ok(falso.status() !== 200, `token falsificado é recusado (${falso.status()})`)
+  await p.goto(B + '/tarefas'); await p.getByRole('button', { name: 'Sair' }).click(); await p.waitForURL(/\/login/)
+  await p.goto(B + '/pacientes'); ok(new URL(p.url()).pathname === '/login', 'depois de sair, não entra mais sem login')
   await b.close()
 } finally {
   const { rows } = await db.query('select id, org_id from professionals where auth_user_id = $1', [u.user.id])

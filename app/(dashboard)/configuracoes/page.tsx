@@ -1,7 +1,6 @@
 import { Settings } from 'lucide-react'
-import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
-import { obterProfissional } from '@/lib/profissional'
+import { profissionalDoLogin } from '@/lib/profissional'
 import { GestaoDSConfig } from '@/components/configuracoes/gestaods-config'
 import { ImportarPlanilha } from '@/components/configuracoes/importar-planilha'
 import type { ResumoImportacao } from '@/lib/gestaods/importar'
@@ -12,10 +11,7 @@ import { diasPadrao } from '@/lib/tarefas'
 export const maxDuration = 300
 
 export default async function ConfiguracoesPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-  const prof = await obterProfissional(user)
+  const prof = await profissionalDoLogin()
   if (!prof) return null
 
   // nunca lê a chave: só o final e o estado da última atualização

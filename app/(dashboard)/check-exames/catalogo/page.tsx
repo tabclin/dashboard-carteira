@@ -1,10 +1,9 @@
-import { createClient } from '@/lib/supabase/server'
+import { usuarioAtual } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { CatalogManager } from '@/components/check-exames/catalog/catalog-manager'
 
 export default async function CatalogoPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await usuarioAtual()
   if (!user) redirect('/login')
 
   return (

@@ -1,7 +1,6 @@
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
-import { obterProfissional } from '@/lib/profissional'
+import { profissionalDoLogin } from '@/lib/profissional'
 import { idadeTexto } from '@/lib/idade'
 import { TabelaPacientes, type LinhaPaciente } from '@/components/pacientes/tabela-pacientes'
 import { BotaoAtualizarGestaoDS } from '@/components/pacientes/botao-atualizar-gestaods'
@@ -12,10 +11,7 @@ export const maxDuration = 300
 const dia = (d: Date | null | undefined) => (d ? d.toISOString().slice(0, 10) : null)
 
 export default async function PacientesPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-  const prof = await obterProfissional(user)
+  const prof = await profissionalDoLogin()
   if (!prof) return null
 
   const [pacientes, consultas, integ] = await Promise.all([

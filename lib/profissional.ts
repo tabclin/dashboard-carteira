@@ -1,4 +1,6 @@
+import { cache } from 'react'
 import { prisma } from '@/lib/prisma/client'
+import { usuarioAtual } from '@/lib/supabase/server'
 
 /** Perfil do profissional do login; na primeira entrada cria a organização e o perfil. */
 export async function obterProfissional(user: { id: string; email?: string | null }) {
@@ -23,3 +25,9 @@ export async function obterProfissional(user: { id: string; email?: string | nul
     return prisma.professional.findUnique({ where: { authUserId: user.id } })
   }
 }
+
+/** Profissional do login atual, buscado uma vez por requisição (o menu e a página compartilham). */
+export const profissionalDoLogin = cache(async () => {
+  const user = await usuarioAtual()
+  return user ? obterProfissional(user) : null
+})

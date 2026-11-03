@@ -3,7 +3,7 @@
 import { parsePdfText } from '@/lib/pdf/parser'
 import { extractWithClaude, extractWithClaudePDF } from '@/lib/ai/extract'
 import { normalizeBatch } from '@/lib/exam/normalize'
-import { createClient } from '@/lib/supabase/server'
+import { usuarioAtual } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import type { ExtractedResult } from '@/lib/pdf/parser'
 
@@ -16,8 +16,7 @@ export interface ExtractPdfResult {
 
 async function getProfessionalId(): Promise<string | null> {
   try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const user = await usuarioAtual()
     if (!user) return null
     const professional = await prisma.professional.findUnique({ where: { authUserId: user.id } })
     return professional?.id ?? null

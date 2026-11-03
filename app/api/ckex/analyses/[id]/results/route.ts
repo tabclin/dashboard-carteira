@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { usuarioAtual } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import { slugify } from '@/lib/utils'
 import { findReference, resolveUnit } from '@/lib/exam/normalize'
 import { autoEvaluate } from '@/lib/exam/evaluate'
 
 async function getProfessional() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await usuarioAtual()
   if (!user) return null
   return prisma.professional.findUnique({ where: { authUserId: user.id } })
 }

@@ -1,9 +1,8 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, FlaskConical, Flame, ScrollText, CalendarCheck, Plus, FileDown, ChevronRight, LineChart, ListChecks } from 'lucide-react'
-import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
-import { obterProfissional } from '@/lib/profissional'
+import { profissionalDoLogin } from '@/lib/profissional'
 import { idadeTexto, dataBR } from '@/lib/idade'
 import { ANALYSIS_STATUS_CONFIG } from '@/types'
 import { Indicadores } from '@/components/pacientes/tabela-pacientes'
@@ -39,10 +38,7 @@ function Secao({ titulo, icone: Icone, cor, total, acao, children }: {
 const Vazio = ({ children }: { children: React.ReactNode }) => <p className="text-sm text-slate-400 py-2">{children}</p>
 
 export default async function FichaPacientePage({ params }: { params: { id: string } }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-  const prof = await obterProfissional(user)
+  const prof = await profissionalDoLogin()
   if (!prof) return null
 
   // só pacientes do próprio login

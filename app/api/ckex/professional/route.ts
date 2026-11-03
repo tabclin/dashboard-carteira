@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { usuarioAtual } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import { z } from 'zod'
 
@@ -11,8 +11,7 @@ const updateProfessionalSchema = z.object({
 
 // GET /api/ckex/professional — retorna o profissional logado (ou null)
 export async function GET() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await usuarioAtual()
   if (!user) return NextResponse.json(null)
 
   const professional = await prisma.professional.findUnique({ where: { authUserId: user.id } })
@@ -21,8 +20,7 @@ export async function GET() {
 
 // POST /api/ckex/professional — cria profissional + organização no onboarding
 export async function POST(request: Request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await usuarioAtual()
   if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
 
   // Verifica se já existe
@@ -54,8 +52,7 @@ export async function POST(request: Request) {
 
 // PATCH /api/ckex/professional — atualiza perfil do profissional logado
 export async function PATCH(request: Request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await usuarioAtual()
   if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
 
   const professional = await prisma.professional.findUnique({ where: { authUserId: user.id } })

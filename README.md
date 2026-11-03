@@ -23,3 +23,7 @@ Mudanças em `supabase/migrations`, aplicadas com `node scripts/aplicar-migracoe
 - `node --test scripts/teste-tarefas-regras.mts`: prazo sugerido e grupos das tarefas
 - `node scripts/teste-tarefas.mts`: tarefas (criar, prazos, concluir sozinha pelas ferramentas, isolamento entre logins)
 - `node scripts/teste-gestaods.mts`: Gestão DS (falso, em :3399) e planilhas, com dois logins temporários; suba o app com `GESTAODS_URL=http://localhost:3399`
+
+## Região
+
+O banco (Supabase) fica em São Paulo (sa-east-1); o `vercel.json` fixa as funções em `gru1` (São Paulo) para cada consulta ao banco não atravessar o continente.

@@ -1,8 +1,11 @@
-import { createClient } from '@/lib/supabase/server'
+import { usuarioAtual } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import { NewAnalysisForm } from '@/components/check-exames/analyses/new-analysis-form'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+
+// a leitura do PDF (extractPdfAction, com IA) roda nesta página e pode passar dos 10s padrão
+export const maxDuration = 60
 
 export default async function NovaAnalisePage({
   searchParams,
@@ -11,8 +14,7 @@ export default async function NovaAnalisePage({
 }) {
   const { patientId: preselectedPatientId, de } = await searchParams
 
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await usuarioAtual()
   if (!user) return null
 
   const professional = await prisma.professional.findUnique({
