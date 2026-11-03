@@ -37,6 +37,8 @@ model Professional {
   planoAlimentares       PlanoAlimentar[]
   orientacoes            Orientacao[]
   orientacaoTemplates    OrientacaoTemplate[]
+  consultas              Consulta[]
+  integracaoGestaoDS     IntegracaoGestaoDS?
   organization           Organization    @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
   @@map("professionals")
@@ -52,10 +54,16 @@ model Patient {
   sex            String?
   notes          String?
   clinikpiId     String?      @unique @map("clinikpi_id")
+  gestaodsId     Int?         @map("gestaods_id")
+  cpf            String?
+  cidade         String?
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime     @updatedAt @map("updated_at")
   analyses       Analysis[]
   orientacoes    Orientacao[]
+  consultas      Consulta[]
+  driAvaliacoes  DriAvaliacao[]
+  planosAlimentares PlanoAlimentar[]
   professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
 
   @@map("patients")
@@ -233,6 +241,7 @@ enum UsageAction {
 model DriAvaliacao {
   id             String       @id @default(cuid())
   professionalId String       @map("professional_id")
+  patientId      String?      @map("patient_id")
   patientName    String?      @map("patient_name")
   data           DateTime     @default(now())
 
@@ -259,6 +268,7 @@ model DriAvaliacao {
   updatedAt      DateTime       @updatedAt      @map("updated_at")
 
   professional   Professional   @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  patient        Patient?       @relation(fields: [patientId], references: [id], onDelete: SetNull)
   planos         PlanoAlimentar[]
 
   @@map("dri_avaliacoes")
@@ -267,6 +277,7 @@ model DriAvaliacao {
 model PlanoAlimentar {
   id             String        @id @default(cuid())
   professionalId String        @map("professional_id")
+  patientId      String?       @map("patient_id")
   avaliacaoId    String?       @map("avaliacao_id")
   patientName    String?       @map("patient_name")
   eerKcal        Decimal       @map("eer_kcal")   @db.Decimal(8, 2)
@@ -280,6 +291,7 @@ model PlanoAlimentar {
   updatedAt      DateTime      @updatedAt      @map("updated_at")
   professional   Professional  @relation(fields: [professionalId], references: [id], onDelete: Cascade)
   avaliacao      DriAvaliacao? @relation(fields: [avaliacaoId], references: [id], onDelete: SetNull)
+  patient        Patient?      @relation(fields: [patientId], references: [id], onDelete: SetNull)
 
   @@map("planos_alimentares")
 }
@@ -313,4 +325,42 @@ model Orientacao {
   template       OrientacaoTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
 
   @@map("orientacoes")
+}
+
+// Consultas realizadas, vindas do Gestão DS ou de planilha (supabase/migrations/0002)
+model Consulta {
+  id             String       @id @default(dbgenerated("(gen_random_uuid())::text"))
+  professionalId String       @map("professional_id")
+  patientId      String?      @map("patient_id")
+  pacienteNome   String       @map("paciente_nome")
+  data           DateTime     @db.Date
+  tipo           String?
+  tipoResumido   String       @default("outro") @map("tipo_resumido")
+  servico        String?
+  gestaodsId     Int?         @map("gestaods_id")
+  origem         String
+  createdAt      DateTime     @default(now()) @map("created_at")
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  patient        Patient?     @relation(fields: [patientId], references: [id], onDelete: SetNull)
+
+  @@index([patientId, data(sort: Desc)], map: "consultas_paciente_data")
+  @@index([professionalId, data], map: "consultas_profissional_data")
+  @@map("consultas")
+}
+
+// Chave do Gestão DS de cada login, criptografada pelo app (lib/gestaods/chave.ts)
+model IntegracaoGestaoDS {
+  professionalId      String       @id @map("professional_id")
+  tokenCifrado        String       @map("token_cifrado")
+  tokenFinal          String       @map("token_final")
+  medicoId            Int?         @map("medico_id")
+  ultimaSincronizacao DateTime?    @map("ultima_sincronizacao")
+  ultimoStatus        String?      @map("ultimo_status")
+  ultimoErro          String?      @map("ultimo_erro")
+  ultimoResumo        Json?        @map("ultimo_resumo")
+  createdAt           DateTime     @default(now()) @map("created_at")
+  updatedAt           DateTime     @default(now()) @updatedAt @map("updated_at")
+  professional        Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+
+  @@map("integracoes_gestaods")
 }

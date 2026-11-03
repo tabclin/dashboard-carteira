@@ -13,6 +13,7 @@ import {
   FlaskConical,
   Flame,
   ScrollText,
+  Settings,
 } from 'lucide-react'
 
 const navItems = [
@@ -128,6 +129,22 @@ export default function Sidebar({ userEmail, collapsed = false, onToggle }: Side
             <p className="text-slate-300 text-xs font-medium truncate">{userEmail}</p>
           </div>
         )}
+
+        <Link
+          href="/configuracoes"
+          title={collapsed ? 'Configurações' : undefined}
+          className={cn(
+            'sidebar-link group',
+            pathname?.startsWith('/configuracoes') && 'sidebar-link-active',
+            collapsed && 'justify-center px-0 py-2.5'
+          )}
+        >
+          <Settings className={cn(
+            'w-4 h-4 flex-shrink-0 transition-colors',
+            pathname?.startsWith('/configuracoes') ? 'text-brand-400' : 'text-slate-500 group-hover:text-slate-300'
+          )} />
+          {!collapsed && <span>Configurações</span>}
+        </Link>
 
         <button
           onClick={handleLogout}
