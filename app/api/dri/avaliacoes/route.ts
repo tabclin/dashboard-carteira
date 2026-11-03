@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import { z } from 'zod'
+import { concluirTarefas } from '@/lib/tarefas'
 
 const saveSchema = z.object({
   patientName:   z.string().optional().nullable(),
@@ -85,6 +86,7 @@ export async function POST(request: Request) {
         conduta:        d.conduta       ?? null,
       },
     })
+    await concluirTarefas(professional.id, avaliacao.patientId, 'dri')
     return NextResponse.json(avaliacao, { status: 201 })
   } catch (err) {
     console.error('[dri/avaliacoes POST]', err)

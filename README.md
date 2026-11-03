@@ -20,4 +20,6 @@ Mudanças em `supabase/migrations`, aplicadas com `node scripts/aplicar-migracoe
 - `node scripts/teste-limpeza.mts`: telas e cadastro, com login temporário (app em :3300)
 - `node --test scripts/teste-idade.mts`: idade e datas sem erro de fuso
 - `node scripts/teste-pacientes.mts`: lista e ficha de pacientes, atalhos para as ferramentas, isolamento entre logins (app em :3300)
+- `node --test scripts/teste-tarefas-regras.mts`: prazo sugerido e grupos das tarefas
+- `node scripts/teste-tarefas.mts`: tarefas (criar, prazos, concluir sozinha pelas ferramentas, isolamento entre logins)
 - `node scripts/teste-gestaods.mts`: Gestão DS (falso, em :3399) e planilhas, com dois logins temporários; suba o app com `GESTAODS_URL=http://localhost:3399`

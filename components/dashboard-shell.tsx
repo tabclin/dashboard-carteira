@@ -6,16 +6,18 @@ import { cn } from '@/lib/utils'
 
 interface DashboardShellProps {
   userEmail?: string
+  tarefasUrgentes?: number
   children: React.ReactNode
 }
 
-export default function DashboardShell({ userEmail, children }: DashboardShellProps) {
+export default function DashboardShell({ userEmail, tarefasUrgentes = 0, children }: DashboardShellProps) {
   const [collapsed, setCollapsed] = useState(false)
 
   return (
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar
         userEmail={userEmail}
+        tarefasUrgentes={tarefasUrgentes}
         collapsed={collapsed}
         onToggle={() => setCollapsed(p => !p)}
       />

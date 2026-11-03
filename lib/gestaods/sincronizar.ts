@@ -2,13 +2,14 @@
 import 'server-only'
 import { prisma } from '@/lib/prisma/client'
 import { decifrar } from './chave'
-import { buscarAtendimentos, buscarPacientes, ErroGestaoDS, type AtendimentoAPI } from './api'
-import { gravarImportacao, type ResumoImportacao } from './importar'
+import { buscarAtendimentos, buscarAgenda, buscarPacientes, ErroGestaoDS, type AtendimentoAPI } from './api'
+import { gravarImportacao, gravarProximosAgendamentos, type ResumoImportacao } from './importar'
 import { dataISO, type PacienteEntrada } from './vinculo'
 
 // Na primeira vez busca o histórico; depois, só os últimos meses (o período é substituído inteiro)
 const MESES_PRIMEIRA_VEZ = 60
 const MESES_DEPOIS = 6
+const AGENDA_DIAS = 180 // agenda futura usada para o "próximo retorno"
 
 const texto = (v: unknown) => {
   const s = typeof v === 'string' ? v.trim() : v == null ? '' : String(v).trim()
@@ -28,7 +29,8 @@ export async function sincronizarGestaoDS(professionalId: string): Promise<Resul
     const hoje = hojeSP()
     const ini = new Date(hoje); ini.setUTCMonth(ini.getUTCMonth() - (integracao.ultimaSincronizacao ? MESES_DEPOIS : MESES_PRIMEIRA_VEZ))
 
-    const [atendimentos, pac] = await Promise.all([buscarAtendimentos(token, ini, hoje), buscarPacientes(token, hoje.getUTCFullYear())])
+    const fimAgenda = new Date(hoje); fimAgenda.setUTCDate(fimAgenda.getUTCDate() + AGENDA_DIAS)
+    const [atendimentos, pac, agenda] = await Promise.all([buscarAtendimentos(token, ini, hoje), buscarPacientes(token, hoje.getUTCFullYear()), buscarAgenda(token, hoje, fimAgenda)])
 
     // CPF e cidade vêm do atendimento mais recente de cada paciente; nascimento, dos aniversariantes
     const nascimento = new Map(pac.aniversariantes.map((p) => [p.paciente_id, dataISO(p.nascimento)]))
@@ -56,7 +58,12 @@ export async function sincronizarGestaoDS(professionalId: string): Promise<Resul
       return d && nome ? [{ gestaodsId: a.id ?? null, pacienteGestaodsId: a.paciente?.id ?? null, pacienteCpf: texto(a.paciente?.cpf), pacienteNome: nome, data: d, tipo: texto(a.tipo), servico: texto(a.servico) }] : []
     })
 
-    const resumo = { ...(await gravarImportacao(professionalId, 'gestaods', pacientes, { itens, periodo: [iso(ini), iso(hoje)] })), segundos: Math.round((Date.now() - inicio) / 100) / 10 }
+    const importacao = await gravarImportacao(professionalId, 'gestaods', pacientes, { itens, periodo: [iso(ini), iso(hoje)] })
+    const comRetorno = await gravarProximosAgendamentos(professionalId, iso(hoje), agenda.flatMap((a) => {
+      const d = dataISO(a.data_agendamento), nome = texto(a.paciente?.nome)
+      return d && nome ? [{ nome, data: d, valido: !a.cancelado && !a.faltou && !a.finalizado }] : []
+    }))
+    const resumo = { ...importacao, comRetorno, segundos: Math.round((Date.now() - inicio) / 100) / 10 }
     await prisma.integracaoGestaoDS.update({
       where: { professionalId },
       data: { ultimaSincronizacao: new Date(), ultimoStatus: 'ok', ultimoErro: null, ultimoResumo: resumo },

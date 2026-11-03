@@ -21,6 +21,18 @@ const config: Config = {
           800: '#075985',
           900: '#0c4a6e',
         },
+        // cores de tema usadas pelos componentes de components/ui/ckex (botão, campo, selo)
+        primary:     { DEFAULT: '#0284c7', foreground: '#ffffff' },
+        secondary:   { DEFAULT: '#f1f5f9', foreground: '#1e293b' },
+        destructive: { DEFAULT: '#dc2626', foreground: '#ffffff' },
+        accent:      { DEFAULT: '#f1f5f9', foreground: '#0f172a' },
+        muted:       { DEFAULT: '#f1f5f9', foreground: '#64748b' },
+        card:        { DEFAULT: '#ffffff', foreground: '#1e293b' },
+        background:  '#ffffff',
+        foreground:  '#1e293b',
+        input:       '#e2e8f0',
+        ring:        '#0ea5e9',
+        border:      '#e2e8f0',
         sidebar: {
           bg:     '#0a0f1e',
           border: '#1e2a3a',

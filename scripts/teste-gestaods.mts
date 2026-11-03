@@ -18,6 +18,7 @@ const db = new pg.Client({ connectionString: process.env.DATABASE_URL, ssl: { re
 await db.connect()
 const ok = (c: unknown, m: string) => { console.log((c ? 'OK   ' : 'FALHA') + ' ' + m); if (!c) process.exitCode = 1 }
 const hoje = new Date(), diasAtras = (n: number) => new Date(hoje.getTime() - n * 864e5).toISOString().slice(0, 10)
+const diaBR = (emDias: number) => diasAtras(-emDias).split('-').reverse().join('/')
 
 // ── Gestão DS falso ──
 const ATENDIMENTOS = [
@@ -37,6 +38,12 @@ const falso = http.createServer((req, res) => {
       return json(200, { data: ATENDIMENTOS.filter((a) => a.data_atendimento >= p.data_inicial && a.data_atendimento <= p.data_final), total_pages: 1 })
     if (req.url?.startsWith('/api/v2/paciente/ultima-atividade-pacientes/'))
       return json(200, { data: [{ id: 501, nome_paciente: 'TESTE GDS MARIA SYNC', celular: '17 90000-0001', email: 'maria@teste.local' }, { id: 502, nome_paciente: 'TESTE GDS JOAO NOVO', celular: null, email: null }], total_pages: 1 })
+    if (req.url?.startsWith('/api/v2/agendamento/listagem/'))
+      return json(200, { data: [
+        { paciente: { nome: 'TESTE GDS MARIA SYNC' }, data_agendamento: diaBR(15) + ' 14:00', cancelado: false, faltou: false, finalizado: false },
+        { paciente: { nome: 'TESTE GDS MARIA SYNC' }, data_agendamento: diaBR(40) + ' 14:00', cancelado: false, faltou: false, finalizado: false },
+        { paciente: { nome: 'TESTE GDS JOAO NOVO' }, data_agendamento: diaBR(5) + ' 09:00', cancelado: true, faltou: false, finalizado: false },
+      ], total_pages: 1 })
     if (req.url?.startsWith('/api/v2/paciente/aniversariantes/')) return json(200, { data: [{ paciente_id: 501, nascimento: '15/03/2021' }, { paciente_id: 502, nascimento: '2019-08-01' }], total_pages: 1 })
     json(404, { message: 'rota desconhecida' })
   })
@@ -55,7 +62,7 @@ async function criarLogin(email: string) {
 }
 async function entrar(p: Page, l: { email: string; senha: string }) {
   await p.goto(B + '/login'); await p.fill('input[type=email]', l.email); await p.fill('input[placeholder="••••••••"]', l.senha); await p.click('button[type=submit]')
-  await p.waitForURL((x) => x.pathname === '/pacientes'); await p.waitForLoadState('networkidle')
+  await p.waitForURL((x) => x.pathname === '/tarefas'); await p.waitForLoadState('networkidle')
 }
 const prof = async (authId: string) => (await db.query('select id from professionals where auth_user_id = $1', [authId])).rows[0]?.id as string
 const linhas = async (sql: string, args: unknown[]) => (await db.query(sql, args)).rows
@@ -95,6 +102,9 @@ try {
   ok(maria?.nasc === '2021-03-15' && maria?.cpf === '11122233396' && maria?.cidade === 'Rio Preto' && maria?.email === 'maria@teste.local', 'e foi completado com nascimento, CPF, cidade e e-mail')
   const cons = await linhas(`select c.gestaods_id, c.tipo_resumido, c.origem, p.name from consultas c left join patients p on p.id = c.patient_id where c.professional_id = $1 order by c.gestaods_id`, [p1])
   ok(cons.length === 3 && cons.every((c) => c.name && c.origem === 'gestaods'), '3 consultas, todas ligadas ao paciente')
+  const ags = await linhas(`select name, proximo_agendamento::text ag from patients where professional_id = $1 and name ilike 'teste gds%' order by name`, [p1])
+  ok(ags.find((x) => x.name === 'Teste GDS Maria Sync')?.ag === diasAtras(-15), 'próximo agendamento vem da agenda do Gestão DS (o mais próximo)')
+  ok(ags.find((x) => x.name === 'TESTE GDS JOAO NOVO')?.ag == null, 'agendamento cancelado não conta como retorno')
   ok(cons.map((c) => c.tipo_resumido).join() === 'retorno,consulta,consulta', 'tipo resumido (retorno / consulta)')
   await p.getByText(/2 pacientes completados|1 pacientes completados/).first().waitFor().catch(() => {})
   ok((await p.content()).includes('Última atualização'), 'a tela mostra quando foi a última atualização')
@@ -127,6 +137,7 @@ try {
   for (const l of [l1, l2]) {
     const id = await prof(l.id)
     if (id) {
+      await db.query('delete from tarefas where professional_id = $1', [id])
       await db.query('delete from consultas where professional_id = $1', [id])
       await db.query('delete from integracoes_gestaods where professional_id = $1', [id])
       await db.query('delete from patients where professional_id = $1', [id])

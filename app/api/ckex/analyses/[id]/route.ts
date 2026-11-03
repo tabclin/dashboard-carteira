@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import { z } from 'zod'
 import { findMatchedRefsForResults } from '@/lib/exam/normalize'
+import { concluirTarefas } from '@/lib/tarefas'
 
 type RefMap = Map<string, { refMin: number | null; refMax: number | null; unit: string } | null>
 
@@ -101,6 +102,8 @@ export async function PATCH(
   if (!existing) return NextResponse.json({ error: 'Não encontrado' }, { status: 404 })
 
   const { status, collectedAt, ...rest } = parsed.data
+  // análise finalizada: a tarefa "Analisar exames" do paciente vira feita
+  if (status === 'FINALIZED' && existing.status !== 'FINALIZED') await concluirTarefas(professional.id, existing.patientId, 'exames')
 
   const analysis = await prisma.analysis.update({
     where: { id },

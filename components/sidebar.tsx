@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import {
   UserRound,
+  ListChecks,
   LogOut,
   Stethoscope,
   ChevronRight,
@@ -17,6 +18,7 @@ import {
 } from 'lucide-react'
 
 const navItems = [
+  { href: '/tarefas',      label: 'Tarefas',      icon: ListChecks   },
   { href: '/pacientes',    label: 'Pacientes',    icon: UserRound    },
   { href: '/check-exames', label: 'Check Exames', icon: FlaskConical },
   { href: '/dri',          label: 'DRI',          icon: Flame        },
@@ -26,11 +28,12 @@ const navItems = [
 
 interface SidebarProps {
   userEmail?: string
+  tarefasUrgentes?: number
   collapsed?: boolean
   onToggle?: () => void
 }
 
-export default function Sidebar({ userEmail, collapsed = false, onToggle }: SidebarProps) {
+export default function Sidebar({ userEmail, tarefasUrgentes = 0, collapsed = false, onToggle }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
@@ -100,7 +103,7 @@ export default function Sidebar({ userEmail, collapsed = false, onToggle }: Side
               href={href}
               title={collapsed ? label : undefined}
               className={cn(
-                'sidebar-link group',
+                'sidebar-link group relative',
                 active && 'sidebar-link-active',
                 collapsed && 'justify-center px-0 py-2.5'
               )}
@@ -109,9 +112,16 @@ export default function Sidebar({ userEmail, collapsed = false, onToggle }: Side
                 'w-4 h-4 flex-shrink-0 transition-colors',
                 active ? 'text-brand-400' : 'text-slate-500 group-hover:text-slate-300'
               )} />
+              {href === '/tarefas' && tarefasUrgentes > 0 && collapsed && (
+                <span className="absolute ml-5 -mt-4 h-2 w-2 rounded-full bg-red-500" aria-hidden />
+              )}
               {!collapsed && (
                 <>
                   <span className="flex-1">{label}</span>
+                  {href === '/tarefas' && tarefasUrgentes > 0 && (
+                    <span className="rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-bold leading-none text-white"
+                      title="Tarefas atrasadas ou para hoje" aria-label={`${tarefasUrgentes} atrasadas ou para hoje`}>{tarefasUrgentes}</span>
+                  )}
                   {active && <ChevronRight className="w-3 h-3 text-brand-400 opacity-70" />}
                 </>
               )}
@@ -134,7 +144,7 @@ export default function Sidebar({ userEmail, collapsed = false, onToggle }: Side
           href="/configuracoes"
           title={collapsed ? 'Configurações' : undefined}
           className={cn(
-            'sidebar-link group',
+            'sidebar-link group relative',
             pathname?.startsWith('/configuracoes') && 'sidebar-link-active',
             collapsed && 'justify-center px-0 py-2.5'
           )}

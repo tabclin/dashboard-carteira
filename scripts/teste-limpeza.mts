@@ -19,7 +19,7 @@ try {
   const p = await (await b.newContext({ viewport: { width: 1360, height: 900 } })).newPage()
   const erros: string[] = []; p.on('console', (m) => m.type() === 'error' && erros.push(m.text())); p.on('pageerror', (e) => erros.push(e.message))
   await p.goto(B + '/login'); await p.fill('input[type=email]', EMAIL); await p.fill('input[placeholder="••••••••"]', SENHA); await p.click('button[type=submit]')
-  await p.waitForURL((x) => x.pathname === '/pacientes'); ok(true, 'depois do login abre direto em Pacientes')
+  await p.waitForURL((x) => x.pathname === '/tarefas'); ok(true, 'depois do login abre direto em Tarefas')
   await p.waitForLoadState('networkidle')
 
   // login novo: o perfil do profissional é criado logo na entrada (antes só no Check Exames)
@@ -27,7 +27,7 @@ try {
   ok(prof, 'perfil do profissional criado logo na primeira entrada')
 
   const menu = (await p.locator('aside nav a').allInnerTexts()).map((t) => t.trim())
-  ok(JSON.stringify(menu) === JSON.stringify(['Pacientes', 'Check Exames', 'DRI', 'Orientações']), 'menu só com Pacientes, Check Exames, DRI e Orientações: ' + menu.join(', '))
+  ok(JSON.stringify(menu) === JSON.stringify(['Tarefas', 'Pacientes', 'Check Exames', 'DRI', 'Orientações']), 'menu só com Tarefas, Pacientes, Check Exames, DRI e Orientações: ' + menu.join(', '))
 
   await p.goto(B + '/check-exames'); await p.waitForURL(/check-exames\/pacientes/); await p.waitForLoadState('networkidle')
   ok(!(await p.content()).includes('Application error'), 'Check Exames abre')
@@ -66,6 +66,7 @@ try {
 } finally {
   const { rows } = await db.query('select id, org_id from professionals where auth_user_id = $1', [u.user.id])
   for (const pr of rows) {
+    await db.query('delete from tarefas where professional_id = $1', [pr.id])
     await db.query('delete from patients where professional_id = $1', [pr.id])
     await db.query('delete from exam_reference_override where professional_id = $1', [pr.id]).catch(() => {})
     await db.query('delete from exam_catalog where professional_id = $1', [pr.id]).catch(() => {})

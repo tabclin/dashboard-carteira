@@ -5,6 +5,8 @@ import { obterProfissional } from '@/lib/profissional'
 import { GestaoDSConfig } from '@/components/configuracoes/gestaods-config'
 import { ImportarPlanilha } from '@/components/configuracoes/importar-planilha'
 import type { ResumoImportacao } from '@/lib/gestaods/importar'
+import { PrazosPadrao } from '@/components/configuracoes/prazos-padrao'
+import { diasPadrao } from '@/lib/tarefas'
 
 // a primeira atualização traz o histórico e pode passar de 1 minuto
 export const maxDuration = 300
@@ -21,9 +23,10 @@ export default async function ConfiguracoesPage() {
     where: { professionalId: prof.id },
     select: { tokenFinal: true, ultimaSincronizacao: true, ultimoStatus: true, ultimoErro: true, ultimoResumo: true },
   })
-  const [pacientes, consultas] = await Promise.all([
+  const [pacientes, consultas, dias] = await Promise.all([
     prisma.patient.count({ where: { professionalId: prof.id } }),
     prisma.consulta.count({ where: { professionalId: prof.id } }),
+    diasPadrao(prof.id),
   ])
 
   return (
@@ -50,6 +53,7 @@ export default async function ConfiguracoesPage() {
           }}
         />
         <ImportarPlanilha />
+        <PrazosPadrao dias={dias} />
       </div>
     </div>
   )

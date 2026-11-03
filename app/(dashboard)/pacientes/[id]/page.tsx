@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowLeft, FlaskConical, Flame, ScrollText, CalendarCheck, Plus, FileDown, ChevronRight, LineChart } from 'lucide-react'
+import { ArrowLeft, FlaskConical, Flame, ScrollText, CalendarCheck, Plus, FileDown, ChevronRight, LineChart, ListChecks } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import { obterProfissional } from '@/lib/profissional'
@@ -8,6 +8,10 @@ import { idadeTexto, dataBR } from '@/lib/idade'
 import { ANALYSIS_STATUS_CONFIG } from '@/types'
 import { Indicadores } from '@/components/pacientes/tabela-pacientes'
 import { cn } from '@/lib/utils'
+import { hojeSP } from '@/lib/tarefas'
+import { textoDoPrazo } from '@/lib/tarefas-regras'
+import { ListaTarefas } from '@/components/tarefas/lista-tarefas'
+import { NovaTarefa } from '@/components/tarefas/nova-tarefa'
 
 const CONSULTAS_VISIVEIS = 10
 const TIPO = { consulta: 'Consulta', retorno: 'Retorno', outro: 'Outro' } as Record<string, string>
@@ -49,11 +53,15 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
       driAvaliacoes: { orderBy: { data: 'desc' }, select: { id: true, data: true, ageMonths: true, eerMasc: true, eerFem: true, sexInput: true, _count: { select: { planos: true } } } },
       orientacoes: { orderBy: [{ orientacaoDate: 'desc' }, { createdAt: 'desc' }], select: { id: true, title: true, orientacaoDate: true, createdAt: true } },
       consultas: { orderBy: { data: 'desc' }, select: { id: true, data: true, tipo: true, tipoResumido: true, servico: true } },
+      tarefas: { where: { status: 'pendente' }, orderBy: { prazo: 'asc' }, select: { id: true, tipo: true, prazo: true, observacao: true, status: true, concluidaComo: true } },
     },
   })
   if (!p) notFound()
+  const hoje = hojeSP()
+  const proximo = p.proximoAgendamento?.toISOString().slice(0, 10) ?? null
 
   const dados = [
+    ['Próximo agendamento', proximo && proximo >= hoje ? `${dataBR(proximo)} (${textoDoPrazo(proximo, hoje).replace('em ', 'daqui a ')})` : null],
     ['Idade', idadeTexto(p.birthDate)],
     ['Nascimento', dataBR(p.birthDate)],
     ['CPF', cpfBR(p.cpf)],
@@ -96,6 +104,16 @@ export default async function FichaPacientePage({ params }: { params: { id: stri
           </Link>
         </div>
       </header>
+
+      <Secao titulo="Tarefas" icone={ListChecks} cor="bg-emerald-600" total={p.tarefas.length}
+        acao={<NovaTarefa paciente={{ id: p.id, name: p.name }} />}>
+        {p.tarefas.length === 0 ? <Vazio>Nenhuma tarefa pendente para este paciente.</Vazio> : (
+          <ListaTarefas semPaciente hoje={hoje} tarefas={p.tarefas.map((t) => ({
+            id: t.id, tipo: t.tipo, prazo: t.prazo.toISOString().slice(0, 10), observacao: t.observacao, status: t.status,
+            concluidaComo: t.concluidaComo, paciente: { id: p.id, nome: p.name },
+          }))} />
+        )}
+      </Secao>
 
       <div className="grid gap-5 lg:grid-cols-2 items-start">
         <Secao titulo="Check Exames" icone={FlaskConical} cor="bg-blue-600" total={p.analyses.length}

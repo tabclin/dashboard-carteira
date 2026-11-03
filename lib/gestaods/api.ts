@@ -60,6 +60,13 @@ export type AtendimentoAPI = {
   servico: string | null
   tipo: string | null
 }
+export type AgendamentoAPI = {
+  paciente: { nome: string } | null
+  data_agendamento: string // "dd/mm/aaaa hh:mm"
+  cancelado: boolean
+  faltou: boolean
+  finalizado: boolean
+}
 export type PacienteAtividadeAPI = { id: number; nome_paciente: string; celular: string | null; email: string | null }
 export type AniversarianteAPI = { paciente_id: number; nascimento: string | null }
 
@@ -74,6 +81,16 @@ export async function buscarAtendimentos(token: string, ini: Date, fim: Date): P
   const todos: AtendimentoAPI[] = []
   for (const [a, b] of blocos(ini, fim)) {
     todos.push(...(await todasAsPaginas<AtendimentoAPI>(token, 'POST', '/api/v2/relatorios/atendimentos/', { data_inicial: iso(a), data_final: iso(b) })))
+  }
+  return todos
+}
+
+/** Agenda (consultas marcadas) entre ini e fim. */
+export async function buscarAgenda(token: string, ini: Date, fim: Date): Promise<AgendamentoAPI[]> {
+  const br = (d: Date) => iso(d).split('-').reverse().join('/')
+  const todos: AgendamentoAPI[] = []
+  for (const [a, b] of blocos(ini, fim)) {
+    todos.push(...(await todasAsPaginas<AgendamentoAPI>(token, 'GET', '/api/v2/agendamento/listagem/', { data_inicial: br(a), data_final: br(b) })))
   }
   return todos
 }

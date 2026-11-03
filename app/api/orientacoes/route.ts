@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma/client'
 import { z } from 'zod'
+import { concluirTarefas } from '@/lib/tarefas'
 
 const secaoValorSchema = z.object({
   id:     z.string(),
@@ -54,12 +55,16 @@ export async function POST(req: Request) {
   const parsed = saveSchema.safeParse(body)
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
 
-  const { patientId, patientName, templateId, title, secoes, orientacaoDate } = parsed.data
+  const { patientId: pedido, patientName, templateId, title, secoes, orientacaoDate } = parsed.data
+  // só liga a um paciente do próprio login
+  const patientId = pedido
+    ? (await prisma.patient.findFirst({ where: { id: pedido, professionalId: prof.id }, select: { id: true } }))?.id ?? null
+    : null
 
   const orientacao = await prisma.orientacao.create({
     data: {
       professionalId: prof.id,
-      patientId:      patientId     ?? null,
+      patientId,
       patientName:    patientName   ?? null,
       templateId:     templateId    ?? null,
       title,
@@ -68,6 +73,7 @@ export async function POST(req: Request) {
     },
     include: { patient: { select: { id: true, name: true } } },
   })
+  await concluirTarefas(prof.id, patientId, 'orientacao')
 
   return NextResponse.json(orientacao, { status: 201 })
 }

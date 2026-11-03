@@ -39,6 +39,8 @@ model Professional {
   orientacaoTemplates    OrientacaoTemplate[]
   consultas              Consulta[]
   integracaoGestaoDS     IntegracaoGestaoDS?
+  tarefas                Tarefa[]
+  preferenciasTarefas    PreferenciasTarefas?
   organization           Organization    @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
   @@map("professionals")
@@ -57,6 +59,7 @@ model Patient {
   gestaodsId     Int?         @map("gestaods_id")
   cpf            String?
   cidade         String?
+  proximoAgendamento DateTime? @map("proximo_agendamento") @db.Date
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime     @updatedAt @map("updated_at")
   analyses       Analysis[]
@@ -64,6 +67,7 @@ model Patient {
   consultas      Consulta[]
   driAvaliacoes  DriAvaliacao[]
   planosAlimentares PlanoAlimentar[]
+  tarefas        Tarefa[]
   professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
 
   @@map("patients")
@@ -363,4 +367,37 @@ model IntegracaoGestaoDS {
   professional        Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
 
   @@map("integracoes_gestaods")
+}
+
+// Tarefas: o quê (exames, dri, orientacao), para quem e até quando (supabase/migrations/0003)
+model Tarefa {
+  id             String       @id @default(dbgenerated("(gen_random_uuid())::text"))
+  professionalId String       @map("professional_id")
+  patientId      String       @map("patient_id")
+  tipo           String
+  prazo          DateTime     @db.Date
+  observacao     String?
+  status         String       @default("pendente")
+  concluidaEm    DateTime?    @map("concluida_em")
+  concluidaComo  String?      @map("concluida_como")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @default(now()) @updatedAt @map("updated_at")
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  patient        Patient      @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([professionalId, status, prazo], map: "tarefas_profissional_status_prazo")
+  @@index([patientId, status], map: "tarefas_paciente")
+  @@map("tarefas")
+}
+
+// Prazo padrão (dias) de cada tipo de tarefa, por login
+model PreferenciasTarefas {
+  professionalId String       @id @map("professional_id")
+  diasExames     Int          @default(5) @map("dias_exames")
+  diasDri        Int          @default(7) @map("dias_dri")
+  diasOrientacao Int          @default(3) @map("dias_orientacao")
+  updatedAt      DateTime     @default(now()) @updatedAt @map("updated_at")
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+
+  @@map("preferencias_tarefas")
 }

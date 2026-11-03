@@ -21,7 +21,7 @@ async function criarLogin(email: string) {
 }
 async function entrar(p: Page, l: { email: string; senha: string }) {
   await p.goto(B + '/login'); await p.fill('input[type=email]', l.email); await p.fill('input[placeholder="••••••••"]', l.senha); await p.click('button[type=submit]')
-  await p.waitForURL((x) => x.pathname === '/pacientes'); await p.waitForLoadState('networkidle')
+  await p.waitForURL((x) => x.pathname === '/tarefas'); await p.waitForLoadState('networkidle')
 }
 const l1 = await criarLogin('teste-pac-1@tabclin.local'), l2 = await criarLogin('teste-pac-2@tabclin.local')
 try {
@@ -100,6 +100,7 @@ try {
 
   // outro login não abre a ficha
   const p2 = await (await b.newContext()).newPage(); await entrar(p2, l2)
+  await p2.goto(B + '/pacientes'); await p2.waitForLoadState('networkidle')
   ok((await p2.getByText('0 pacientes').count()) === 1, 'segundo login não vê os pacientes do primeiro')
   const r = await p2.goto(B + `/pacientes/${joao}`); ok(r?.status() === 404, 'nem consegue abrir a ficha pelo endereço (404)')
   const r2 = await p2.goto(B + `/dri/calculadora?patientId=${joao}`); await p2.waitForLoadState('networkidle')
@@ -109,7 +110,7 @@ try {
   for (const l of [l1, l2]) {
     const [pr] = await q('select id, org_id from professionals where auth_user_id = $1', [l.id])
     if (pr) {
-      for (const t of ['consultas', 'planos_alimentares', 'dri_avaliacoes', 'orientacoes', 'analyses', 'patients']) await q(`delete from ${t} where professional_id = $1`, [pr.id])
+      for (const t of ['tarefas', 'preferencias_tarefas', 'consultas', 'planos_alimentares', 'dri_avaliacoes', 'orientacoes', 'analyses', 'patients']) await q(`delete from ${t} where professional_id = $1`, [pr.id])
       await q('delete from professionals where id = $1', [pr.id]); await q('delete from organizations where id = $1', [pr.org_id])
     }
     await adm.auth.admin.deleteUser(l.id)

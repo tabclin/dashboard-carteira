@@ -4,7 +4,7 @@
 import 'server-only'
 import { randomUUID } from 'node:crypto'
 import { prisma } from '@/lib/prisma/client'
-import { planejarPacientes, ligarConsultas, type PacienteEntrada, type ConsultaEntrada, type Ambiguo } from './vinculo'
+import { planejarPacientes, ligarConsultas, chaveNome, type PacienteEntrada, type ConsultaEntrada, type Ambiguo } from './vinculo'
 
 export type ResumoImportacao = {
   pacientesNovos: number
@@ -77,4 +77,28 @@ export async function gravarImportacao(
     consultasSemPaciente: ligadas.filter((c) => !c.patientId).length,
     periodo: consultas?.periodo ?? null,
   }
+}
+
+/**
+ * Próximo agendamento de cada paciente (data de hoje em diante, sem cancelados/faltas).
+ * A agenda do Gestão DS só traz o nome, então liga pelo nome quando ele é único no cadastro.
+ * Quem não tem mais agendamento futuro fica sem data.
+ */
+export async function gravarProximosAgendamentos(professionalId: string, hoje: string, agenda: { nome: string; data: string; valido: boolean }[]) {
+  const pacientes = await prisma.patient.findMany({ where: { professionalId }, select: { id: true, name: true, proximoAgendamento: true } })
+  const porNome = new Map<string, string | null>()
+  for (const p of pacientes) { const k = chaveNome(p.name); if (k) porNome.set(k, porNome.has(k) ? null : p.id) }
+  const proximo = new Map<string, string>()
+  for (const a of agenda) {
+    if (!a.valido || a.data < hoje) continue
+    const id = porNome.get(chaveNome(a.nome) ?? '')
+    if (id && (!proximo.has(id) || a.data < proximo.get(id)!)) proximo.set(id, a.data)
+  }
+  const mudancas = pacientes
+    .map((p) => ({ id: p.id, antes: dia(p.proximoAgendamento), depois: proximo.get(p.id) ?? null }))
+    .filter((m) => m.antes !== m.depois)
+  await prisma.$transaction(
+    mudancas.map((m) => prisma.patient.update({ where: { id: m.id }, data: { proximoAgendamento: m.depois ? data(m.depois) : null } })),
+  )
+  return proximo.size
 }
