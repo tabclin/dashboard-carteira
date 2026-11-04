@@ -7,7 +7,7 @@ import { createClient } from '@supabase/supabase-js'
 import pg from 'pg'
 import { randomBytes, randomUUID } from 'node:crypto'
 config({ path: '.env.local', quiet: true })
-const B = 'http://localhost:3300'
+const B = process.env.BASE ?? 'http://localhost:3300'
 const adm = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, { auth: { persistSession: false } })
 const db = new pg.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } })
 await db.connect()
