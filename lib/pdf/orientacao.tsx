@@ -53,7 +53,8 @@ const styles = StyleSheet.create({
 
   divider: { borderTopWidth: 1, borderTopColor: SLATE_2, marginBottom: 16 },
 
-  section:      { marginBottom: 18 },
+  section:      { marginBottom: 14 },
+  sectionEnd:   { borderTopWidth: 1, borderTopColor: SLATE_2, marginTop: 14 },   // linha fina ao fim de cada seção
   // faixa clara de ponta a ponta marcando o início de cada seção
   sectionBand:  { borderRadius: 4, paddingVertical: 5, paddingHorizontal: 9, marginBottom: 8 },
   sectionLabel: { fontSize: 16, fontFamily: 'Helvetica-Bold' },
@@ -182,7 +183,7 @@ export function OrientacaoDocument({ aparencia, paciente, title, secoes, data }:
 
         <View style={styles.divider} />
 
-        {secoes.map((s) => (
+        {secoes.map((s, i) => (
           // a imagem não se separa do seu título
           <View key={s.id} style={styles.section} wrap={s.tipo !== 'imagem'}>
             {s.titulo ? (
@@ -206,6 +207,7 @@ export function OrientacaoDocument({ aparencia, paciente, title, secoes, data }:
                 ? <Blocos blocos={htmlParaBlocos(s.valor)} cor={c.titulo} />
                 : <Text style={styles.sectionEmpty}>Não preenchido</Text>
             }
+            {i < secoes.length - 1 ? <View style={styles.sectionEnd} /> : null}
           </View>
         ))}
 
