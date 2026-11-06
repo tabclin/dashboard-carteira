@@ -6,6 +6,8 @@ import { ImportarPlanilha } from '@/components/configuracoes/importar-planilha'
 import type { ResumoImportacao } from '@/lib/gestaods/importar'
 import { PrazosPadrao } from '@/components/configuracoes/prazos-padrao'
 import { diasPadrao } from '@/lib/tarefas'
+import { AparenciaPdf } from '@/components/configuracoes/aparencia-pdf'
+import { aparenciaComPadrao } from '@/lib/pdf/aparencia'
 
 // a primeira atualização traz o histórico e pode passar de 1 minuto
 export const maxDuration = 300
@@ -19,10 +21,11 @@ export default async function ConfiguracoesPage() {
     where: { professionalId: prof.id },
     select: { tokenFinal: true, ultimaSincronizacao: true, ultimoStatus: true, ultimoErro: true, ultimoResumo: true },
   })
-  const [pacientes, consultas, dias] = await Promise.all([
+  const [pacientes, consultas, dias, aparencia] = await Promise.all([
     prisma.patient.count({ where: { professionalId: prof.id } }),
     prisma.consulta.count({ where: { professionalId: prof.id } }),
     diasPadrao(prof.id),
+    prisma.aparenciaPdf.findUnique({ where: { professionalId: prof.id } }),
   ])
 
   return (
@@ -34,7 +37,7 @@ export default async function ConfiguracoesPage() {
           </div>
           <div>
             <h1 className="text-lg font-bold text-slate-800 leading-tight">Configurações</h1>
-            <p className="text-xs text-slate-500">Integração com o Gestão DS e importação de planilhas · {pacientes} pacientes · {consultas} consultas</p>
+            <p className="text-xs text-slate-500">Integração com o Gestão DS, planilhas e aparência do PDF · {pacientes} pacientes · {consultas} consultas</p>
           </div>
         </div>
       </div>
@@ -50,6 +53,7 @@ export default async function ConfiguracoesPage() {
         />
         <ImportarPlanilha />
         <PrazosPadrao dias={dias} />
+        <AparenciaPdf inicial={aparenciaComPadrao(aparencia, prof)} />
       </div>
     </div>
   )

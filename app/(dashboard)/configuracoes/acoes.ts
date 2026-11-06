@@ -9,6 +9,7 @@ import { testarChave, ErroGestaoDS } from '@/lib/gestaods/api'
 import { sincronizarGestaoDS } from '@/lib/gestaods/sincronizar'
 import { gravarImportacao, type ResumoImportacao } from '@/lib/gestaods/importar'
 import { lerPlanilha } from '@/lib/gestaods/planilha'
+import { corValida } from '@/lib/pdf/aparencia'
 
 type Resultado<T = object> = ({ ok: true } & T) | { ok: false; erro: string }
 
@@ -74,4 +75,22 @@ export async function importarPlanilhas(form: FormData): Promise<Resultado<{ arq
   } catch (e) {
     return { ok: false, erro: (e as Error).message }
   }
+}
+
+export interface DadosAparenciaPdf { cor: string; nome: string; crm: string; rqe: string; especialidade: string; logo: string | null }
+
+const LOGO_MAX = 1_400_000 // ~1 MB de imagem em base64
+
+/** Aparência do PDF das orientações do login atual (campo vazio = usa o cadastro). */
+export async function salvarAparenciaPdf(d: DadosAparenciaPdf): Promise<Resultado> {
+  const prof = await profissionalAtual()
+  if (!corValida(d.cor)) return { ok: false, erro: 'Escolha uma cor válida.' }
+  if (!d.nome.trim()) return { ok: false, erro: 'Preencha o nome que aparece no PDF.' }
+  if (d.logo && !/^data:image\/(png|jpeg);base64,/.test(d.logo)) return { ok: false, erro: 'A logo precisa ser PNG ou JPG.' }
+  if (d.logo && d.logo.length > LOGO_MAX) return { ok: false, erro: 'A logo pode ter até 1 MB.' }
+  const vazio = (s: string) => s.trim() || null
+  const dados = { cor: d.cor.toLowerCase(), nome: d.nome.trim(), crm: vazio(d.crm), rqe: vazio(d.rqe), especialidade: vazio(d.especialidade), logo: d.logo || null }
+  await prisma.aparenciaPdf.upsert({ where: { professionalId: prof.id }, create: { professionalId: prof.id, ...dados }, update: dados })
+  revalidatePath('/configuracoes')
+  return { ok: true }
 }
