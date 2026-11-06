@@ -53,8 +53,10 @@ const styles = StyleSheet.create({
 
   divider: { borderTopWidth: 1, borderTopColor: SLATE_2, marginBottom: 16 },
 
-  section:      { marginBottom: 16 },
-  sectionLabel: { fontSize: 14, fontFamily: 'Helvetica-Bold', marginBottom: 6 },
+  section:      { marginBottom: 18 },
+  // faixa clara de ponta a ponta marcando o início de cada seção
+  sectionBand:  { borderRadius: 4, paddingVertical: 5, paddingHorizontal: 9, marginBottom: 8 },
+  sectionLabel: { fontSize: 16, fontFamily: 'Helvetica-Bold' },
   sectionEmpty: { fontSize: 10, color: SLATE_5, fontFamily: 'Helvetica-Oblique' },
 
   paragrafo: { fontSize: 10, lineHeight: 1.6 },
@@ -183,7 +185,11 @@ export function OrientacaoDocument({ aparencia, paciente, title, secoes, data }:
         {secoes.map((s) => (
           // a imagem não se separa do seu título
           <View key={s.id} style={styles.section} wrap={s.tipo !== 'imagem'}>
-            {s.titulo ? <Text style={[styles.sectionLabel, { color: c.titulo }]} minPresenceAhead={40}>{s.titulo}</Text> : null}
+            {s.titulo ? (
+              <View style={[styles.sectionBand, { backgroundColor: c.faixa }]} minPresenceAhead={40}>
+                <Text style={[styles.sectionLabel, { color: c.titulo }]}>{s.titulo}</Text>
+              </View>
+            ) : null}
             {s.tipo === 'imagem'
               ? (() => {
                   const { src, largura, alinhamento } = parseImageValor(s.valor)

@@ -53,10 +53,12 @@ export function coresDe(cor: string) {
   const principal  = corValida(cor) ? cor.toLowerCase() : COR_PADRAO
   const textoSobre = contraste(principal, '#ffffff') >= contraste(principal, TEXTO_ESCURO) ? '#ffffff' : TEXTO_ESCURO
   const escura     = mistura(principal, '#000000', 0.3)
+  const titulo     = contraste(principal, '#ffffff') >= 3 ? principal : escura   // títulos sobre o papel branco
   return {
     principal,
     escura,
-    titulo:          contraste(principal, '#ffffff') >= 3 ? principal : escura,   // títulos sobre o papel branco
+    titulo,
+    faixa:           mistura(titulo, '#ffffff', 0.86),   // fundo do título da seção: a cor do título "transparente"
     clara:           mistura(principal, '#ffffff', 0.9),
     textoSobre,
     textoSobreSuave: mistura(textoSobre, principal, 0.25),

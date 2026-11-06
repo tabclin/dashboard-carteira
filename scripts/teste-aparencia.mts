@@ -45,3 +45,10 @@ test('linha de registro', () => {
   assert.equal(linhaRegistro(a), 'Pediatra · CRM-SP 157418 · RQE 59046')
   assert.equal(linhaRegistro({ ...a, especialidade: null, rqe: null }), 'CRM-SP 157418')
 })
+test('faixa do título: tom bem claro da cor do título, texto continua legível', () => {
+  for (const cor of ['#4f46e5', '#ef7f67', '#ffe066', '#0f766e']) {
+    const c = coresDe(cor)
+    assert.match(c.faixa, /^#[0-9a-f]{6}$/)
+    assert.ok(parseInt(c.faixa.slice(1, 3), 16) > 200, 'faixa clara para ' + cor)
+  }
+})
