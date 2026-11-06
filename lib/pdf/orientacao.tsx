@@ -1,32 +1,10 @@
 import React from 'react'
-import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer'
+import { Document, Page, Text, View, StyleSheet, Image, Link } from '@react-pdf/renderer'
 import type { SecaoValor } from '@/lib/orientacoes/types'
+import { parseImageValor } from '@/lib/orientacoes/imagem'
+import { htmlParaBlocos, type Bloco, type Trecho } from './html-blocos'
+import { coresDe, linhaRegistro, type Aparencia } from './aparencia'
 
-function parseImageSrc(valor: string): { src: string; largura: number } {
-  try {
-    const p = JSON.parse(valor)
-    if (p && typeof p.src === 'string') return { src: p.src, largura: p.largura ?? 100 }
-  } catch {}
-  return { src: valor, largura: 100 }
-}
-
-function htmlToText(html: string): string {
-  return html
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<\/p>/gi, '\n')
-    .replace(/<\/li>/gi, '\n')
-    .replace(/<li[^>]*>/gi, '  • ')
-    .replace(/<[^>]+>/g, '')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim()
-}
-
-const BRAND   = '#4f46e5'
-const BRAND_D = '#3730a3'
 const SLATE_7 = '#334155'
 const SLATE_5 = '#64748b'
 const SLATE_2 = '#e2e8f0'
@@ -42,17 +20,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 48,
   },
   header: {
-    backgroundColor: BRAND,
     borderRadius: 8,
-    padding: 16,
+    padding: 14,
     marginBottom: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  headerName: { color: '#fff', fontSize: 13, fontFamily: 'Helvetica-Bold' },
-  headerSub:  { color: '#c7d2fe', fontSize: 9, marginTop: 2 },
-  headerDate: { color: '#c7d2fe', fontSize: 9 },
+  headerLeft: { flexDirection: 'row', alignItems: 'center', flexShrink: 1 },
+  logoBox:    { backgroundColor: '#fff', borderRadius: 6, padding: 4, marginRight: 12 },
+  logo:       { height: 44, maxWidth: 110, objectFit: 'contain' },
+  headerName: { fontSize: 13, fontFamily: 'Helvetica-Bold' },
+  headerSub:  { fontSize: 9, marginTop: 2 },
+  headerDate: { fontSize: 9, marginLeft: 12 },
 
   patientBox: {
     backgroundColor: SLATE_1,
@@ -62,28 +42,27 @@ const styles = StyleSheet.create({
   },
   patientLabel: { color: SLATE_5, fontSize: 8, fontFamily: 'Helvetica-Bold', textTransform: 'uppercase' },
   patientName:  { color: SLATE_7, fontSize: 12, fontFamily: 'Helvetica-Bold', marginTop: 2 },
+  patientAge:   { color: SLATE_5, fontFamily: 'Helvetica' },
 
   docTitle: {
     borderLeftWidth: 3,
-    borderLeftColor: BRAND,
     paddingLeft: 10,
     marginBottom: 18,
   },
-  docTitleText: { color: BRAND_D, fontSize: 14, fontFamily: 'Helvetica-Bold' },
+  docTitleText: { fontSize: 14, fontFamily: 'Helvetica-Bold' },
 
   divider: { borderTopWidth: 1, borderTopColor: SLATE_2, marginBottom: 16 },
 
-  section: { marginBottom: 14 },
-  sectionLabel: {
-    fontSize: 8,
-    fontFamily: 'Helvetica-Bold',
-    color: BRAND,
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-    marginBottom: 4,
-  },
-  sectionValue: { fontSize: 10, color: SLATE_7, lineHeight: 1.6 },
+  section:      { marginBottom: 16 },
+  sectionLabel: { fontSize: 14, fontFamily: 'Helvetica-Bold', marginBottom: 6 },
   sectionEmpty: { fontSize: 10, color: SLATE_5, fontFamily: 'Helvetica-Oblique' },
+
+  paragrafo: { fontSize: 10, lineHeight: 1.6 },
+  h2:        { fontSize: 12.5, fontFamily: 'Helvetica-Bold', lineHeight: 1.4, marginTop: 6, marginBottom: 3 },
+  h3:        { fontSize: 11, fontFamily: 'Helvetica-Bold', color: SLATE_7, lineHeight: 1.4, marginTop: 4, marginBottom: 2 },
+  linha:     { borderTopWidth: 1, borderTopColor: SLATE_2, marginVertical: 8 },
+  item:      { flexDirection: 'row' },
+  marcador:  { width: 14, fontSize: 10, lineHeight: 1.6 },
 
   footer: {
     position: 'absolute',
@@ -100,62 +79,133 @@ const styles = StyleSheet.create({
   footerText: { color: SLATE_5, fontSize: 8 },
 })
 
-interface Props {
-  professional: { name: string; crm?: string | null; specialty?: string | null }
-  patientName:  string | null
-  title:        string
-  secoes:       SecaoValor[]
-  createdAt:    Date
+type Base = 'Helvetica' | 'Helvetica-Bold'
+
+function fonte(t: Trecho, base: Base) {
+  const negrito = t.negrito || base === 'Helvetica-Bold'
+  if (negrito && t.italico) return 'Helvetica-BoldOblique'
+  if (negrito) return 'Helvetica-Bold'
+  if (t.italico) return 'Helvetica-Oblique'
+  return 'Helvetica'
 }
 
-export function OrientacaoDocument({ professional, patientName, title, secoes, createdAt }: Props) {
-  const dateStr = createdAt.toLocaleDateString('pt-BR')
-  const crmLine = [professional.crm, professional.specialty].filter(Boolean).join(' | ')
+function TrechoPdf({ t, base, corLink }: { t: Trecho; base: Base; corLink: string }) {
+  const decoracao = [t.sublinhado || t.link ? 'underline' : '', t.tachado ? 'line-through' : ''].filter(Boolean).join(' ')
+  const estilo = {
+    fontFamily: fonte(t, base),
+    ...(t.cor || t.link ? { color: t.cor ?? corLink } : {}),
+    ...(t.fundo ? { backgroundColor: t.fundo } : {}),
+    ...(decoracao ? { textDecoration: decoracao as 'underline' } : {}),
+  }
+  if (t.link) return <Link src={t.link} style={estilo}>{t.texto}</Link>
+  return <Text style={estilo}>{t.texto}</Text>
+}
+
+/** Texto formatado do editor: títulos, parágrafos, listas e linhas. */
+function Blocos({ blocos, cor, nivel = 0 }: { blocos: Bloco[]; cor: string; nivel?: number }) {
+  return (
+    <>
+      {blocos.map((b, i) => {
+        if (b.tipo === 'linha') return <View key={i} style={styles.linha} />
+        if (b.tipo === 'lista') {
+          return (
+            <View key={i} style={{ marginLeft: nivel ? 12 : 4 }}>
+              {b.itens.map((item, j) => (
+                <View key={j} style={styles.item}>
+                  <Text style={styles.marcador}>{b.ordenada ? `${j + 1}.` : '•'}</Text>
+                  <View style={{ flex: 1 }}><Blocos blocos={item} cor={cor} nivel={nivel + 1} /></View>
+                </View>
+              ))}
+            </View>
+          )
+        }
+        const estilo = b.tipo === 'h2' ? [styles.h2, { color: cor }] : b.tipo === 'h3' ? [styles.h3] : [styles.paragrafo]
+        const base: Base = b.tipo === 'paragrafo' ? 'Helvetica' : 'Helvetica-Bold'
+        return (
+          <Text key={i} style={[...estilo, { textAlign: b.alinhamento }]}>
+            {b.trechos.length ? b.trechos.map((t, j) => <TrechoPdf key={j} t={t} base={base} corLink={cor} />) : ' '}
+          </Text>
+        )
+      })}
+    </>
+  )
+}
+
+const JUSTIFICA = { esquerda: 'flex-start', centro: 'center', direita: 'flex-end' } as const
+
+interface Props {
+  aparencia: Aparencia
+  paciente:  { nome: string; idade: string | null } | null
+  title:     string
+  secoes:    SecaoValor[]
+  data:      string   // dd/mm/aaaa
+}
+
+export function OrientacaoDocument({ aparencia, paciente, title, secoes, data }: Props) {
+  const registro = linhaRegistro(aparencia)
+  const c        = coresDe(aparencia.cor)
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <View style={styles.header} fixed>
-          <View>
-            <Text style={styles.headerName}>{professional.name}</Text>
-            {crmLine ? <Text style={styles.headerSub}>{crmLine}</Text> : null}
+        <View style={[styles.header, { backgroundColor: c.principal }]} fixed>
+          <View style={styles.headerLeft}>
+            {aparencia.logo ? (
+              <View style={styles.logoBox}>
+                {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                <Image src={aparencia.logo} style={styles.logo} />
+              </View>
+            ) : null}
+            <View style={{ flexShrink: 1 }}>
+              <Text style={[styles.headerName, { color: c.textoSobre }]}>{aparencia.nome}</Text>
+              {registro ? <Text style={[styles.headerSub, { color: c.textoSobreSuave }]}>{registro}</Text> : null}
+            </View>
           </View>
-          <Text style={styles.headerDate}>{dateStr}</Text>
+          <Text style={[styles.headerDate, { color: c.textoSobreSuave }]}>{data}</Text>
         </View>
 
-        {patientName ? (
+        {paciente ? (
           <View style={styles.patientBox}>
             <Text style={styles.patientLabel}>Paciente</Text>
-            <Text style={styles.patientName}>{patientName}</Text>
+            <Text style={styles.patientName}>
+              {paciente.nome}
+              {paciente.idade ? <Text style={styles.patientAge}>{`  ·  ${paciente.idade}`}</Text> : null}
+            </Text>
           </View>
         ) : null}
 
-        <View style={styles.docTitle}>
-          <Text style={styles.docTitleText}>{title}</Text>
+        <View style={[styles.docTitle, { borderLeftColor: c.principal }]}>
+          <Text style={[styles.docTitleText, { color: c.escura }]}>{title}</Text>
         </View>
 
         <View style={styles.divider} />
 
         {secoes.map((s) => (
-          <View key={s.id} style={styles.section}>
-            {s.titulo ? <Text style={styles.sectionLabel}>{s.titulo}</Text> : null}
+          // a imagem não se separa do seu título
+          <View key={s.id} style={styles.section} wrap={s.tipo !== 'imagem'}>
+            {s.titulo ? <Text style={[styles.sectionLabel, { color: c.titulo }]} minPresenceAhead={40}>{s.titulo}</Text> : null}
             {s.tipo === 'imagem'
               ? (() => {
-                  const { src, largura } = parseImageSrc(s.valor)
+                  const { src, largura, alinhamento } = parseImageValor(s.valor)
                   if (!src) return null
                   const w = Math.round((499 * largura) / 100)
-                  return <Image src={src} style={{ width: w, maxHeight: 300, objectFit: 'contain', borderRadius: 4 }} />
+                  return (
+                    <View style={{ flexDirection: 'row', justifyContent: JUSTIFICA[alinhamento] }}>
+                      {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                      <Image src={src} style={{ width: w, maxHeight: 300, objectFit: 'contain', borderRadius: 4 }} />
+                    </View>
+                  )
                 })()
               : s.valor.trim()
-                ? <Text style={styles.sectionValue}>{htmlToText(s.valor)}</Text>
-                : <Text style={styles.sectionEmpty}>Nao preenchido</Text>
+                ? <Blocos blocos={htmlParaBlocos(s.valor)} cor={c.titulo} />
+                : <Text style={styles.sectionEmpty}>Não preenchido</Text>
             }
           </View>
         ))}
 
         <View style={styles.footer} fixed>
-          <Text style={styles.footerText}>{professional.name}</Text>
-          <Text style={styles.footerText}>Gerado em {dateStr}</Text>
+          <Text style={styles.footerText}>{aparencia.nome}</Text>
+          <Text style={styles.footerText}>Gerado em {data}</Text>
         </View>
       </Page>
     </Document>

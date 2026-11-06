@@ -30,6 +30,11 @@ test('texto do cabeçalho legível', () => {
   assert.equal(coresDe('#ffe066').textoSobre, '#1e293b')
   assert.equal(coresDe('#ffffff').textoSobre, '#1e293b')
 })
+test('títulos sobre o branco: cor clara escurece, cor forte fica', () => {
+  assert.equal(coresDe('#4f46e5').titulo, '#4f46e5')
+  assert.notEqual(coresDe('#ef7f67').titulo, '#ef7f67')
+  assert.equal(coresDe('#ef7f67').titulo, coresDe('#ef7f67').escura)
+})
 test('cores derivadas são hex válidos e a escura é mais escura', () => {
   const c = coresDe('#ef7f67')
   for (const v of Object.values(c)) assert.match(v, /^#[0-9a-f]{6}$/)

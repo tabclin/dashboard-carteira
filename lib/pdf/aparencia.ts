@@ -52,9 +52,11 @@ const contraste = (a: string, b: string) => { const [x, y] = [luminancia(a), lum
 export function coresDe(cor: string) {
   const principal  = corValida(cor) ? cor.toLowerCase() : COR_PADRAO
   const textoSobre = contraste(principal, '#ffffff') >= contraste(principal, TEXTO_ESCURO) ? '#ffffff' : TEXTO_ESCURO
+  const escura     = mistura(principal, '#000000', 0.3)
   return {
     principal,
-    escura:          mistura(principal, '#000000', 0.3),
+    escura,
+    titulo:          contraste(principal, '#ffffff') >= 3 ? principal : escura,   // títulos sobre o papel branco
     clara:           mistura(principal, '#ffffff', 0.9),
     textoSobre,
     textoSobreSuave: mistura(textoSobre, principal, 0.25),

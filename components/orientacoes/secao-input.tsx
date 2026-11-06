@@ -4,7 +4,10 @@ import { useRef } from 'react'
 import { ImagePlus, X, ZoomIn, ZoomOut } from 'lucide-react'
 import type { SecaoTemplate, SecaoValor } from '@/lib/orientacoes/types'
 import { applyVariables, type VariableContext } from '@/lib/orientacoes/variables'
+import { parseImageValor, serializeImageValor } from '@/lib/orientacoes/imagem'
 import { RichTextEditor } from './editor'
+
+export { parseImageValor, serializeImageValor }
 
 type SecaoShape = SecaoTemplate | SecaoValor
 
@@ -12,20 +15,6 @@ interface Props {
   secao:    SecaoShape
   valor:    string
   onChange: (id: string, valor: string) => void
-}
-
-// Image valor is stored as JSON: { src: string, largura: number (20-100%) }
-// Backward compat: plain base64/URL string → treated as 100% width
-export function parseImageValor(valor: string): { src: string; largura: number } {
-  try {
-    const p = JSON.parse(valor)
-    if (p && typeof p.src === 'string') return { src: p.src, largura: p.largura ?? 100 }
-  } catch {}
-  return { src: valor, largura: 100 }
-}
-
-export function serializeImageValor(src: string, largura: number): string {
-  return JSON.stringify({ src, largura })
 }
 
 export function SecaoInput({ secao, valor, onChange }: Props) {

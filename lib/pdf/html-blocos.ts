@@ -40,7 +40,7 @@ function decodificar(s: string): string {
 
 function lerAtributos(s: string): Record<string, string> {
   const attrs: Record<string, string> = {}
-  for (const m of s.matchAll(/([a-zA-Z_:][\w:.-]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g)) {
+  for (const m of Array.from(s.matchAll(/([a-zA-Z_:][\w:.-]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g))) {
     attrs[m[1].toLowerCase()] = decodificar(m[2] ?? m[3] ?? m[4] ?? '')
   }
   return attrs
@@ -50,7 +50,7 @@ function lerAtributos(s: string): Record<string, string> {
 function arvore(html: string): No[] {
   const raiz: Elemento = { tag: '#raiz', attrs: {}, filhos: [] }
   const pilha: Elemento[] = [raiz]
-  for (const m of html.replace(/<!--[\s\S]*?-->/g, '').matchAll(/<(\/?)([a-zA-Z][\w-]*)([^>]*)>|([^<]+)|</g)) {
+  for (const m of Array.from(html.replace(/<!--[\s\S]*?-->/g, '').matchAll(/<(\/?)([a-zA-Z][\w-]*)([^>]*)>|([^<]+)|</g))) {
     const topo = pilha[pilha.length - 1]
     if (m[4] !== undefined || m[2] === undefined) { topo.filhos.push(m[4] ?? '<'); continue }
     const tag = m[2].toLowerCase()
