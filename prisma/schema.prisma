@@ -41,6 +41,7 @@ model Professional {
   integracaoGestaoDS     IntegracaoGestaoDS?
   tarefas                Tarefa[]
   preferenciasTarefas    PreferenciasTarefas?
+  aparenciaPdf           AparenciaPdf?
   organization           Organization    @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
   @@map("professionals")
@@ -400,4 +401,19 @@ model PreferenciasTarefas {
   professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
 
   @@map("preferencias_tarefas")
+}
+
+// Aparência do PDF das orientações, por login (vazio = cadastro + azul padrão)
+model AparenciaPdf {
+  professionalId String       @id @map("professional_id")
+  cor            String?
+  nome           String?
+  crm            String?
+  rqe            String?
+  especialidade  String?
+  logo           String?
+  updatedAt      DateTime     @default(now()) @updatedAt @map("updated_at")
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+
+  @@map("aparencia_pdf")
 }
