@@ -10,11 +10,11 @@ import {
 } from 'lucide-react'
 import { TemplateBuilder } from './template-builder'
 import { SecaoInput, initValores } from './secao-input'
-import { buildContext, applyVariables } from '@/lib/orientacoes/variables'
+import { buildContext, applyVariables, normalizarSexo, trocarNeutras } from '@/lib/orientacoes/variables'
 import type { SecaoTemplate, SecaoValor, TipoSecao } from '@/lib/orientacoes/types'
 import { TIPO_LABELS } from '@/lib/orientacoes/types'
 
-interface Patient    { id: string; name: string }
+interface Patient    { id: string; name: string; sex?: string | null }
 interface Template   { id: string; title: string; secoes: SecaoTemplate[] | null | undefined; createdAt: string }
 interface Orientacao {
   id:             string
@@ -24,7 +24,7 @@ interface Orientacao {
   patientId:      string | null
   orientacaoDate: string | null
   createdAt:      string
-  patient:        { id: string; name: string } | null
+  patient:        Patient | null
 }
 
 interface OrientacaoGroup {
@@ -126,6 +126,12 @@ export function OrientacoesPage({ pacienteInicial = null }: { pacienteInicial?: 
   const [savedId,             setSavedId]             = useState<string | null>(null)
   const [pendingImprovements, setPendingImprovements] = useState<Record<string, string> | null>(null)
 
+  // Menino/menina escolhido aqui: guarda o texto neutro ("o/a") para poder trocar a escolha antes de editar
+  const [escolhaSexo,  setEscolhaSexo]  = useState<{ sexo: 'M' | 'F'; neutras: SecaoValor[]; resultado: SecaoValor[] } | null>(null)
+  const [gravandoSexo, setGravandoSexo] = useState(false)
+  const semSexo        = !!selectedPatient && normalizarSexo(selectedPatient.sex) === null
+  const podeTrocarSexo = !escolhaSexo || secoes === escolhaSexo.resultado
+
   // ── History ────────────────────────────────────────────────────
   const [orientacoes,      setOrientacoes]      = useState<Orientacao[]>([])
   const [loadingHistory,   setLoadingHistory]   = useState(false)
@@ -178,11 +184,20 @@ export function OrientacoesPage({ pacienteInicial = null }: { pacienteInicial?: 
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
-  function applyTemplate(tpl: Template) {
-    const ctx  = buildContext(selectedPatient, new Date(orientacaoDate))
-    const vals = initValores(tpl.secoes ?? [], ctx)
-    setSelectedTpl(tpl)
+  function aplicarModelo(tpl: Template) {
+    const data = new Date(orientacaoDate)
+    const vals = initValores(tpl.secoes ?? [], buildContext(selectedPatient, data))
     setSecoes(vals)
+    // sexo escolhido nesta tela: guarda também a versão neutra, para a escolha ainda poder ser trocada
+    if (escolhaSexo && selectedPatient) {
+      const neutras = initValores(tpl.secoes ?? [], buildContext({ ...selectedPatient, sex: null }, data))
+      setEscolhaSexo({ ...escolhaSexo, neutras, resultado: vals })
+    }
+  }
+
+  function applyTemplate(tpl: Template) {
+    aplicarModelo(tpl)
+    setSelectedTpl(tpl)
     setShowTplDD(false)
     setSavedId(null)
   }
@@ -190,11 +205,33 @@ export function OrientacoesPage({ pacienteInicial = null }: { pacienteInicial?: 
   // Re-apply variables when patient changes (if template already selected)
   useEffect(() => {
     if (!selectedTpl) return
-    const ctx  = buildContext(selectedPatient, new Date(orientacaoDate))
-    const vals = initValores(selectedTpl.secoes ?? [], ctx)
-    setSecoes(vals)
+    aplicarModelo(selectedTpl)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPatient, orientacaoDate])
+  }, [selectedPatient?.id, orientacaoDate])
+
+  useEffect(() => { setEscolhaSexo(null) }, [selectedPatient?.id])
+
+  async function escolherSexo(sexo: 'M' | 'F') {
+    if (!selectedPatient || gravandoSexo || escolhaSexo?.sexo === sexo || !podeTrocarSexo) return
+    setGravandoSexo(true)
+    try {
+      const res = await fetch(`/api/pacientes/${selectedPatient.id}/sexo`, {
+        method:  'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ sexo }),
+      })
+      if (!res.ok) throw new Error()
+      const neutras   = escolhaSexo?.neutras ?? secoes
+      const resultado = neutras.map(s => s.tipo === 'imagem' ? s : { ...s, valor: trocarNeutras(s.valor, sexo), titulo: trocarNeutras(s.titulo, sexo) })
+      setSecoes(resultado)
+      setEscolhaSexo({ sexo, neutras, resultado })
+      setSelectedPatient({ ...selectedPatient, sex: sexo })
+    } catch {
+      toast.error('Não consegui salvar menino/menina. Tente de novo.')
+    } finally {
+      setGravandoSexo(false)
+    }
+  }
 
   function updateValor(id: string, valor: string) {
     setSecoes(prev => prev.map(s => s.id === id ? { ...s, valor } : s))
@@ -214,6 +251,7 @@ export function OrientacoesPage({ pacienteInicial = null }: { pacienteInicial?: 
 
   async function handleSave() {
     if (!selectedPatient) { toast.error('Selecione um paciente'); return }
+    if (semSexo) { toast.error('Escolha menino ou menina'); return }
     if (secoes.length === 0) { toast.error('Adicione ao menos uma seção'); return }
 
     setSaving(true)
@@ -338,6 +376,7 @@ export function OrientacoesPage({ pacienteInicial = null }: { pacienteInicial?: 
     setSecoes([])
     setSavedId(null)
     setPendingImprovements(null)
+    setEscolhaSexo(null)
   }
 
   async function loadHistory() {
@@ -498,6 +537,38 @@ export function OrientacoesPage({ pacienteInicial = null }: { pacienteInicial?: 
                 )}
               </div>
             </div>
+
+            {/* Menino ou menina: obrigatório quando o cadastro não tem o sexo */}
+            {selectedPatient && (semSexo || escolhaSexo) && (
+              <div className={`rounded-xl border p-4 space-y-2 ${semSexo ? 'bg-amber-50 border-amber-300' : 'bg-emerald-50 border-emerald-200'}`}>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-sm font-semibold text-slate-800">Esta criança é:</span>
+                  {(['M', 'F'] as const).map(sx => {
+                    const escolhido = escolhaSexo?.sexo === sx
+                    const bloqueado = !escolhido && !podeTrocarSexo
+                    return (
+                      <button key={sx} type="button" onClick={() => escolherSexo(sx)} disabled={gravandoSexo || bloqueado}
+                        aria-pressed={escolhido}
+                        title={bloqueado ? 'Para trocar, edite o texto à mão' : undefined}
+                        className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-semibold border transition-colors disabled:opacity-50 ${
+                          escolhido ? 'bg-emerald-600 border-emerald-600 text-white' : 'bg-white border-slate-300 text-slate-700 hover:border-indigo-400 hover:text-indigo-700'
+                        }`}>
+                        {escolhido && <Check className="w-4 h-4" />}
+                        {sx === 'M' ? 'Menino' : 'Menina'}
+                      </button>
+                    )
+                  })}
+                  {gravandoSexo && <Loader2 className="w-4 h-4 animate-spin text-slate-400" />}
+                </div>
+                <p className="text-xs text-slate-600">
+                  {semSexo
+                    ? 'O cadastro está sem o sexo. Escolha para o texto sair certo ("o/a" vira "o" ou "a"). A escolha fica salva no cadastro.'
+                    : podeTrocarSexo
+                      ? 'Salvo no cadastro. Se escolheu errado, ainda dá para trocar.'
+                      : 'Salvo no cadastro. Para trocar agora, edite o texto à mão.'}
+                </p>
+              </div>
+            )}
 
             {/* Step 2 — Date */}
             <div className={`bg-white border rounded-xl p-4 transition-opacity ${
@@ -665,11 +736,13 @@ export function OrientacoesPage({ pacienteInicial = null }: { pacienteInicial?: 
             {/* Actions */}
             {secoes.length > 0 && (
               <div className="flex items-center gap-3 flex-wrap pt-1">
-                <button onClick={handleSave} disabled={saving}
+                <button onClick={handleSave} disabled={saving || semSexo}
+                  title={semSexo ? 'Escolha menino ou menina' : undefined}
                   className="flex items-center gap-2 px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold transition-colors disabled:opacity-60">
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                   Salvar
                 </button>
+                {semSexo && <span className="text-xs font-medium text-amber-700">Escolha menino ou menina</span>}
 
                 <button onClick={handleImprove} disabled={improving || !!pendingImprovements}
                   className="flex items-center gap-2 px-4 py-2 bg-violet-50 hover:bg-violet-100 text-violet-700 border border-violet-200 rounded-lg text-sm font-semibold transition-colors disabled:opacity-60"

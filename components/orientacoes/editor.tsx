@@ -1,5 +1,6 @@
 'use client'
 
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
@@ -23,7 +24,13 @@ interface EditorProps {
   placeholder?: string
 }
 
-export function RichTextEditor({ content, onChange, placeholder }: EditorProps) {
+export interface RichTextEditorRef {
+  /** Insere texto onde está o cursor (ou no fim, se o editor ainda não teve foco). */
+  inserir: (texto: string) => void
+}
+
+export const RichTextEditor = forwardRef<RichTextEditorRef, EditorProps>(function RichTextEditor({ content, onChange, placeholder }, ref) {
+  const emitido = useRef(content) // último HTML que o próprio editor mandou para fora
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -41,8 +48,23 @@ export function RichTextEditor({ content, onChange, placeholder }: EditorProps) 
         class: 'prose prose-sm max-w-none focus:outline-none min-h-[320px] px-4 py-3',
       },
     },
-    onUpdate: ({ editor }) => onChange(editor.getHTML()),
+    onUpdate: ({ editor }) => { emitido.current = editor.getHTML(); onChange(emitido.current) },
   })
+
+  useImperativeHandle(ref, () => ({
+    inserir: (texto) => {
+      if (!editor) return
+      const chain = editor.isFocused || editor.state.selection.from > 1 ? editor.chain().focus() : editor.chain().focus('end')
+      chain.insertContent(texto).run()
+    },
+  }), [editor])
+
+  // conteúdo trocado de fora (ex.: escolha de menino/menina): o editor mostra o novo texto
+  useEffect(() => {
+    if (!editor || editor.isDestroyed || content === emitido.current) return
+    emitido.current = content
+    editor.commands.setContent(content, { emitUpdate: false })
+  }, [editor, content])
 
   if (!editor) return null
 
@@ -161,4 +183,4 @@ export function RichTextEditor({ content, onChange, placeholder }: EditorProps) 
       </div>
     </div>
   )
-}
+})

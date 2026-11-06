@@ -6,7 +6,8 @@ import type { SecaoTemplate, TipoSecao } from '@/lib/orientacoes/types'
 import { TIPO_LABELS } from '@/lib/orientacoes/types'
 import { VARIABLES } from '@/lib/orientacoes/variables'
 import { parseImageValor, serializeImageValor } from './secao-input'
-import { RichTextEditor } from './editor'
+import { RichTextEditor, type RichTextEditorRef } from './editor'
+import { AlinhamentoImagem, JUSTIFICA_IMAGEM } from './alinhamento-imagem'
 
 function uid() {
   return Math.random().toString(36).slice(2, 10)
@@ -20,6 +21,8 @@ interface Props {
 export function TemplateBuilder({ secoes, onChange }: Props) {
   const [focusedId, setFocusedId] = useState<string | null>(null)
   const fileRefs = useRef<Record<string, HTMLInputElement | null>>({})
+  const editorRefs = useRef<Record<string, RichTextEditorRef | null>>({})
+  const textoRefs  = useRef<Record<string, HTMLTextAreaElement | null>>({})
 
   function add() {
     if (secoes.length >= 20) return
@@ -69,15 +72,24 @@ export function TemplateBuilder({ secoes, onChange }: Props) {
     update(id, { opcoes: (s.opcoes ?? []).filter((_, j) => j !== i) })
   }
 
+  // Insere a variável onde está o cursor (sem cursor: no fim)
   function insertVar(id: string, variable: string, tipo: TipoSecao) {
     const s = secoes.find(x => x.id === id)
     if (!s) return
     if (tipo === 'texto_longo') {
-      // For rich text, append as a text node inline
-      update(id, { valor: s.valor + variable })
-    } else {
-      update(id, { valor: (s.valor ?? '') + variable })
+      editorRefs.current[id]?.inserir(variable)
+      return
     }
+    const ta    = textoRefs.current[id]
+    const valor = s.valor ?? ''
+    const ini   = ta?.selectionStart ?? valor.length
+    const fim   = ta?.selectionEnd ?? valor.length
+    update(id, { valor: valor.slice(0, ini) + variable + valor.slice(fim) })
+    requestAnimationFrame(() => {
+      if (!ta) return
+      ta.focus()
+      ta.setSelectionRange(ini + variable.length, ini + variable.length)
+    })
   }
 
   return (
@@ -143,6 +155,7 @@ export function TemplateBuilder({ secoes, onChange }: Props) {
                   <button
                     key={v.key}
                     type="button"
+                    onMouseDown={(e) => e.preventDefault() /* mantém o cursor no texto */}
                     onClick={(e) => { e.stopPropagation(); insertVar(s.id, v.key, s.tipo) }}
                     className="px-2 py-0.5 text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded font-mono transition-colors border border-indigo-100"
                     title={v.label}
@@ -156,6 +169,7 @@ export function TemplateBuilder({ secoes, onChange }: Props) {
             {/* texto_curto: plain textarea */}
             {s.tipo === 'texto_curto' && (
               <textarea
+                ref={el => { textoRefs.current[s.id] = el }}
                 className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none bg-white"
                 rows={4}
                 placeholder="Conteúdo padrão desta seção (pode usar variáveis)..."
@@ -168,6 +182,7 @@ export function TemplateBuilder({ secoes, onChange }: Props) {
             {s.tipo === 'texto_longo' && (
               <RichTextEditor
                 key={s.id}
+                ref={el => { editorRefs.current[s.id] = el }}
                 content={s.valor}
                 onChange={html => update(s.id, { valor: html })}
                 placeholder="Conteúdo padrão desta seção (pode usar variáveis)..."
@@ -201,11 +216,12 @@ export function TemplateBuilder({ secoes, onChange }: Props) {
 
             {/* imagem: file upload */}
             {s.tipo === 'imagem' && (() => {
-              const { src, largura } = parseImageValor(s.valor)
+              const { src, largura, alinhamento } = parseImageValor(s.valor)
               return (
                 <div className="space-y-3">
                   {src ? (
                     <>
+                      <div className={`flex ${JUSTIFICA_IMAGEM[alinhamento]}`}>
                       <div className="relative" style={{ width: `${largura}%` }}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={src} alt={s.titulo} className="w-full rounded-lg border border-slate-200 object-contain" />
@@ -213,6 +229,7 @@ export function TemplateBuilder({ secoes, onChange }: Props) {
                           className="absolute top-1 right-1 bg-white rounded-full p-0.5 shadow text-red-400 hover:text-red-600">
                           <X className="w-4 h-4" />
                         </button>
+                      </div>
                       </div>
 
                       <div className="flex items-center gap-3">
@@ -223,11 +240,12 @@ export function TemplateBuilder({ secoes, onChange }: Props) {
                           max={100}
                           step={5}
                           value={largura}
-                          onChange={e => update(s.id, { valor: serializeImageValor(src, Number(e.target.value)) })}
+                          onChange={e => update(s.id, { valor: serializeImageValor(src, Number(e.target.value), alinhamento) })}
                           className="flex-1 accent-indigo-600"
                         />
                         <ZoomIn className="w-4 h-4 text-slate-400 flex-shrink-0" />
                         <span className="text-xs font-mono text-slate-500 w-10 text-right">{largura}%</span>
+                        <AlinhamentoImagem valor={alinhamento} onChange={a => update(s.id, { valor: serializeImageValor(src, largura, a) })} />
                       </div>
 
                       <button type="button" onClick={() => fileRefs.current[s.id]?.click()}
@@ -253,7 +271,7 @@ export function TemplateBuilder({ secoes, onChange }: Props) {
                       if (!file) return
                       if (file.size > 3 * 1024 * 1024) { alert('Imagem muito grande. Máximo 3 MB.'); return }
                       const reader = new FileReader()
-                      reader.onload = ev => update(s.id, { valor: serializeImageValor(ev.target?.result as string, largura) })
+                      reader.onload = ev => update(s.id, { valor: serializeImageValor(ev.target?.result as string, largura, alinhamento) })
                       reader.readAsDataURL(file)
                     }}
                   />

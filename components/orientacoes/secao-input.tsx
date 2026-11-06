@@ -6,6 +6,7 @@ import type { SecaoTemplate, SecaoValor } from '@/lib/orientacoes/types'
 import { applyVariables, type VariableContext } from '@/lib/orientacoes/variables'
 import { parseImageValor, serializeImageValor } from '@/lib/orientacoes/imagem'
 import { RichTextEditor } from './editor'
+import { AlinhamentoImagem, JUSTIFICA_IMAGEM } from './alinhamento-imagem'
 
 export { parseImageValor, serializeImageValor }
 
@@ -24,8 +25,8 @@ export function SecaoInput({ secao, valor, onChange }: Props) {
     if (file.size > 3 * 1024 * 1024) { alert('Imagem muito grande. Máximo 3 MB.'); return }
     const reader = new FileReader()
     reader.onload = e => {
-      const { largura } = parseImageValor(valor)
-      onChange(secao.id, serializeImageValor(e.target?.result as string, largura))
+      const { largura, alinhamento } = parseImageValor(valor)
+      onChange(secao.id, serializeImageValor(e.target?.result as string, largura, alinhamento))
     }
     reader.readAsDataURL(file)
   }
@@ -70,11 +71,12 @@ export function SecaoInput({ secao, valor, onChange }: Props) {
       )}
 
       {secao.tipo === 'imagem' && (() => {
-        const { src, largura } = parseImageValor(valor)
+        const { src, largura, alinhamento } = parseImageValor(valor)
         return (
           <div className="space-y-3">
             {src ? (
               <>
+                <div className={`flex ${JUSTIFICA_IMAGEM[alinhamento]}`}>
                 <div className="relative" style={{ width: `${largura}%` }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -91,6 +93,7 @@ export function SecaoInput({ secao, valor, onChange }: Props) {
                     <X className="w-4 h-4" />
                   </button>
                 </div>
+                </div>
 
                 {/* Size slider */}
                 <div className="flex items-center gap-3">
@@ -101,11 +104,12 @@ export function SecaoInput({ secao, valor, onChange }: Props) {
                     max={100}
                     step={5}
                     value={largura}
-                    onChange={e => onChange(secao.id, serializeImageValor(src, Number(e.target.value)))}
+                    onChange={e => onChange(secao.id, serializeImageValor(src, Number(e.target.value), alinhamento))}
                     className="flex-1 accent-indigo-600"
                   />
                   <ZoomIn className="w-4 h-4 text-slate-400 flex-shrink-0" />
                   <span className="text-xs font-mono text-slate-500 w-10 text-right">{largura}%</span>
+                  <AlinhamentoImagem valor={alinhamento} onChange={a => onChange(secao.id, serializeImageValor(src, largura, a))} />
                 </div>
 
                 <button type="button" onClick={() => fileRef.current?.click()}

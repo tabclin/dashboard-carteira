@@ -40,7 +40,7 @@ export async function GET(req: Request) {
       ...(patientId ? { patientId } : {}),
     },
     orderBy: { createdAt: 'desc' },
-    include: { patient: { select: { id: true, name: true } } },
+    include: { patient: { select: { id: true, name: true, sex: true } } },
   })
 
   return NextResponse.json(orientacoes)
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
       secoes,
       orientacaoDate: orientacaoDate ? new Date(orientacaoDate) : new Date(),
     },
-    include: { patient: { select: { id: true, name: true } } },
+    include: { patient: { select: { id: true, name: true, sex: true } } },
   })
   await concluirTarefas(prof.id, patientId, 'orientacao')
 
