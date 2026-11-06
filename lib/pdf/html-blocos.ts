@@ -122,6 +122,12 @@ function escrever(ctx: Contexto, texto: string, estilo: Estilo) {
   else ctx.atual.trechos.push({ texto, ...estilo })
 }
 
+// quebra de linha no fim do bloco (Shift+Enter): o PDF ignoraria a linha vazia; um espaço fixo a mantém
+function fecharBloco(bloco: Texto | null) {
+  const ultimo = bloco?.trechos[bloco.trechos.length - 1]
+  if (ultimo?.texto.endsWith('\n')) ultimo.texto += '\u00a0'
+}
+
 function percorrer(nos: No[], estilo: Estilo, ctx: Contexto) {
   for (const no of nos) {
     if (typeof no === 'string') {
@@ -135,16 +141,19 @@ function percorrer(nos: No[], estilo: Estilo, ctx: Contexto) {
         ctx.blocos.push(bloco)
         ctx.atual = bloco
         percorrer(no.filhos, estilo, ctx)
+        fecharBloco(bloco)
         ctx.atual = null
         break
       }
       case 'ul': case 'ol': {
+        fecharBloco(ctx.atual)
         ctx.atual = null
         const itens: Bloco[][] = []
         for (const f of no.filhos) {
           if (typeof f === 'string' && !f.trim()) continue
           const sub: Contexto = { blocos: [], atual: null }
           percorrer(typeof f === 'string' ? [f] : f.tag === 'li' ? f.filhos : [f], estilo, sub)
+          fecharBloco(sub.atual)
           itens.push(sub.blocos)
         }
         ctx.blocos.push({ tipo: 'lista', ordenada: no.tag === 'ol', itens })
@@ -174,5 +183,6 @@ export function htmlParaBlocos(html: string): Bloco[] {
   }
   const ctx: Contexto = { blocos: [], atual: null }
   percorrer(arvore(html), {}, ctx)
+  fecharBloco(ctx.atual)
   return ctx.blocos
 }

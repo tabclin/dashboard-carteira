@@ -69,3 +69,11 @@ test('texto puro com quebras', () => {
   assert.deepEqual(htmlParaBlocos('linha 1\nlinha 2').map((b) => textoDe([b])), ['linha 1', 'linha 2'])
   assert.deepEqual(htmlParaBlocos(''), [])
 })
+test('Shift+Enter no fim do item (ou do parágrafo) vira uma linha em branco que o PDF mostra', () => {
+  const [l] = htmlParaBlocos('<ol><li><p>Um<br></p></li><li><p>Dois</p></li></ol>')
+  assert.ok(l.tipo === 'lista')
+  if (l.tipo !== 'lista') return
+  assert.equal(textoDe(l.itens[0]), 'Um\n ')
+  assert.equal(textoDe([htmlParaBlocos('<p>a<br><br></p>')[0]]), 'a\n\n ')
+  assert.equal(textoDe([htmlParaBlocos('<p>a<br>b</p>')[0]]), 'a\nb')
+})
