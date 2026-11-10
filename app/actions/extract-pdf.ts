@@ -27,7 +27,10 @@ async function getProfessionalId(): Promise<string | null> {
 
 async function extractTextFromPdf(buffer: Buffer): Promise<string> {
   const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs')
-  pdfjsLib.GlobalWorkerOptions.workerSrc = ''
+  // No servidor não há Web Worker: com o worker carregado em globalThis.pdfjsWorker o pdfjs roda na mesma thread.
+  // (com workerSrc = '' ele falhava sempre e todo PDF ia direto para a IA por imagem)
+  const g = globalThis as { pdfjsWorker?: unknown }
+  if (!g.pdfjsWorker) g.pdfjsWorker = await import('pdfjs-dist/legacy/build/pdf.worker.mjs')
   const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(buffer) })
   const pdf = await loadingTask.promise
   const textParts: string[] = []
@@ -40,6 +43,17 @@ async function extractTextFromPdf(buffer: Buffer): Promise<string> {
     textParts.push(pageText)
   }
   return textParts.join('\n')
+}
+
+function motivoSemExames(hasAI: boolean, aiError: unknown): string {
+  const fim = ' Nenhuma análise foi criada.'
+  if (!hasAI) return 'A leitura por IA não está configurada e o leitor automático não encontrou exames neste PDF.' + fim
+  if (aiError) {
+    const msg = aiError instanceof Error ? aiError.message : String(aiError)
+    if (/credit balance/i.test(msg)) return 'Os créditos da IA que lê os exames acabaram. Avise o suporte da TabClin para recarregar.' + fim
+    return 'A IA não conseguiu ler este PDF agora. Tente de novo em alguns minutos.' + fim
+  }
+  return 'Nenhum exame foi encontrado neste PDF.' + fim
 }
 
 export async function extractPdfAction(formData: FormData): Promise<ExtractPdfResult> {
@@ -77,6 +91,7 @@ export async function extractPdfAction(formData: FormData): Promise<ExtractPdfRe
 
     let results = parsePdfText(text)
     let usedAI = false
+    let aiError: unknown = null
 
     if (hasAI) {
       try {
@@ -89,7 +104,13 @@ export async function extractPdfAction(formData: FormData): Promise<ExtractPdfRe
         }
       } catch (aiErr) {
         console.error('[extractPdfAction] Claude falhou:', aiErr)
+        aiError = aiErr
       }
+    }
+
+    // Sem nenhum exame não há o que salvar: avisa o motivo em vez de criar uma análise vazia
+    if (results.length === 0) {
+      return { results: [], rawText: text.slice(0, 1500), usedAI: false, error: motivoSemExames(hasAI, aiError) }
     }
 
     const patientSex = formData.get('patientSex') as string | null

@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, ReferenceLine, ResponsiveContainer, Legend, LabelList,
@@ -9,7 +11,7 @@ import {
 import { ANALYSIS_STATUS_CONFIG } from '@/types'
 import type { $Enums } from '@prisma/client'
 type AnalysisStatus = $Enums.AnalysisStatus
-import { TrendingUp, FlaskConical, ChevronRight } from 'lucide-react'
+import { TrendingUp, FlaskConical, ChevronRight, Trash2 } from 'lucide-react'
 
 interface ResultPoint {
   id: string
@@ -51,6 +53,25 @@ function formatDate(date: string) {
 }
 
 export function PatientHistory({ patient, analyses }: PatientHistoryProps) {
+  const router = useRouter()
+  const [excluindo, setExcluindo] = useState<string | null>(null)
+
+  async function excluirAnalise(a: AnalysisPoint) {
+    const qtd = `${a.results.length} exame${a.results.length !== 1 ? 's' : ''}`
+    if (!confirm(`Excluir a análise de ${formatDate(a.collectedAt)} (${qtd})? Esta ação não pode ser desfeita.`)) return
+    setExcluindo(a.id)
+    try {
+      const res = await fetch(`/api/ckex/analyses/${a.id}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error()
+      toast.success('Análise excluída')
+      router.refresh()
+    } catch {
+      toast.error('Erro ao excluir a análise')
+    } finally {
+      setExcluindo(null)
+    }
+  }
+
   // Monta lista de exames com pelo menos 2 pontos numéricos
   const examOptions = useMemo(() => {
     const map = new Map<string, { slug: string; name: string; unit: string | null; count: number }>()
@@ -225,10 +246,10 @@ export function PatientHistory({ patient, analyses }: PatientHistoryProps) {
               const danger = a.results.filter((r) => r.status === 'DANGER').length
               const attention = a.results.filter((r) => r.status === 'ATTENTION').length
               return (
+                <div key={a.id} className="flex items-center hover:bg-slate-50 transition-colors">
                 <Link
-                  key={a.id}
                   href={`/check-exames/analises/${a.id}`}
-                  className="flex items-center gap-4 px-5 py-3 hover:bg-slate-50 transition-colors"
+                  className="flex flex-1 min-w-0 items-center gap-4 pl-5 pr-2 py-3"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
@@ -254,6 +275,17 @@ export function PatientHistory({ patient, analyses }: PatientHistoryProps) {
                     <ChevronRight className="w-4 h-4 text-slate-300" />
                   </div>
                 </Link>
+                <button
+                  type="button"
+                  onClick={() => excluirAnalise(a)}
+                  disabled={excluindo === a.id}
+                  title="Excluir análise"
+                  aria-label={`Excluir análise de ${formatDate(a.collectedAt)}`}
+                  className="mr-3 p-2 rounded-lg text-slate-300 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-40"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+                </div>
               )
             })}
           </div>
