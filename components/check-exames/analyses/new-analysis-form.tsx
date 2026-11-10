@@ -263,7 +263,7 @@ export function NewAnalysisForm({ patients, preselectedPatientId }: NewAnalysisF
         }),
       })
 
-      const saveData = await saveRes.json()
+      const saveData = await saveRes.json().catch(() => ({ error: `Erro ao salvar análise (${saveRes.status})` }))
       if (!saveRes.ok) throw new Error(saveData.error ?? 'Erro ao salvar análise')
 
       const aiLabel = extractData.usedAI ? ' (via IA)' : ' (parser)'

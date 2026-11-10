@@ -65,56 +65,62 @@ export async function POST(request: Request) {
   })
   if (!patient) return NextResponse.json({ error: 'Paciente não encontrado' }, { status: 404 })
 
-  const analysis = await prisma.analysis.create({
-    data: {
-      patientId,
-      professionalId: professional.id,
-      collectedAt: new Date(collectedAt),
-      labName: labName || null,
-      notes: notes || null,
-      status: 'DRAFT',
-      results: results && results.length > 0 ? {
-        create: results.map((r, i) => ({
-          examName: r.examName,
-          examSlug: r.examSlug,
-          catalogId: r.catalogId || null,
-          extractedName: r.extractedName || null,
-          category: r.category || null,
-          value: r.value || null,
-          valueNumeric: r.valueNumeric ?? null,
-          unit: r.unit || null,
-          refMin: r.refMin ?? null,
-          refMax: r.refMax ?? null,
-          refText: r.refText || null,
-          sortOrder: i,
-          status: autoEvaluate(r.valueNumeric ?? null, r.refMin ?? null, r.refMax ?? null),
-        })),
-      } : undefined,
-    },
-    include: { results: { orderBy: { sortOrder: 'asc' } } },
-  })
+  try {
+    const analysis = await prisma.analysis.create({
+      data: {
+        patientId,
+        professionalId: professional.id,
+        collectedAt: new Date(collectedAt),
+        labName: labName || null,
+        notes: notes || null,
+        status: 'DRAFT',
+        results: results && results.length > 0 ? {
+          create: results.map((r, i) => ({
+            examName: r.examName,
+            examSlug: r.examSlug,
+            catalogId: r.catalogId || null,
+            extractedName: r.extractedName || null,
+            category: r.category || null,
+            value: r.value || null,
+            valueNumeric: r.valueNumeric ?? null,
+            unit: r.unit || null,
+            refMin: r.refMin ?? null,
+            refMax: r.refMax ?? null,
+            refText: r.refText || null,
+            sortOrder: i,
+            status: autoEvaluate(r.valueNumeric ?? null, r.refMin ?? null, r.refMax ?? null),
+          })),
+        } : undefined,
+      },
+      include: { results: { orderBy: { sortOrder: 'asc' } } },
+    })
 
-  // Re-avaliar status usando referências do catálogo (filtradas por sexo/idade)
-  const refMap = await findMatchedRefsForResults(
-    analysis.results.map((r) => ({ examSlug: r.examSlug, unit: r.unit })),
-    patient.sex,
-    patient.birthDate,
-    professional.id,
-  )
-
-  const statusUpdates = analysis.results.flatMap((r) => {
-    const matched = refMap.get(`${r.examSlug}::${r.unit ?? ''}`)
-    if (!matched) return []
-    const newStatus = autoEvaluate(
-      r.valueNumeric != null ? Number(r.valueNumeric) : null,
-      matched.refMin,
-      matched.refMax,
+    // Re-avaliar status usando referências do catálogo (filtradas por sexo/idade)
+    const refMap = await findMatchedRefsForResults(
+      analysis.results.map((r) => ({ examSlug: r.examSlug, unit: r.unit })),
+      patient.sex,
+      patient.birthDate,
+      professional.id,
     )
-    if (newStatus === r.status) return []
-    return [prisma.result.update({ where: { id: r.id }, data: { status: newStatus } })]
-  })
 
-  if (statusUpdates.length > 0) await Promise.all(statusUpdates)
+    const statusUpdates = analysis.results.flatMap((r) => {
+      const matched = refMap.get(`${r.examSlug}::${r.unit ?? ''}`)
+      if (!matched) return []
+      const newStatus = autoEvaluate(
+        r.valueNumeric != null ? Number(r.valueNumeric) : null,
+        matched.refMin,
+        matched.refMax,
+      )
+      if (newStatus === r.status) return []
+      return [prisma.result.update({ where: { id: r.id }, data: { status: newStatus } })]
+    })
 
-  return NextResponse.json(analysis, { status: 201 })
+    if (statusUpdates.length > 0) await Promise.all(statusUpdates)
+
+    return NextResponse.json(analysis, { status: 201 })
+  } catch (err) {
+    // sem isto a resposta vinha vazia e a tela mostrava "Unexpected end of JSON input"
+    console.error('[POST /api/ckex/analyses]', err)
+    return NextResponse.json({ error: 'Não foi possível salvar a análise. Nenhum dado foi gravado; tente novamente ou avise o suporte da TabClin.' }, { status: 500 })
+  }
 }

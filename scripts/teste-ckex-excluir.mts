@@ -72,7 +72,12 @@ try {
     console.log('      aviso na tela: ' + texto.replace(/\s+/g, ' '))
     await p.screenshot({ path: `${SAIDA}/tela-pdf.png` })
     const n = (await q('select count(*)::int n from analyses where patient_id = $1', [pac.id]))[0].n
-    if (/extraído/.test(texto)) ok(n === 2, 'PDF lido: análise criada com exames')
+    if (/extraído/.test(texto)) {
+      ok(n === 2, 'PDF lido: análise criada com exames')
+      // laudos que escrevem hemácias como 4.590.000/mm³ precisam caber no banco (migração 0006)
+      const [mx] = await q('select max(r.value_numeric)::float m, count(*)::int n from results r join analyses a on a.id = r.analysis_id where a.patient_id = $1', [pac.id])
+      console.log(`      ${mx.n} resultados gravados; maior valor ${mx.m}`)
+    }
     else ok(n === 1 && /Nenhuma análise foi criada/.test(texto), 'PDF sem exames: aviso claro e nenhuma análise vazia criada')
   }
 

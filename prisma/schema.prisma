@@ -104,10 +104,10 @@ model Result {
   extractedName    String?      @map("extracted_name")
   category         String?
   value            String?
-  valueNumeric     Decimal?     @map("value_numeric") @db.Decimal(10, 4)
+  valueNumeric     Decimal?     @map("value_numeric") @db.Decimal(18, 4)
   unit             String?
-  refMin           Decimal?     @map("ref_min") @db.Decimal(10, 4)
-  refMax           Decimal?     @map("ref_max") @db.Decimal(10, 4)
+  refMin           Decimal?     @map("ref_min") @db.Decimal(18, 4)
+  refMax           Decimal?     @map("ref_max") @db.Decimal(18, 4)
   refText          String?      @map("ref_text")
   status           ResultStatus @default(NOT_EVALUATED)
   professionalNote String?      @map("professional_note")
@@ -128,12 +128,12 @@ model ExamCatalog {
   category       String?
   description    String?
   unit           String?
-  criticalLow    Decimal?     @map("critical_low")   @db.Decimal(10, 4)
-  criticalHigh   Decimal?     @map("critical_high")  @db.Decimal(10, 4)
-  refMinMale     Decimal?     @map("ref_min_male")   @db.Decimal(10, 4)
-  refMaxMale     Decimal?     @map("ref_max_male")   @db.Decimal(10, 4)
-  refMinFemale   Decimal?     @map("ref_min_female") @db.Decimal(10, 4)
-  refMaxFemale   Decimal?     @map("ref_max_female") @db.Decimal(10, 4)
+  criticalLow    Decimal?     @map("critical_low")   @db.Decimal(18, 4)
+  criticalHigh   Decimal?     @map("critical_high")  @db.Decimal(18, 4)
+  refMinMale     Decimal?     @map("ref_min_male")   @db.Decimal(18, 4)
+  refMaxMale     Decimal?     @map("ref_max_male")   @db.Decimal(18, 4)
+  refMinFemale   Decimal?     @map("ref_min_female") @db.Decimal(18, 4)
+  refMaxFemale   Decimal?     @map("ref_max_female") @db.Decimal(18, 4)
   aliases        String[]
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime     @updatedAt      @map("updated_at")
@@ -151,12 +151,12 @@ model ExamCatalogTemplate {
   category     String?
   description  String?
   unit         String?
-  criticalLow  Decimal?       @map("critical_low")   @db.Decimal(10, 4)
-  criticalHigh Decimal?       @map("critical_high")  @db.Decimal(10, 4)
-  refMinMale   Decimal?       @map("ref_min_male")   @db.Decimal(10, 4)
-  refMaxMale   Decimal?       @map("ref_max_male")   @db.Decimal(10, 4)
-  refMinFemale Decimal?       @map("ref_min_female") @db.Decimal(10, 4)
-  refMaxFemale Decimal?       @map("ref_max_female") @db.Decimal(10, 4)
+  criticalLow  Decimal?       @map("critical_low")   @db.Decimal(18, 4)
+  criticalHigh Decimal?       @map("critical_high")  @db.Decimal(18, 4)
+  refMinMale   Decimal?       @map("ref_min_male")   @db.Decimal(18, 4)
+  refMaxMale   Decimal?       @map("ref_max_male")   @db.Decimal(18, 4)
+  refMinFemale Decimal?       @map("ref_min_female") @db.Decimal(18, 4)
+  refMaxFemale Decimal?       @map("ref_max_female") @db.Decimal(18, 4)
   aliases      String[]
   createdAt    DateTime       @default(now()) @map("created_at")
   updatedAt    DateTime       @updatedAt      @map("updated_at")
@@ -173,8 +173,8 @@ model ExamReference {
   sex               String                  @default("U")
   ageMinMonths      Int?                    @map("age_min_months")
   ageMaxMonths      Int?                    @map("age_max_months")
-  refMin            Decimal?                @map("ref_min") @db.Decimal(10, 4)
-  refMax            Decimal?                @map("ref_max") @db.Decimal(10, 4)
+  refMin            Decimal?                @map("ref_min") @db.Decimal(18, 4)
+  refMax            Decimal?                @map("ref_max") @db.Decimal(18, 4)
   overrides         ExamReferenceOverride[]
   createdAt         DateTime                @default(now()) @map("created_at")
   updatedAt         DateTime                @updatedAt      @map("updated_at")
@@ -196,8 +196,8 @@ model ExamReferenceOverride {
   professional    Professional  @relation(fields: [professionalId], references: [id], onDelete: Cascade)
   examReferenceId String        @map("exam_reference_id")
   examReference   ExamReference @relation(fields: [examReferenceId], references: [id], onDelete: Cascade)
-  refMin          Decimal?      @map("ref_min") @db.Decimal(10, 4)
-  refMax          Decimal?      @map("ref_max") @db.Decimal(10, 4)
+  refMin          Decimal?      @map("ref_min") @db.Decimal(18, 4)
+  refMax          Decimal?      @map("ref_max") @db.Decimal(18, 4)
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt      @map("updated_at")
 
